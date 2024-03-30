@@ -10,6 +10,9 @@ import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
+import { C_revies } from './review/entities/chillinker.reivews.entity';
+import { P_revies } from './review/entities/platform.reviews.entity';
+import { Review_likes } from './review/entities/review.likes.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -22,7 +25,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [],
+    entities: [C_revies, P_revies, Review_likes],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
