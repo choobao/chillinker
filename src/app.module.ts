@@ -10,6 +10,7 @@ import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
+import { Users } from './user/entities/user.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -22,7 +23,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [],
+    entities: [Users],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
