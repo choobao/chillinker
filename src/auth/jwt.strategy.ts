@@ -20,9 +20,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   private static extractJWT(req: RequestType): string | null {
-    const { authorization } = req.cookies;
-    if (authorization) {
-      const [tokenType, token] = authorization.split(' ');
+    const { accessToken } = req.cookies;
+    if (accessToken) {
+      const [tokenType, token] = accessToken.split(' ');
       if (token) {
         return token;
       }

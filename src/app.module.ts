@@ -11,6 +11,8 @@ import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
 import { Users } from './user/entities/user.entity';
+import { Follows } from './follow/entities/follow.entity';
+import { FollowModule } from './follow/follow.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -23,7 +25,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [Users],
+    entities: [Users, Follows],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -36,6 +38,7 @@ const typeOrmModuleOptions = {
       isGlobal: true,
       validationSchema: Joi.object({
         JWT_SECRET_KEY: Joi.string().required(),
+        JWT_REFRESH_KEY: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_HOST: Joi.string().required(),
@@ -47,6 +50,7 @@ const typeOrmModuleOptions = {
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,
     UserModule,
+    FollowModule,
     MainModule,
     ReviewModule,
     CollectionModule,

@@ -9,6 +9,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -43,11 +44,35 @@ export class UserController {
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
     try {
-      const token = await this.userService.login(loginDto);
+      const tokens = await this.userService.login(loginDto);
       return res
         .status(201)
-        .cookie('authorization', `Bearer ${token.accessToken}`)
+        .cookie('accessToken', `Bearer ${tokens.accessToken}`)
+        .cookie('refreshToken', `Bearer ${tokens.refreshToken}`)
         .send('로그인되었습니다.');
+    } catch (err) {
+      console.error(err);
+      return res.status(err.status).send(`${err}`);
+    }
+  }
+
+  //AccessToken 재발급
+  // @UseGuards(AuthGuard('jwt'))
+  @Post('refresh')
+  async renewAccessToken(@Req() req, @Res() res) {
+    try {
+      const { refreshToken } = req.cookies;
+      if (!refreshToken) {
+        throw new UnauthorizedException('로그인이 필요합니다.');
+      }
+
+      const [tokenType, token] = refreshToken.split(' ');
+      const newToken = (await this.userService.renewAccessToken(token))
+        .accessToken;
+      return res
+        .status(200)
+        .cookie('accessToken', `Bearer ${newToken}`)
+        .send('accessToken이 성공적으로 갱신되었습니다.');
     } catch (err) {
       console.error(err);
       return res.status(err.status).send(`${err}`);
@@ -61,7 +86,8 @@ export class UserController {
     try {
       return res
         .status(200)
-        .clearCookie('authorization')
+        .clearCookie('accessToken')
+        .clearCookie('refreshToken')
         .send('로그아웃되었습니다.');
     } catch (err) {
       console.error(err);
@@ -111,7 +137,8 @@ export class UserController {
       await this.userService.leave(id, deleteUserDto);
       return res
         .status(200)
-        .clearCookie('authorization')
+        .clearCookie('accessToken')
+        .clearCookie('refreshToken')
         .send('회원탈퇴되었습니다. GoodBye!');
     } catch (err) {
       console.error(err);

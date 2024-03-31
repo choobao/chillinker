@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -22,6 +23,7 @@ export class UserService {
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
     private datasouce: DataSource,
   ) {}
 
@@ -67,7 +69,24 @@ export class UserService {
 
     return {
       accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(
+        { email: payload.email, id: payload.id },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_KEY'),
+          expiresIn: '7d',
+        },
+      ),
     };
+  }
+
+  //refreshToken 검증하고 AccessToken 재발급
+  async renewAccessToken(token: string) {
+    const refreshTokenData = await this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_REFRESH_KEY'),
+    });
+    const payload = { email: refreshTokenData.email, id: refreshTokenData.id };
+    const newAccessToken = this.jwtService.sign(payload);
+    return { accessToken: newAccessToken };
   }
 
   //마이페이지 보기/타 유저페이지 보기
