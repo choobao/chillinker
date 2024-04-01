@@ -40,12 +40,11 @@ export class UserService {
 
     const hashedPassword = await hash(password, 10);
     await this.userRepository.save({
-      //create로하면 안되는데..? 저장이 그냥 안됨
       email,
       password: hashedPassword,
       nickname,
       intro,
-      profileImage,
+      profile_image: profileImage,
     });
   }
 
@@ -116,7 +115,11 @@ export class UserService {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
-    await this.userRepository.update(id, { nickname, intro, profileImage });
+    await this.userRepository.update(id, {
+      nickname,
+      intro,
+      profile_image: profileImage,
+    });
   }
 
   //회원탈퇴

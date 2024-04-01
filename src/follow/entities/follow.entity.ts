@@ -14,17 +14,17 @@ export class Follows {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', name: 'followingId', nullable: false })
-  followingId: number;
+  @Column({ type: 'int', nullable: false })
+  following_id: number;
 
-  @Column({ type: 'int', name: 'followerId', nullable: false })
-  followerId: number;
+  @Column({ type: 'int', nullable: false })
+  follower_id: number;
 
-  @ManyToOne(() => Users, (user) => user.followings, { onDelete: 'CASCADE' }) //followers가 들어가야하나..?
-  @JoinColumn([{ name: 'followingId', referencedColumnName: 'id' }])
+  @ManyToOne(() => Users, (user) => user.followings, { onDelete: 'CASCADE' })
+  @JoinColumn([{ name: 'following_id', referencedColumnName: 'id' }])
   followings: Users;
 
   @ManyToOne(() => Users, (user) => user.followers, { onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'followerId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'follower_id', referencedColumnName: 'id' }])
   followers: Users;
 }

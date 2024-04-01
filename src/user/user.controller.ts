@@ -80,7 +80,7 @@ export class UserController {
   }
 
   //로그아웃
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) //필요할까요? 이미 지난 AT나 RT를 가지고있을텐데...
   @Post('logout')
   async logout(@Res() res) {
     try {

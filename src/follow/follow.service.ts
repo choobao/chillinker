@@ -24,13 +24,13 @@ export class FollowService {
     }
 
     const isExistingFollowing = await this.followRepository.findOne({
-      where: { followingId, followerId },
+      where: { following_id: followingId, follower_id: followerId },
     });
 
     if (isExistingFollowing) {
       await this.followRepository.delete({
-        followingId: isExistingFollowing.followingId,
-        followerId,
+        following_id: followingId,
+        follower_id: followerId,
       });
 
       return {
@@ -39,7 +39,10 @@ export class FollowService {
       };
     }
 
-    await this.followRepository.save({ followingId, followerId });
+    await this.followRepository.save({
+      following_id: followingId,
+      follower_id: followerId,
+    });
     return {
       status: 200,
       message: `${followingUser.nickname}님을 팔로우했습니다.`,
@@ -56,12 +59,6 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
-    // const followingList = await this.followRepository.find({
-    //   where: { followerId },
-    //   select: { id: true },
-    //   relations: ['followings'],
-    // });
-
     const followingList = await this.followRepository
       .createQueryBuilder('follows')
       .leftJoinAndSelect('follows.followings', 'followings')
@@ -69,9 +66,9 @@ export class FollowService {
         'followings.id',
         'followings.email',
         'followings.nickname',
-        'followings.profileImage',
+        'followings.profile_image',
       ])
-      .where('follows.followerId = followerId', { followerId })
+      .where('follows.follower_id = follower_id', { follower_id: followerId })
       .getRawMany();
 
     return followingList;
@@ -87,12 +84,6 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
-    // const followerList = await this.followRepository.find({
-    //   where: { followingId },
-    //   select: { id: true },
-    //   relations: ['followers'],
-    // });
-
     const followerList = await this.followRepository
       .createQueryBuilder('follows')
       .leftJoinAndSelect('follows.followers', 'followers')
@@ -100,9 +91,11 @@ export class FollowService {
         'followers.id',
         'followers.email',
         'followers.nickname',
-        'followers.profileImage',
+        'followers.profile_image',
       ])
-      .where('follows.followingId = followingId', { followingId })
+      .where('follows.following_id = following_id', {
+        following_id: followingId,
+      })
       .getRawMany();
     return followerList;
   }
