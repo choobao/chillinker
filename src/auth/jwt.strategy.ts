@@ -2,7 +2,12 @@ import _ from 'lodash';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserService } from 'src/user/user.service';
 import { Request as RequestType } from 'express';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
@@ -23,9 +28,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const { accessToken } = req.cookies;
     if (accessToken) {
       const [tokenType, token] = accessToken.split(' ');
-      if (token) {
-        return token;
+      if (tokenType !== 'Bearer')
+        throw new BadRequestException('토큰 타입이 일치하지 않습니다.');
+      if (!token) {
+        throw new UnauthorizedException('토큰이 유효하지 않습니다.');
       }
+      return token;
     }
     return null;
   }
