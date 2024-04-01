@@ -19,10 +19,10 @@ export class C_reviews {
   @Column({ type: 'varchar', nullable: false })
   content: string;
 
-  @Column({ type: 'integer', default: 0, nullable: false })
+  @Column({ type: 'int', default: 0, nullable: false })
   like_count: number;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({ type: 'int', nullable: false })
   rate: number;
 
   @CreateDateColumn()
