@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -8,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CollectionService } from './collection.service';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateColDto } from './dto/createCol.dto';
 // import { Collections } from './entities/collections.entity';
 
 @Controller('collections')
@@ -32,10 +34,11 @@ export class CollectionController {
     return myCol;
   }
 
+  // 컬렉션 생성
+  @UseGuards(AuthGuard('jwt'))
   @Post('/')
-  async addCollection() {
-    const addCol = await this.collectionService.createCol();
-    return addCol;
+  async addCollection(@Body() createColDto: CreateColDto) {
+    return await this.collectionService.createCol(createColDto);
   }
 
   @Get('/bookmark/collections')
