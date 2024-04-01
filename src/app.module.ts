@@ -10,6 +10,7 @@ import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
+import { FirebaseAdminModule } from './firebase-admin/firebase-admin.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -49,6 +50,7 @@ const typeOrmModuleOptions = {
     MainModule,
     ReviewModule,
     CollectionModule,
+    FirebaseAdminModule,
   ],
   controllers: [ReviewController],
   providers: [],
