@@ -68,7 +68,7 @@ export class FollowService {
         'followings.nickname',
         'followings.profile_image',
       ])
-      .where('follows.follower_id = follower_id', { follower_id: followerId })
+      .where('follows.follower_id = :followerId', { followerId })
       .getRawMany();
 
     return followingList;
@@ -84,6 +84,8 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
+    console.log(followingUser);
+
     const followerList = await this.followRepository
       .createQueryBuilder('follows')
       .leftJoinAndSelect('follows.followers', 'followers')
@@ -93,9 +95,7 @@ export class FollowService {
         'followers.nickname',
         'followers.profile_image',
       ])
-      .where('follows.following_id = following_id', {
-        following_id: followingId,
-      })
+      .where('follows.following_id = :followingId', { followingId })
       .getRawMany();
     return followerList;
   }
