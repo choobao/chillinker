@@ -9,9 +9,9 @@ import {
 } from 'typeorm';
 
 @Entity({
-  name: 'p_revies',
+  name: 'p_reviews',
 })
-export class P_revies {
+export class P_reviews {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,8 +30,8 @@ export class P_revies {
   @CreateDateColumn()
   created_at: Date;
 
-  //**WebContents와 P_revies는 1:N
-  //   @ManyToOne(() => Web_contents, (web_contents) => web_contents.p_revies)
+  //**WebContents와 p_reviews는 1:N
+  //   @ManyToOne(() => Web_contents, (web_contents) => web_contents.p_reviews)
   //   web_contents: Web_contents;
 
   // @Column('int', { name: 'web_contents_id', nullable: false })

@@ -7,11 +7,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Review_likes } from './review.likes.entity';
 
 @Entity({
-  name: 'c_revies',
+  name: 'c_reviews',
 })
-export class C_revies {
+export class C_reviews {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -42,6 +43,6 @@ export class C_revies {
   // web_contents_id: number;
 
   //**CReviews와 ReviewLikes는 N:1
-  // @OneToMany(() => Review_likes, (review_likes) => review_likes.c_reviews)
-  // review_likes: Review_likes[];
+  @OneToMany(() => Review_likes, (review_likes) => review_likes.c_reviews)
+  review_likes: Review_likes[];
 }
