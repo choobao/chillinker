@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -10,9 +9,7 @@ import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
-import { C_revies } from './review/entities/chillinker.reivews.entity';
-import { P_revies } from './review/entities/platform.reviews.entity';
-import { Review_likes } from './review/entities/review.likes.entity';
+import { FollowModule } from './follow/follow.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -25,7 +22,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [C_revies, P_revies, Review_likes],
+    autoLoadEntities: true,
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -38,6 +35,7 @@ const typeOrmModuleOptions = {
       isGlobal: true,
       validationSchema: Joi.object({
         JWT_SECRET_KEY: Joi.string().required(),
+        JWT_REFRESH_KEY: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_HOST: Joi.string().required(),
@@ -49,6 +47,7 @@ const typeOrmModuleOptions = {
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,
     UserModule,
+    FollowModule,
     MainModule,
     ReviewModule,
     CollectionModule,
