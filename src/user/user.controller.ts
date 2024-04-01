@@ -19,7 +19,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -57,7 +57,6 @@ export class UserController {
   }
 
   //AccessToken 재발급
-  // @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
   async renewAccessToken(@Req() req, @Res() res) {
     try {

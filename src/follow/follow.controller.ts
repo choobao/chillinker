@@ -11,7 +11,7 @@ import {
 import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('user/:id')
+@Controller('users/:id')
 export class FollowController {
   constructor(private followService: FollowService) {}
 

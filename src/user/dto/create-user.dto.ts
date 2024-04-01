@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsStrongPassword,
   MinLength,
 } from 'class-validator';
 
@@ -12,12 +13,18 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @MinLength(6)
+  @IsStrongPassword(
+    {},
+    {
+      message:
+        '비밀번호는 영문 알파벳 대,소문자, 숫자, 특수문자(!@#$%^&*)를 포함해야 합니다.',
+    },
+  )
+  @MinLength(8, { message: '비밀번호는 6글자 이상이어야합니다.' })
   @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
   password: string;
 
   @IsString()
-  @MinLength(6)
   @IsNotEmpty({ message: '비밀번호 확인을 입력해주세요.' })
   confirmPassword: string;
 

@@ -25,7 +25,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [Users, Follows],
+    autoLoadEntities: true,
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),

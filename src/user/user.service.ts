@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -24,7 +25,7 @@ export class UserService {
     private userRepository: Repository<Users>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private datasouce: DataSource,
+    private dataSource: DataSource,
   ) {}
 
   //회원가입
@@ -135,7 +136,7 @@ export class UserService {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
-    const queryRunner = this.datasouce.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -150,7 +151,9 @@ export class UserService {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
 
-      throw new Error(`회원 탈퇴처리 중 오류가 발생했습니다.:${err}`);
+      throw new InternalServerErrorException(
+        `회원 탈퇴처리 중 오류가 발생했습니다.:${err}`,
+      );
     }
   }
 
