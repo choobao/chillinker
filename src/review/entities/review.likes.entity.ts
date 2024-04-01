@@ -16,7 +16,7 @@ export class Review_likes {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({ type: 'int', nullable: false })
   like: number;
 
   //**Users와 Review_likes는 1:N
