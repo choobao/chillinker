@@ -49,7 +49,7 @@ export class FollowService {
     };
   }
 
-  //이 유저의 팔로잉 목록 조회
+  //이 유저의 팔로잉 목록 조회(테스트 중 오류발견)
   async getFollowingList(followerId: number) {
     const followingUser = await this.userRepository.findOneBy({
       id: followerId,
@@ -74,7 +74,7 @@ export class FollowService {
     return followingList;
   }
 
-  //이 유저의 팔로워 목록 조회
+  //이 유저의 팔로워 목록 조회(테스트 중 오류발견)
   async getFollowerList(followingId: number) {
     const followingUser = await this.userRepository.findOneBy({
       id: followingId,

@@ -10,8 +10,6 @@ import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
-import { Users } from './user/entities/user.entity';
-import { Follows } from './follow/entities/follow.entity';
 import { FollowModule } from './follow/follow.module';
 
 const typeOrmModuleOptions = {
