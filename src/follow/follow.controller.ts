@@ -10,12 +10,15 @@ import {
 } from '@nestjs/common';
 import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('FOLLOWS')
 @Controller('users/:id')
 export class FollowController {
   constructor(private followService: FollowService) {}
 
   //이 유저 팔로우/언팔로우
+  @ApiOperation({ summary: '팔로우/언팔로우' })
   @UseGuards(AuthGuard('jwt'))
   @Post('follow')
   async follow(@Param('id') followingId: number, @Req() req, @Res() res) {
@@ -34,6 +37,7 @@ export class FollowController {
   }
 
   //이 유저의 팔로잉 목록 조회
+  @ApiOperation({ summary: '팔로잉 목록 조회' })
   @Get('followingList')
   async getFollowingList(@Param('id') followerId: number, @Res() res) {
     try {
@@ -48,6 +52,7 @@ export class FollowController {
   }
 
   //이 유저의 팔로워 목록 조회
+  @ApiOperation({ summary: '팔로워 목록 조회' })
   @Get('followerList')
   async getFollowerList(@Param('id') followingId: number, @Res() res) {
     try {
