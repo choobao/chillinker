@@ -13,20 +13,17 @@ import { Collection_likes } from './collection.likes.entity';
   name: 'collections',
 })
 export class Collections {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'collection_id' })
   id: number;
 
   @Column({ type: 'int', nullable: false })
-  userId: number;
+  user_id: number;
 
   @Column({ type: 'varchar', nullable: false })
   title: string;
 
   @Column({ type: 'varchar', nullable: false }) // false 맞는지 따로 확인
   desc: string;
-
-  @Column({ type: 'int', nullable: false })
-  web_contents_id: number;
 
   @CreateDateColumn() // 만든 순서대로 쌓이면 필요하지 않을까 하여 일단 넣음
   created_at: Date;
