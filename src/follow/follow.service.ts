@@ -84,8 +84,6 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
-    console.log(followingUser);
-
     const followerList = await this.followRepository
       .createQueryBuilder('follows')
       .leftJoinAndSelect('follows.followers', 'followers')

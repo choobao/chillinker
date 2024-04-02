@@ -18,12 +18,15 @@ import { LoginDto } from './dto/login.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('USER')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   //회원가입
+  @ApiOperation({ summary: '회원가입' })
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto, @Res() res) {
     try {
@@ -41,6 +44,7 @@ export class UserController {
   }
 
   //로그인
+  @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
     try {
@@ -57,6 +61,7 @@ export class UserController {
   }
 
   //AccessToken 재발급
+  @ApiOperation({ summary: 'AccessToken 재발급' })
   @Post('refresh')
   async renewAccessToken(@Req() req, @Res() res) {
     try {
@@ -79,6 +84,7 @@ export class UserController {
   }
 
   //로그아웃
+  @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard('jwt')) //필요할까요? 이미 지난 AT나 RT를 가지고있을텐데...
   @Post('logout')
   async logout(@Res() res) {
@@ -95,6 +101,7 @@ export class UserController {
   }
 
   //마이페이지 조회
+  @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('mypage')
   async getMyInfo(@Req() req, @Res() res) {
@@ -108,7 +115,8 @@ export class UserController {
     }
   }
 
-  //회원정보 수정
+  //회원 정보 수정
+  @ApiOperation({ summary: '회원 정보 수정' })
   @UseGuards(AuthGuard('jwt'))
   @Patch('mypage/update')
   async updateMyInfo(
@@ -126,7 +134,8 @@ export class UserController {
     }
   }
 
-  //회원 탈퇴
+  //회원탈퇴
+  @ApiOperation({ summary: '회원탈퇴' })
   @UseGuards(AuthGuard('jwt'))
   @Delete('mypage/leave')
   async leave(@Body() deleteUserDto: DeleteUserDto, @Req() req, @Res() res) {
@@ -145,7 +154,8 @@ export class UserController {
     }
   }
 
-  //타 유저 페이지 보기
+  //타 유저 페이지 조회
+  @ApiOperation({ summary: '타 유저 페이지 조회' })
   @Get(':id')
   async getUserInfo(@Param('id') id: number, @Res() res) {
     try {
