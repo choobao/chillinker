@@ -71,6 +71,16 @@ export class CollectionService {
     await this.colRepository.remove(collection);
   }
 
+  // 컬렉션 북마크 추가
+  async addBookmark(collectionId: number) {
+    const collection = await this.colRepository.findOneBy({
+      id: collectionId,
+    });
+    collection.isBookmarked = true;
+    await this.colRepository.save(collection);
+    return collection;
+  }
+
   // 북마크 컬렉션 목록 조회
   async getBookmarkColList(userId: number) {
     return this.colRepository.find({

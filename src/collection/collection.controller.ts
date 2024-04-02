@@ -64,6 +64,14 @@ export class CollectionController {
     return await this.collectionService.deleteCol(collectionId);
   }
 
+  // 컬렉션 북마크
+  @UseGuards(AuthGuard('jwt'))
+  @Post('bookmark/:collectionId')
+  //   @Post('/:collectionId/bookmark') // 순서 고민......
+  async addBookmarkCollection(collectionId: number) {
+    return await this.collectionService.addBookmark(collectionId);
+  }
+
   //   @Get('/bookmark/collections')
   //   async bookmarkCollections() {}
   //   @Get('/bookmark/collections/:collectionId')

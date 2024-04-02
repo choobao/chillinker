@@ -3,10 +3,10 @@ import { CollectionService } from './collection.service';
 import { CollectionController } from './collection.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Collections } from './entities/collections.entity';
-import { CollectionLikes } from './entities/collection.likes.entity';
+import { CollectionBookmark } from './entities/collection.bookmark.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Collections, CollectionLikes])],
+  imports: [TypeOrmModule.forFeature([Collections, CollectionBookmark])],
   exports: [CollectionService],
   providers: [CollectionService],
   controllers: [CollectionController],

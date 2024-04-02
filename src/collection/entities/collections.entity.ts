@@ -2,12 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CollectionLikes } from './collection.likes.entity';
+import { CollectionBookmark } from './collection.bookmark.entity';
 import { Users } from 'src/user/entities/user.entity';
 
 @Entity({
@@ -26,20 +25,23 @@ export class Collections {
   @Column({ type: 'boolean', default: false })
   isBookmarked: boolean;
 
+  @Column({ type: 'int', nullable: true })
+  bookmarkCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
   // 관계 설정
 
-  // 컬렉션 - 컬렉션 좋아요
+  // 컬렉션 - 컬렉션 북마크
   @OneToMany(
-    () => CollectionLikes,
-    (collectionLikes) => collectionLikes.collections,
+    () => CollectionBookmark,
+    (collectionBookmark) => collectionBookmark.collections,
   )
-  collectionLikes: CollectionLikes[];
+  collectionBookmark: CollectionBookmark[];
 
-  @Column('int', { name: 'collectionLikesId', nullable: true })
-  collectionLikesId: number;
+  @Column('int', { name: 'collectionBookmarkId', nullable: true })
+  collectionBookmarkId: number;
 
   // 컬렉션 - 웹컨텐츠
   //   @OneToMany(() => WebContents, (webContents) => webContents.collections)
