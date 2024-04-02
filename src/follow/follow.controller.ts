@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
   Req,
@@ -13,12 +14,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('FOLLOWS')
-@Controller('users/:id')
+@Controller('users/:id/follows')
 export class FollowController {
   constructor(private followService: FollowService) {}
 
-  //이 유저 팔로우/언팔로우
   @ApiOperation({ summary: '팔로우/언팔로우' })
+  @HttpCode(201)
   @UseGuards(AuthGuard('jwt'))
   @Post('follow')
   async follow(@Param('id') followingId: number, @Req() req, @Res() res) {
@@ -28,38 +29,31 @@ export class FollowController {
       if (followingId === followerId) {
         throw new BadRequestException('스스로를 팔로우 할 수는 없습니다');
       }
-      const result = await this.followService.follow(followingId, followerId);
-      return res.status(result.status).send(`${result.message}`);
+      return await this.followService.follow(followingId, followerId);
     } catch (err) {
       console.error(err);
       return res.status(err.status).send(`${err}`);
     }
   }
 
-  //이 유저의 팔로잉 목록 조회
   @ApiOperation({ summary: '팔로잉 목록 조회' })
+  @HttpCode(200)
   @Get('followingList')
   async getFollowingList(@Param('id') followerId: number, @Res() res) {
     try {
-      const followingList =
-        await this.followService.getFollowingList(followerId);
-
-      return res.status(200).json({ data: followingList });
+      return await this.followService.getFollowingList(followerId);
     } catch (err) {
       console.error(err);
       return res.status(err.status).send(`${err}`);
     }
   }
 
-  //이 유저의 팔로워 목록 조회
   @ApiOperation({ summary: '팔로워 목록 조회' })
+  @HttpCode(200)
   @Get('followerList')
   async getFollowerList(@Param('id') followingId: number, @Res() res) {
     try {
-      const followerList =
-        await this.followService.getFollowerList(followingId);
-
-      return res.status(200).json({ data: followerList });
+      return await this.followService.getFollowerList(followingId);
     } catch (err) {
       console.error(err);
       return res.status(err.status).send(`${err}`);

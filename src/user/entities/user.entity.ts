@@ -28,15 +28,15 @@ export class Users {
   intro?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  profile_image?: string;
+  profileImage?: string;
 
   @CreateDateColumn({
     type: 'timestamp',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', select: false, nullable: true })
-  deleted_at?: Date;
+  deletedAt?: Date;
 
   //내가 팔로잉 한 사람 목록
   @OneToMany(() => Follows, (following) => following.followings)

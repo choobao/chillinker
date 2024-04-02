@@ -13,7 +13,6 @@ export class FollowService {
     private userRepository: Repository<Users>,
   ) {}
 
-  //유저 팔로우
   async follow(followingId: number, followerId: number) {
     const followingUser = await this.userRepository.findOneBy({
       id: followingId,
@@ -23,33 +22,21 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
+    const followRelation = { followingId, followerId };
+
     const isExistingFollowing = await this.followRepository.findOne({
-      where: { following_id: followingId, follower_id: followerId },
+      where: followRelation,
     });
 
-    if (isExistingFollowing) {
-      await this.followRepository.delete({
-        following_id: followingId,
-        follower_id: followerId,
-      });
+    isExistingFollowing
+      ? await this.followRepository.delete(followRelation)
+      : await this.followRepository.save(followRelation);
 
-      return {
-        status: 200,
-        message: `${followingUser.nickname}님을 언팔로우했습니다.`,
-      };
-    }
-
-    await this.followRepository.save({
-      following_id: followingId,
-      follower_id: followerId,
-    });
     return {
-      status: 200,
-      message: `${followingUser.nickname}님을 팔로우했습니다.`,
+      message: `${followingUser.nickname}님을 ${isExistingFollowing && '언'}팔로우했습니다.`,
     };
   }
 
-  //이 유저의 팔로잉 목록 조회(테스트 중 오류발견)
   async getFollowingList(followerId: number) {
     const followingUser = await this.userRepository.findOneBy({
       id: followerId,
@@ -66,15 +53,14 @@ export class FollowService {
         'followings.id',
         'followings.email',
         'followings.nickname',
-        'followings.profile_image',
+        'followings.profileImage',
       ])
-      .where('follows.follower_id = :followerId', { followerId })
+      .where('follows.followerId = :followerId', { followerId })
       .getRawMany();
 
     return followingList;
   }
 
-  //이 유저의 팔로워 목록 조회(테스트 중 오류발견)
   async getFollowerList(followingId: number) {
     const followingUser = await this.userRepository.findOneBy({
       id: followingId,
@@ -91,10 +77,11 @@ export class FollowService {
         'followers.id',
         'followers.email',
         'followers.nickname',
-        'followers.profile_image',
+        'followers.profileImage',
       ])
-      .where('follows.following_id = :followingId', { followingId })
+      .where('follows.followingId = :followingId', { followingId })
       .getRawMany();
+
     return followerList;
   }
 }
