@@ -14,10 +14,10 @@ export class Follows {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ name: 'followingId', type: 'int', nullable: false })
   followingId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ name: 'followerId', type: 'int', nullable: false })
   followerId: number;
 
   @ManyToOne(() => Users, (user) => user.followings, { onDelete: 'CASCADE' })

@@ -22,41 +22,24 @@ export class FollowController {
   @HttpCode(201)
   @UseGuards(AuthGuard('jwt'))
   @Post('follow')
-  async follow(@Param('id') followingId: number, @Req() req, @Res() res) {
-    try {
-      const followerId = req.user.id;
+  async follow(@Param('id') followingId: number, @Req() req) {
+    const followerId = req.user.id;
 
-      if (followingId === followerId) {
-        throw new BadRequestException('스스로를 팔로우 할 수는 없습니다');
-      }
-      return await this.followService.follow(followingId, followerId);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
+    if (followingId === followerId) {
+      throw new BadRequestException('스스로를 팔로우 할 수는 없습니다');
     }
+    await this.followService.follow(followingId, followerId);
   }
 
   @ApiOperation({ summary: '팔로잉 목록 조회' })
-  @HttpCode(200)
   @Get('followingList')
-  async getFollowingList(@Param('id') followerId: number, @Res() res) {
-    try {
-      return await this.followService.getFollowingList(followerId);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+  async getFollowingList(@Param('id') followerId: number) {
+    return await this.followService.getFollowingList(followerId);
   }
 
   @ApiOperation({ summary: '팔로워 목록 조회' })
-  @HttpCode(200)
   @Get('followerList')
-  async getFollowerList(@Param('id') followingId: number, @Res() res) {
-    try {
-      return await this.followService.getFollowerList(followingId);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+  async getFollowerList(@Param('id') followingId: number) {
+    return await this.followService.getFollowerList(followingId);
   }
 }

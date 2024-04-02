@@ -46,7 +46,8 @@ export class UserController {
     const tokens = await this.userService.login(loginDto);
     return res
       .cookie('accessToken', `Bearer ${tokens.accessToken}`)
-      .cookie('refreshToken', `Bearer ${tokens.refreshToken}`);
+      .cookie('refreshToken', `Bearer ${tokens.refreshToken}`)
+      .end();
   }
 
   @ApiOperation({ summary: 'AccessToken 재발급' })
@@ -60,14 +61,14 @@ export class UserController {
     const [tokenType, token] = refreshToken.split(' ');
     const newToken = (await this.userService.renewAccessToken(token))
       .accessToken;
-    return res.cookie('accessToken', `Bearer ${newToken}`);
+    return res.cookie('accessToken', `Bearer ${newToken}`).end();
   }
 
   @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   async logout(@Res() res) {
-    return res.clearCookie('accessToken').clearCookie('refreshToken');
+    return res.clearCookie('accessToken').clearCookie('refreshToken').end();
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
@@ -101,7 +102,7 @@ export class UserController {
     const { id } = user;
 
     await this.userService.leave(id, deleteUserDto);
-    return res.clearCookie('accessToken').clearCookie('refreshToken');
+    return res.clearCookie('accessToken').clearCookie('refreshToken').end();
   }
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })
