@@ -28,7 +28,6 @@ export class UserService {
     private dataSource: DataSource,
   ) {}
 
-  //회원가입
   async register(createUserDto: CreateUserDto) {
     const { email, password, nickname, intro, profileImage } = createUserDto;
 
@@ -45,11 +44,12 @@ export class UserService {
       password: hashedPassword,
       nickname,
       intro,
-      profile_image: profileImage,
+      profileImage,
     });
+
+    return { message: '회원가입되었습니다. 로그인해주세요!' };
   }
 
-  //로그인
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
     const user = await this.userRepository.findOne({
@@ -79,7 +79,6 @@ export class UserService {
     };
   }
 
-  //refreshToken 검증하고 AccessToken 재발급
   async renewAccessToken(token: string) {
     const refreshTokenData = await this.jwtService.verify(token, {
       secret: this.configService.get<string>('JWT_REFRESH_KEY'),
@@ -89,7 +88,6 @@ export class UserService {
     return { accessToken: newAccessToken };
   }
 
-  //마이페이지 보기/타 유저페이지 보기
   async getUserInfoById(id: number) {
     const user = await this.userRepository.findOneBy({ id });
 
@@ -99,7 +97,6 @@ export class UserService {
     return user;
   }
 
-  //회원정보 수정
   async updateMyInfo(id: number, updateUserDto: UpdateUserDto) {
     const { password, nickname, intro, profileImage } = updateUserDto;
 
@@ -119,11 +116,10 @@ export class UserService {
     await this.userRepository.update(id, {
       nickname,
       intro,
-      profile_image: profileImage,
+      profileImage,
     });
   }
 
-  //회원탈퇴
   async leave(id: number, deleteUserDto: DeleteUserDto) {
     const { password } = deleteUserDto;
 
@@ -146,18 +142,17 @@ export class UserService {
       await queryRunner.manager.softDelete(Users, { id });
 
       await queryRunner.commitTransaction();
-      await queryRunner.release();
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      await queryRunner.release();
 
       throw new InternalServerErrorException(
         `회원 탈퇴처리 중 오류가 발생했습니다.:${err}`,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 
-  //이메일로 회원정보 찾기-이메일 중복확인,jwt전략에서 씀
   async findUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
   }
