@@ -43,10 +43,13 @@ export class CollectionService {
   }
 
   // 컬렉션 생성
-  async createCol(createColDto: CreateColDto): Promise<Collections> {
+  async createCol(
+    createColDto: CreateColDto,
+    userId: number,
+  ): Promise<Collections> {
     try {
-      const newCol = this.colRepository.create(createColDto);
-      return await this.colRepository.save(newCol);
+      const collection = this.colRepository.create({ ...createColDto, userId });
+      return await this.colRepository.save(collection);
     } catch (error) {
       throw new ConflictException('컬렉션 생성에 실패했습니다.');
     }
@@ -58,7 +61,9 @@ export class CollectionService {
     updateColDto: UpdateColDto,
   ): Promise<Collections> {
     try {
-      const collection = await this.colRepository.findOne(collectionId);
+      const collection = await this.colRepository.findOneBy({
+        id: collectionId,
+      });
       if (!collection) {
         throw new NotFoundException('유효한 컬렉션이 아닙니다.');
       }
@@ -76,7 +81,9 @@ export class CollectionService {
   //   컬렉션 삭제 _북마크한 컬렉션에서는 북마크 버튼을 다시 누르면 취소되는걸로(라디오버튼 느낌?) 추가 로직 필요 -> 이건 추후에 고려
   async deleteCol(collectionId: number): Promise<void> {
     try {
-      const collection = await this.colRepository.findOne(collectionId);
+      const collection = await this.colRepository.findOneBy({
+        id: collectionId,
+      });
 
       if (!collection) {
         throw new NotFoundException('유효한 컬렉션이 아닙니다.');

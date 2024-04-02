@@ -15,6 +15,8 @@ import { CollectionService } from './collection.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
+import { UserInfo } from 'utils/userinfo.decorator';
+import { Users } from 'src/user/entities/user.entity';
 // import { Collections } from './entities/collections.entity';
 
 @Controller('collections')
@@ -24,17 +26,15 @@ export class CollectionController {
   //   내 컬렉션 목록 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
-  async myCollections(@Param('userId', ParseIntPipe) userId: number) {
-    const myColList = await this.collectionService.getMyColList(userId);
+  async myCollections(@UserInfo() users: Users) {
+    const myColList = await this.collectionService.getMyColList(users.id);
     return await myColList;
   }
 
   // 내 컬렉션 상세 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/:collectionId')
-  async myCollection(
-    @Param('collectionId', ParseIntPipe) collectionId: number,
-  ) {
+  async myCollection(collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
   }
@@ -42,15 +42,18 @@ export class CollectionController {
   // 컬렉션 생성
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
-  async addCollection(@Body() createColDto: CreateColDto) {
-    return await this.collectionService.createCol(createColDto);
+  async addCollection(
+    @Body() createColDto: CreateColDto,
+    @UserInfo() users: Users,
+  ) {
+    return await this.collectionService.createCol(createColDto, users.id);
   }
 
   // 컬렉션 수정
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
-    @Param('collection_id', ParseIntPipe) collectionId: number,
+    collectionId: number,
     @Body() updateColDto: UpdateColDto,
   ) {
     return await this.collectionService.updateCol(collectionId, updateColDto);
@@ -60,9 +63,7 @@ export class CollectionController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(204)
   @Delete('/:collectionId')
-  async deleteCollection(
-    @Param('collection_id', ParseIntPipe) collectionId: number,
-  ) {
+  async deleteCollection(collectionId: number) {
     return await this.collectionService.deleteCol(collectionId);
   }
 

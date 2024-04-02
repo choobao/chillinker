@@ -38,7 +38,7 @@ export class Collections {
   )
   collectionLikes: CollectionLikes[];
 
-  @Column('int', { name: 'collectionLikesId', nullable: false })
+  @Column('int', { name: 'collectionLikesId', nullable: true })
   collectionLikesId: number;
 
   // 컬렉션 - 웹컨텐츠
