@@ -2,13 +2,13 @@ import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Collections } from './collections.entity';
 
 @Entity({
-  name: 'collection_likes',
+  name: 'collectionLikes',
 })
-export class Collection_likes {
+export class CollectionLikes {
   @PrimaryGeneratedColumn()
   id: number;
 
   // 컬렉션 좋아요 - 컬렉션
-  @ManyToOne(() => Collections, (collections) => collections.collection_likes)
+  @ManyToOne(() => Collections, (collections) => collections.collectionLikes)
   collections: Collections[];
 }
