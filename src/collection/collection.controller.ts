@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -22,8 +24,8 @@ export class CollectionController {
   //   내 컬렉션 목록 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
-  async myCollections(@Param('user_id', ParseIntPipe) user_id: number) {
-    const myColList = await this.collectionService.getMyColList(user_id);
+  async myCollections(@Param('userId', ParseIntPipe) userId: number) {
+    const myColList = await this.collectionService.getMyColList(userId);
     return await myColList;
   }
 
@@ -31,9 +33,9 @@ export class CollectionController {
   @UseGuards(AuthGuard('jwt'))
   @Get('/:collectionId')
   async myCollection(
-    @Param('collection_id', ParseIntPipe) collection_id: number,
+    @Param('collectionId', ParseIntPipe) collectionId: number,
   ) {
-    const myCol = await this.collectionService.getMyCol(collection_id);
+    const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
   }
 
@@ -47,16 +49,25 @@ export class CollectionController {
   // 컬렉션 수정
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
-  async updateCollection()
-
-  @Get('/bookmark/collections')
-  async bookmarkCollections(
-    @Param('collection_id', ParseIntPipe) collection_id: number,
-    @Body() updateColDto: UpdateColDto
+  async updateCollection(
+    @Param('collection_id', ParseIntPipe) collectionId: number,
+    @Body() updateColDto: UpdateColDto,
   ) {
-    return await this.collectionService.updateCol(collection_id, updateColDto);
+    return await this.collectionService.updateCol(collectionId, updateColDto);
   }
 
-  @Get('/bookmark/collections/:collectionId')
-  async bookmarkCollection() {}
+  // 컬렉션 삭제
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(204)
+  @Delete('/:collectionId')
+  async deleteCollection(
+    @Param('collection_id', ParseIntPipe) collectionId: number,
+  ) {
+    return await this.collectionService.deleteCol(collectionId);
+  }
+
+  //   @Get('/bookmark/collections')
+  //   async bookmarkCollections() {}
+  //   @Get('/bookmark/collections/:collectionId')
+  //   async bookmarkCollection() {}
 }
