@@ -31,76 +31,51 @@ export class UserController {
   @ApiOperation({ summary: '회원가입' })
   @Post('register')
   @HttpCode(201)
-  async register(@Body() createUserDto: CreateUserDto, @Res() res) {
-    try {
-      const { password, confirmPassword } = createUserDto;
-      if (password !== confirmPassword) {
-        throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
-      }
-
-      return await this.userService.register(createUserDto);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
+  async register(@Body() createUserDto: CreateUserDto) {
+    const { password, confirmPassword } = createUserDto;
+    if (password !== confirmPassword) {
+      throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
     }
+
+    return await this.userService.register(createUserDto);
   }
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
-    try {
-      const tokens = await this.userService.login(loginDto);
-      return res
-        .cookie('accessToken', `Bearer ${tokens.accessToken}`)
-        .cookie('refreshToken', `Bearer ${tokens.refreshToken}`);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+    const tokens = await this.userService.login(loginDto);
+    return res
+      .cookie('accessToken', `Bearer ${tokens.accessToken}`)
+      .cookie('refreshToken', `Bearer ${tokens.refreshToken}`);
   }
 
   @ApiOperation({ summary: 'AccessToken 재발급' })
   @Post('refresh')
   async renewAccessToken(@Req() req, @Res() res) {
-    try {
-      const { refreshToken } = req.cookies;
-      if (!refreshToken) {
-        throw new UnauthorizedException('로그인이 필요합니다.');
-      }
-
-      const [tokenType, token] = refreshToken.split(' ');
-      const newToken = (await this.userService.renewAccessToken(token))
-        .accessToken;
-      return res.cookie('accessToken', `Bearer ${newToken}`);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      throw new UnauthorizedException('로그인이 필요합니다.');
     }
+
+    const [tokenType, token] = refreshToken.split(' ');
+    const newToken = (await this.userService.renewAccessToken(token))
+      .accessToken;
+    return res.cookie('accessToken', `Bearer ${newToken}`);
   }
 
   @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   async logout(@Res() res) {
-    try {
-      return res.clearCookie('accessToken').clearCookie('refreshToken');
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+    return res.clearCookie('accessToken').clearCookie('refreshToken');
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('mypage')
-  async getMyInfo(@UserInfo() user: Users, @Res() res) {
-    try {
-      const { id } = user;
-      return await this.userService.getUserInfoById(id);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+  async getMyInfo(@UserInfo() user: Users) {
+    const { id } = user;
+    return await this.userService.getUserInfoById(id);
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })
@@ -109,15 +84,9 @@ export class UserController {
   async updateMyInfo(
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
-    @Res() res,
   ) {
-    try {
-      const { id } = user;
-      await this.userService.updateMyInfo(id, updateUserDto);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+    const { id } = user;
+    await this.userService.updateMyInfo(id, updateUserDto);
   }
 
   @ApiOperation({ summary: '회원탈퇴' })
@@ -129,25 +98,15 @@ export class UserController {
     @UserInfo() user: Users,
     @Res() res,
   ) {
-    try {
-      const { id } = user;
+    const { id } = user;
 
-      await this.userService.leave(id, deleteUserDto);
-      return res.clearCookie('accessToken').clearCookie('refreshToken');
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+    await this.userService.leave(id, deleteUserDto);
+    return res.clearCookie('accessToken').clearCookie('refreshToken');
   }
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })
   @Get(':id')
-  async getUserInfo(@Param('id') id: number, @Res() res) {
-    try {
-      return await this.userService.getUserInfoById(id);
-    } catch (err) {
-      console.error(err);
-      return res.status(err.status).send(`${err}`);
-    }
+  async getUserInfo(@Param('id') id: number) {
+    return await this.userService.getUserInfoById(id);
   }
 }
