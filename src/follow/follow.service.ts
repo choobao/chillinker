@@ -22,7 +22,7 @@ export class FollowService {
       throw new NotFoundException('해당 유저를 찾을 수 없습니다');
     }
 
-    const followRelation = { followingId, followerId };
+    const followRelation = { followingId: followingId, followerId: followerId };
 
     const isExistingFollowing = await this.followRepository.findOne({
       where: followRelation,
@@ -31,10 +31,6 @@ export class FollowService {
     isExistingFollowing
       ? await this.followRepository.delete(followRelation)
       : await this.followRepository.save(followRelation);
-
-    return {
-      message: `${followingUser.nickname}님을 ${isExistingFollowing && '언'}팔로우했습니다.`,
-    };
   }
 
   async getFollowingList(followerId: number) {
