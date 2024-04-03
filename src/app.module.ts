@@ -14,6 +14,7 @@ import { FollowModule } from './follow/follow.module';
 import { Review_likes } from './review/entities/review.likes.entity';
 import { P_reviews } from './review/entities/platform.reviews.entity';
 import { C_reviews } from './review/entities/chillinker.reivews.entity';
+import { WebContentModule } from './web-content/web-content.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -55,6 +56,7 @@ const typeOrmModuleOptions = {
     MainModule,
     ReviewModule,
     CollectionModule,
+    WebContentModule,
   ],
   controllers: [ReviewController],
   providers: [],
