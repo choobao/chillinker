@@ -13,7 +13,7 @@ import { Users } from 'src/user/entities/user.entity';
   name: 'collections',
 })
 export class Collections {
-  @PrimaryGeneratedColumn({ name: 'collectionId' })
+  @PrimaryGeneratedColumn({ name: 'collection_id' })
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
@@ -40,7 +40,7 @@ export class Collections {
   )
   collectionBookmark: CollectionBookmark[];
 
-  @Column('int', { name: 'collectionBookmarkId', nullable: true })
+  @Column('int', { name: 'collection_bookmark_id', nullable: true })
   collectionBookmarkId: number;
 
   // 컬렉션 - 웹컨텐츠
@@ -54,6 +54,6 @@ export class Collections {
   @ManyToOne(() => Users, (users) => users.collections)
   users: Users;
 
-  @Column('int', { name: 'userId', nullable: false })
+  @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 }

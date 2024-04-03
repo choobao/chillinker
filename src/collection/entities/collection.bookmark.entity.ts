@@ -9,10 +9,10 @@ import { Collections } from './collections.entity';
 import { Users } from 'src/user/entities/user.entity';
 
 @Entity({
-  name: 'collectionBookmark',
+  name: 'collection_bookmark',
 })
 export class CollectionBookmark {
-  @PrimaryGeneratedColumn({ name: 'collectionBookmarkId' })
+  @PrimaryGeneratedColumn({ name: 'collection_bookmark_id' })
   id: number;
 
   @CreateDateColumn()
@@ -26,6 +26,6 @@ export class CollectionBookmark {
   @ManyToOne(() => Users, (users) => users.collections)
   users: Users;
 
-  @Column('int', { name: 'userId', nullable: false })
+  @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 }
