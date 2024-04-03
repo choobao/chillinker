@@ -15,6 +15,7 @@ import { Review_likes } from './review/entities/review.likes.entity';
 import { P_reviews } from './review/entities/platform.reviews.entity';
 import { C_reviews } from './review/entities/chillinker.reivews.entity';
 import { WebContentModule } from './web-content/web-content.module';
+import { RedisModule } from './redis/redis.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -57,6 +58,7 @@ const typeOrmModuleOptions = {
     ReviewModule,
     CollectionModule,
     WebContentModule,
+    RedisModule,
   ],
   controllers: [ReviewController],
   providers: [],
