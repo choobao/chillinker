@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Collection_likes } from './collection.likes.entity';
 import { Users } from 'src/user/entities/user.entity';
+import { WebContents } from 'src/web-content/entities/webContents.entity';
 
 @Entity({
   name: 'collections',
@@ -42,15 +43,15 @@ export class Collections {
   collection_likes_id: number;
 
   // 컬렉션 - 웹컨텐츠
-  //   @OneToMany(() => Web_contents, (web_contents) => web_contents.collections)
-  //   web_contents: Web_contents[];
+  @OneToMany(() => WebContents, (webContents) => webContents.collection)
+  webContent: WebContents[];
 
-  //   @Column('int', { name: 'web_contents_id', nullable: false })
-  //   web_contents_id: number;
+  @Column('int', { name: 'web_contents_id', nullable: false })
+  webContentsId: number;
 
   // 컬렉션 - 유저
   @ManyToOne(() => Users, (users) => users.collections)
-  users: Users;
+  user: Users;
 
   @Column('int', { name: 'user_id', nullable: false })
   user_id: number;

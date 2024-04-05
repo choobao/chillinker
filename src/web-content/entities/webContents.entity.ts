@@ -10,9 +10,10 @@ import {
 import { ContentType } from '../webContent.type';
 import { IsEnum, IsInt, IsString } from 'class-validator';
 import { Collections } from '../../collection/entities/collections.entity';
-import { C_reviews } from '../../review/entities/chillinker.reivews.entity';
-import { P_reviews } from '../../review/entities/platform.reviews.entity';
+
 import { Bogosips } from './bogosips.entity';
+import { PReviews } from 'src/review/entities/platform.reviews.entity';
+import { CReviews } from 'src/review/entities/chillinker.reivews.entity';
 
 @Entity('webContents')
 export class WebContents {
@@ -73,13 +74,13 @@ export class WebContents {
   @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
   bogosips: Bogosips[];
 
-  @OneToMany(() => P_reviews, (pReview) => pReview.webContent)
-  pReviews: P_reviews[];
+  @OneToMany(() => PReviews, (pReview) => pReview.webContent)
+  pReviews: PReviews[];
 
-  @OneToMany(() => C_reviews, (cReview) => cReview.webContent)
-  cReviews: C_reviews[];
+  @OneToMany(() => CReviews, (cReview) => cReview.webContent)
+  cReviews: CReviews[];
 
-  @ManyToOne(() => Collections, (collection) => collection.webContents, {
+  @ManyToOne(() => Collections, (collection) => collection.webContent, {
     onDelete: 'CASCADE',
   })
   collection: Collections;

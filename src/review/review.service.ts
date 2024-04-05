@@ -37,13 +37,13 @@ export class ReviewService {
   ) {}
 
   async getCReviews(
-    webContentsId: number,
+    webContentId: number,
     page?: number,
     order?: string,
     option?: string,
   ) {
     const reviews = await this.chillinkerReviewsRepository.findOne({
-      where: { webContentsId },
+      where: { webContentId },
     });
     if (!reviews) {
       throw new NotFoundException('작품에 작성된 리뷰가 존재하지 않습니다.');
@@ -53,7 +53,7 @@ export class ReviewService {
     if (option == 'c') {
       if (order == 'recent') {
         const recentReviews = await this.chillinkerReviewsRepository.find({
-          where: { webContentsId },
+          where: { webContentId },
           order: { createdAt: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
@@ -62,7 +62,7 @@ export class ReviewService {
         return recentReviews;
       } else {
         const defaultReivews = await this.chillinkerReviewsRepository.find({
-          where: { webContentsId },
+          where: { webContentId },
           order: { likeCount: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
@@ -72,7 +72,7 @@ export class ReviewService {
     } else {
       if (order == 'recent') {
         const recentReviews = await this.platformReviewsRepository.find({
-          where: { webContentsId },
+          where: { webContentId },
           order: { createdAt: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
@@ -81,7 +81,7 @@ export class ReviewService {
         return recentReviews;
       } else {
         const defaultReivews = await this.platformReviewsRepository.find({
-          where: { webContentsId },
+          where: { webContentId },
           order: { likeCount: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
@@ -93,14 +93,14 @@ export class ReviewService {
 
   async createReivew(
     user: Users,
-    webContentsId: number,
+    webContentId: number,
     createReviewDto: CreateCReviewsDto,
   ) {
     const userId = user.id;
     const { content, rate } = createReviewDto;
 
     const findUserReiew = await this.chillinkerReviewsRepository.findOne({
-      where: { userId, webContentsId },
+      where: { userId, webContentId },
     });
 
     if (!findUserReiew) {
@@ -109,7 +109,7 @@ export class ReviewService {
 
     const createReview = await this.chillinkerReviewsRepository.save({
       userId: userId,
-      webContentsId: webContentsId,
+      webContentId,
       content: content,
       rate: rate,
     });
