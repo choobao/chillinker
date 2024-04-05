@@ -2,18 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CollectionBookmark } from './collection.bookmark.entity';
+import { CollectionBookmark } from './collection-bookmark.entity';
 import { Users } from 'src/user/entities/user.entity';
 
 @Entity({
   name: 'collections',
 })
 export class Collections {
-  @PrimaryGeneratedColumn({ name: 'collection_id' })
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
@@ -21,9 +22,6 @@ export class Collections {
 
   @Column({ type: 'varchar', nullable: false })
   desc: string;
-
-  @Column({ type: 'boolean', default: false })
-  isBookmarked: boolean;
 
   @Column({ type: 'int', nullable: true })
   bookmarkCount: number;
@@ -36,9 +34,9 @@ export class Collections {
   // 컬렉션 - 컬렉션 북마크
   @OneToMany(
     () => CollectionBookmark,
-    (collectionBookmark) => collectionBookmark.collections,
+    (collectionBookmark) => collectionBookmark.collection,
   )
-  collectionBookmark: CollectionBookmark[];
+  collectionBookmarks: CollectionBookmark[];
 
   @Column('int', { name: 'collection_bookmark_id', nullable: true })
   collectionBookmarkId: number;
@@ -51,9 +49,10 @@ export class Collections {
   //   webContentsId: number;
 
   // 컬렉션 - 유저
-  @ManyToOne(() => Users, (users) => users.collections)
-  users: Users;
+  @ManyToOne(() => Users, (user) => user.collections)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: Users;
 
-  @Column('int', { name: 'user_id', nullable: false })
+  @Column('int', { nullable: false })
   userId: number;
 }

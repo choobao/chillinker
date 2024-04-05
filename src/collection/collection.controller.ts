@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Param,
   Patch,
   Post,
   UseGuards,
@@ -23,15 +24,15 @@ export class CollectionController {
   //   내 컬렉션 목록 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
-  async myCollections(@UserInfo() users: Users) {
-    const myColList = await this.collectionService.getMyColList(users.id);
+  async myCollections(@UserInfo() user: Users) {
+    const myColList = await this.collectionService.getMyColList(user.id);
     return await myColList;
   }
 
   // 내 컬렉션 상세 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/:collectionId')
-  async myCollection(collectionId: number) {
+  async myCollection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
   }
@@ -41,16 +42,16 @@ export class CollectionController {
   @Post('/')
   async addCollection(
     @Body() createColDto: CreateColDto,
-    @UserInfo() users: Users,
+    @UserInfo() user: Users,
   ) {
-    return await this.collectionService.createCol(createColDto, users.id);
+    return await this.collectionService.createCol(createColDto, user.id);
   }
 
   // 컬렉션 수정
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
-    collectionId: number,
+    @Param('collectionId') collectionId: number,
     @Body() updateColDto: UpdateColDto,
   ) {
     return await this.collectionService.updateCol(collectionId, updateColDto);
@@ -63,17 +64,4 @@ export class CollectionController {
   async deleteCollection(collectionId: number) {
     return await this.collectionService.deleteCol(collectionId);
   }
-
-  // 컬렉션 북마크
-  @UseGuards(AuthGuard('jwt'))
-  @Post('bookmark/:collectionId')
-  //   @Post('/:collectionId/bookmark') // 순서 고민......
-  async addBookmarkCollection(collectionId: number) {
-    return await this.collectionService.addBookmark(collectionId);
-  }
-
-  //   @Get('/bookmark/collections')
-  //   async bookmarkCollections() {}
-  //   @Get('/bookmark/collections/:collectionId')
-  //   async bookmarkCollection() {}
 }
