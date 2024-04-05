@@ -1,53 +1,115 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { P_reviews } from './entities/platform.reviews.entity';
-import { Review_likes } from './entities/review.likes.entity';
 import { CreateCReviewsDto } from './dto/review.create.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
-import { C_reviews } from './entities/chillinker.reivews.entity';
+
+import { Users } from 'src/user/entities/user.entity';
+import {
+  CReviewDto,
+  PaginationBuilder,
+  PaginationRequest,
+  PaginationResponse,
+} from 'src/utils/pagination';
+import { query } from 'express';
+import { ReviewLikes } from './entities/review.likes.entity';
+import { CReviews } from './entities/chillinker.reivews.entity';
+import { PReviews } from './entities/platform.reviews.entity';
 
 @Injectable()
 export class ReviewService {
   constructor(
-    @InjectRepository(C_reviews)
-    private readonly chillinkerReviewsRepository: Repository<C_reviews>,
-    @InjectRepository(P_reviews)
-    private readonly platformReviewsRepository: Repository<P_reviews>,
-    @InjectRepository(Review_likes)
-    private readonly reveiewLikesRepository: Repository<Review_likes>,
+    @InjectRepository(CReviews)
+    private readonly chillinkerReviewsRepository: Repository<CReviews>,
+    @InjectRepository(PReviews)
+    private readonly platformReviewsRepository: Repository<PReviews>,
+    @InjectRepository(ReviewLikes)
+    private readonly reveiewLikesRepository: Repository<ReviewLikes>,
+    private readonly dataSource: DataSource,
   ) {}
 
-  async getReivew() {}
+  async getCReviews(
+    webContentsId: number,
+    page?: number,
+    order?: string,
+    option?: string,
+  ) {
+    const reviews = await this.chillinkerReviewsRepository.findOne({
+      where: { webContentsId },
+    });
+    if (!reviews) {
+      throw new NotFoundException('작품에 작성된 리뷰가 존재하지 않습니다.');
+    }
+    //option = c, p
+    //order은 등록순(recent,만들어진 최신순), 인기순(popular,좋아요순)필요
+    if (option == 'c') {
+      if (order == 'recent') {
+        const recentReviews = await this.chillinkerReviewsRepository.find({
+          where: { webContentsId },
+          order: { createdAt: 'desc' },
+          take: 10,
+          skip: (page - 1) * 10,
+        });
 
-  //이 아래로는 유저정보 받아오는 로직 필요
+        return recentReviews;
+      } else {
+        const defaultReivews = await this.chillinkerReviewsRepository.find({
+          where: { webContentsId },
+          order: { likeCount: 'desc' },
+          take: 10,
+          skip: (page - 1) * 10,
+        });
+        return defaultReivews;
+      }
+    } else {
+      if (order == 'recent') {
+        const recentReviews = await this.platformReviewsRepository.find({
+          where: { webContentsId },
+          order: { createdAt: 'desc' },
+          take: 10,
+          skip: (page - 1) * 10,
+        });
+
+        return recentReviews;
+      } else {
+        const defaultReivews = await this.platformReviewsRepository.find({
+          where: { webContentsId },
+          order: { likeCount: 'desc' },
+          take: 10,
+          skip: (page - 1) * 10,
+        });
+        return defaultReivews;
+      }
+    }
+  }
+
   async createReivew(
-    // user:User,
-    // webContentsId:webContentsId,
+    user: Users,
+    webContentsId: number,
     createReviewDto: CreateCReviewsDto,
   ) {
-    //작품 아이디, 유저아이디, dto, reviewLikes는 default니까 필요없을듯?
-
-    //리뷰 dto에서 받아온것을 유저 아이디와 함께 레파지토리에 저장
+    const userId = user.id;
     const { content, rate } = createReviewDto;
 
-    //작품당 리뷰는 한개만 가능, 리뷰 레파지토리에서 작품아이디와 유저아이디가 일치하는게 있는지 확인
-    // const findUserReivew = await this.chillinkerReviewsRepository.findOne({
-    //   where: { userId: user.Id, webContentsId: webContentsId },
-    // });
+    const findUserReiew = await this.chillinkerReviewsRepository.findOne({
+      where: { userId, webContentsId },
+    });
 
-    // if(!findUserReview){
-    //     throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.')
-    // }
+    if (!findUserReiew) {
+      throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.');
+    }
 
     const createReview = await this.chillinkerReviewsRepository.save({
-      // userId:user.Id,
-      // webContentsId:webContentsId,
+      userId: userId,
+      webContentsId: webContentsId,
       content: content,
       rate: rate,
     });
@@ -56,22 +118,20 @@ export class ReviewService {
   }
 
   async modifyReivew(
-    // user:User,
+    user: Users,
     reviewId: number,
     modifyCReivewDto: ModifyCReviewsDto,
   ) {
-    //리뷰 아이디, 유저 아이디, 수정dto 정보 받아오기
-    // const { userId } = user;
+    const userId = user.id;
     const { content, rate } = modifyCReivewDto;
-    //레포지토리에서 리뷰를 찾아서 작성된 유저와 같다면 통과, 아니라면 안됨
 
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
     });
 
-    // if (findReivew.user_id !== userId) {
-    //   throw new ForbiddenException('작성자만 리뷰를 수정할 수 있습니다.');
-    // }
+    if (findReivew.userId !== userId) {
+      throw new ForbiddenException('작성자만 리뷰를 수정할 수 있습니다.');
+    }
 
     //수정정보 업데이트
     const modifyReivew = await this.chillinkerReviewsRepository.update(
@@ -82,62 +142,82 @@ export class ReviewService {
     return modifyReivew;
   }
 
-  async deleteReivew(
-    // user:User,
-    reviewId: number,
-  ) {
-    // const { userId } = user;
+  async deleteReivew(user: Users, reviewId: number) {
+    const userId = user.id;
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
     });
 
-    // if (findReivew.user_id !== userId) {
-    //   throw new ForbiddenException('작성자만 리뷰를 삭제할 수 있습니다.');
-    // }
+    if (findReivew.userId !== userId) {
+      throw new ForbiddenException('작성자만 리뷰를 삭제할 수 있습니다.');
+    }
 
-    const modifyReivew = await this.chillinkerReviewsRepository.delete({
+    const deleteReivew = await this.chillinkerReviewsRepository.delete({
       id: reviewId,
     });
   }
 
-  async likeReivew(
-    // user:User,
-    reviewId: number,
-  ) {
-    // const { userId } = user;
-    const findReivew = await this.chillinkerReviewsRepository.findOne({
+  async likeReivew(user: Users, reviewId: number) {
+    const userId = user.id;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    const findReview = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
     });
 
-    // if (findReivew.user_id == userId) {
-    //   throw new ForbiddenException('본인이 쓴 리뷰에는 좋아요를 누를 수 없습니다.');
-    // }
+    if (!findReview) {
+      throw new NotFoundException('해당 리뷰를 찾을 수 없습니다.');
+    }
 
-    const like = await this.reveiewLikesRepository.findOne({
-      where: {
-        // user_id:user.id,
-        c_reveiw_id: reviewId,
-      },
-    });
+    if (findReview.userId == userId) {
+      throw new ForbiddenException(
+        '본인이 쓴 리뷰에는 좋아요를 누를 수 없습니다.',
+      );
+    }
 
-    if (!like) {
-      await this.reveiewLikesRepository.save({
-        like: 1,
-        // user_id: user.id,
-        c_reveiw_id: reviewId,
+    try {
+      queryRunner.connect();
+      queryRunner.startTransaction();
+
+      const like = await this.reveiewLikesRepository.findOne({
+        where: {
+          userId: userId,
+          cReviewId: reviewId,
+        },
       });
 
-      return '해당 리뷰에 좋아요를 등록했습니다.';
-    } else {
-      await this.reveiewLikesRepository.update(
-        {
-          // user_id:user.id,
-          c_reveiw_id: reviewId,
-        },
-        { like: 0 },
-      );
+      if (!like) {
+        await this.reveiewLikesRepository.save({
+          like: 1,
+          userId: userId,
+          cReviewId: reviewId,
+        });
 
-      return '해당 리뷰에 좋아요를 취소했습니다.';
+        findReview.likeCount += 1;
+      } else {
+        await this.reveiewLikesRepository.update(
+          {
+            userId: userId,
+            cReviewId: reviewId,
+          },
+          { like: 0 },
+        );
+
+        findReview.likeCount -= 1;
+      }
+      await this.chillinkerReviewsRepository.save(findReview);
+
+      await queryRunner.commitTransaction();
+
+      return like
+        ? '해당 리뷰에 좋아요를 취소했습니다.'
+        : '해당 리뷰에 좋아요를 등록했습니다.';
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException('리뷰 좋아요에 실패하였습니다.');
+    } finally {
+      await queryRunner.release();
     }
   }
 }

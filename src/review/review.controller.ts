@@ -8,62 +8,80 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from 'src/utils/userinfo.decorator';
+import { Users } from 'src/user/entities/user.entity';
+import { PaginationRequest } from 'src/utils/pagination';
 
-@Controller('reviews')
+@Controller('webContents/:webContentsId/reviews')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @Get()
-  async getReivew() {}
+  async getCReivew(
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
+    @Query('page', ParseIntPipe) page?: number,
+    @Query('order') order?: string,
+    @Query('option') option?: string,
+  ) {
+    return await this.reviewService.getCReviews(
+      webContentsId,
+      page,
+      order,
+      option,
+    );
+  }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async createReview(
-    // @userInfo() user:User,
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
+    @UserInfo() user: Users,
     @Body() createCReviewsDto: CreateCReviewsDto,
   ) {
     return await this.reviewService.createReivew(
-      // user,
+      user,
+      webContentsId,
       createCReviewsDto,
     );
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/:reviewId')
   async modifyReview(
-    // @userInfo() user:User,
+    @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
     @Body() modifyCReviewsDto: ModifyCReviewsDto,
   ) {
     return await this.reviewService.modifyReivew(
-      // user,
+      user,
       reviewId,
       modifyCReviewsDto,
     );
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/:reviewId')
   @HttpCode(204)
   async deleteReivew(
-    // @userInfo() user:User,
+    @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    await this.reviewService.deleteReivew(
-      // user,
-      reviewId,
-    );
+    await this.reviewService.deleteReivew(user, reviewId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('/:reviewId/likes')
   async likeReview(
-    // @userInfo() user:User,
+    @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    return await this.reviewService.likeReivew(
-      // user,
-      reviewId,
-    );
+    return await this.reviewService.likeReivew(user, reviewId);
   }
 }
