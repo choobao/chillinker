@@ -1,5 +1,7 @@
+
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BogosipType } from '../webContent.type';
+
 import { WebContents } from './webContents.entity';
 import { Users } from '../../user/entities/user.entity';
 
