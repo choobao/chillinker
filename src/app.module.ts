@@ -10,9 +10,6 @@ import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
 import { FollowModule } from './follow/follow.module';
 
-import { Review_likes } from './review/entities/review.likes.entity';
-import { P_reviews } from './review/entities/platform.reviews.entity';
-import { C_reviews } from './review/entities/chillinker.reivews.entity';
 import { WebContentModule } from './web-content/web-content.module';
 import { RedisModule } from './redis/redis.module';
 

@@ -20,8 +20,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserInfo } from 'utils/userinfo.decorator';
+
 import { Users } from './entities/user.entity';
+import { UserInfo } from 'src/utils/userinfo.decorator';
 
 @ApiTags('USER')
 @Controller('users')

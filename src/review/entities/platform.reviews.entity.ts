@@ -32,11 +32,11 @@ export class PReviews {
   createdAt: Date;
 
   //**WebContents와 p_reviews는 1:N
-  @ManyToOne(() => WebContents, (webContents) => webContents.pReviews, {
+  @ManyToOne(() => WebContents, (webContent) => webContent.pReviews, {
     onDelete: 'CASCADE',
   })
-  webContents: WebContents;
+  webContent: WebContents;
 
-  @Column('int', { name: 'web_contents_id', nullable: false })
-  webContentsId: number;
+  @Column('int', { name: 'web_content_id', nullable: false })
+  webContentId: number;
 }

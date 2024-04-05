@@ -7,6 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Follows } from '../../follow/entities/follow.entity';
+import { ReviewLikes } from 'src/review/entities/review.likes.entity';
+import { CReviews } from 'src/review/entities/chillinker.reivews.entity';
+import { Collections } from 'src/collection/entities/collections.entity';
 
 @Entity({
   name: 'users',
@@ -45,4 +48,16 @@ export class Users {
   //나를 팔로잉 한 사람 목록
   @OneToMany(() => Follows, (follower) => follower.followers)
   followers: Follows[];
+
+  @OneToMany(() => CReviews, (cReviews) => cReviews.users)
+  cReviews: CReviews[];
+
+  @OneToMany(() => ReviewLikes, (reviewLikes) => reviewLikes.users)
+  reviewLikes: ReviewLikes[];
+
+  @OneToMany(() => Collections, (collection) => collection.user)
+  collections: Collections[];
+
+  // @OneToMany(() => CollectionBookmarkUser, (bookmarkUser) => bookmarkUser.user)
+  // collectionBookmarks: CollectionBookmarkUser[];
 }

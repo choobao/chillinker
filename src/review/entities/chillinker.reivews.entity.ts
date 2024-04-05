@@ -38,15 +38,15 @@ export class CReviews {
   userId: number;
 
   //**WebContents와 CReviews는 1:N
-  @ManyToOne(() => WebContents, (webContents) => webContents.cReviews, {
+  @ManyToOne(() => WebContents, (webContent) => webContent.cReviews, {
     onDelete: 'CASCADE',
   })
-  webContents: WebContents;
+  webContent: WebContents;
 
-  @Column('int', { name: 'web_contents_id', nullable: false })
-  webContentsId: number;
+  @Column('int', { name: 'web_content_id', nullable: false })
+  webContentId: number;
 
   //**CReviews와 ReviewLikes는 N:1
   @OneToMany(() => ReviewLikes, (reviewLikes) => reviewLikes.cReviews)
-  reviewLikes: ReviewLikes[];
+  reviewLike: ReviewLikes[];
 }

@@ -28,7 +28,7 @@ export class ReviewLikes {
   userId: number;
 
   // **C_reviews와 Review_likes는 1:N
-  @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLikes)
+  @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike)
   cReviews: CReviews;
 
   @Column('int', { name: 'c_reveiw_id', nullable: false })
