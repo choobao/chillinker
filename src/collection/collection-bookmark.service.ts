@@ -12,10 +12,10 @@ import { CollectionBookmarkUser } from './entities/collection-bookmark-user.enti
 @Injectable()
 export class CollectionBookmarkService {
   constructor(
-    @InjectRepository(CollectionBookmarkUser)
-    private colBookUserRepository: Repository<CollectionBookmarkUser>,
     @InjectRepository(Collections)
     private colRepository: Repository<Collections>,
+    @InjectRepository(CollectionBookmarkUser)
+    private colBookUserRepository: Repository<CollectionBookmarkUser>,
   ) {}
 
   // 북마크 컬렉션 목록 조회
@@ -51,6 +51,9 @@ export class CollectionBookmarkService {
       throw new BadRequestException('이미 북마크된 컬렉션입니다.');
     }
 
+    collection.bookmarkCount += 1;
+    await this.colRepository.save(collection);
+
     const bookmark = this.colBookUserRepository.create({
       collection,
       user: { id: userId },
@@ -64,9 +67,17 @@ export class CollectionBookmarkService {
     const bookmark = await this.colBookUserRepository.findOne({
       where: { collection: { id: collectionId }, user: { id: userId } },
     });
-
     if (!bookmark) {
       throw new NotFoundException('북마크를 찾을 수 없습니다.');
+    }
+
+    const collection = await this.colRepository.findOne({
+      where: { id: collectionId },
+    });
+
+    if (collection && collection.bookmarkCount > 0) {
+      collection.bookmarkCount -= 1;
+      await this.colRepository.save(collection);
     }
 
     await this.colBookUserRepository.delete(bookmark.id);
