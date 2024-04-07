@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Collections } from './entities/collections.entity';
+import { CollectionBookmark } from './entities/collection-bookmark.entity';
 import { CollectionBookmarkUser } from './entities/collection-bookmark-user.entity';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class CollectionBookmarkService {
     private colRepository: Repository<Collections>,
     @InjectRepository(CollectionBookmarkUser)
     private colBookUserRepository: Repository<CollectionBookmarkUser>,
+    @InjectRepository(CollectionBookmark)
+    private colBookRepository: Repository<CollectionBookmark>,
   ) {}
 
   // 북마크 컬렉션 목록 조회
@@ -51,15 +54,19 @@ export class CollectionBookmarkService {
       throw new BadRequestException('이미 북마크된 컬렉션입니다.');
     }
 
+    const bookmark = this.colBookRepository.create({ collection });
+    await this.colBookRepository.save(bookmark);
+
     collection.bookmarkCount += 1;
     await this.colRepository.save(collection);
 
-    const bookmark = this.colBookUserRepository.create({
+    const bookmarkUser = this.colBookUserRepository.create({
       collection,
       user: { id: userId },
+      bookmark,
     });
 
-    await this.colBookUserRepository.save(bookmark);
+    await this.colBookUserRepository.save(bookmarkUser);
   }
 
   // 컬렉션 북마크 해제(삭제)
