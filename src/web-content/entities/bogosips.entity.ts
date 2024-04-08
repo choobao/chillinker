@@ -1,14 +1,17 @@
-import { Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BogosipType } from '../webContent.type';
+
 import { WebContents } from './webContents.entity';
 import { Users } from '../../user/entities/user.entity';
 
+@Entity('bogosips')
 export class Bogosips {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Users, (user) => user.bogosips)
-  user: Users;
+  // @ManyToOne(() => Users, (user) => user.bogosips)
+  // user: Users;
 
   @Column()
   userId: number;

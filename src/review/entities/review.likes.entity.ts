@@ -7,12 +7,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { C_reviews } from './chillinker.reivews.entity';
+import { Users } from 'src/user/entities/user.entity';
+import { CReviews } from './chillinker.reivews.entity';
 
 @Entity({
-  name: 'review_likes',
+  name: 'reviewLikes',
 })
-export class Review_likes {
+export class ReviewLikes {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,16 +21,16 @@ export class Review_likes {
   like: number;
 
   //**Users와 Review_likes는 1:N
-  //   @ManyToOne(() => Users, (users) => users.review_likes)
-  //   users: Users;
+  @ManyToOne(() => Users, (users) => users.reviewLikes)
+  users: Users;
 
-  // @Column('int', { name: 'user_id', nullable: false })
-  // user_id: number;
+  @Column('int', { name: 'user_id', nullable: false })
+  userId: number;
 
   // **C_reviews와 Review_likes는 1:N
-  @ManyToOne(() => C_reviews, (c_reviews) => c_reviews.review_likes)
-  c_reviews: C_reviews;
+  @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike)
+  cReviews: CReviews;
 
   @Column('int', { name: 'c_reveiw_id', nullable: false })
-  c_reveiw_id: number;
+  cReviewId: number;
 }

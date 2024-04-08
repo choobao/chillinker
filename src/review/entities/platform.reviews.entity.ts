@@ -1,3 +1,4 @@
+import { WebContents } from 'src/web-content/entities/webContents.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,9 +10,9 @@ import {
 } from 'typeorm';
 
 @Entity({
-  name: 'p_reviews',
+  name: 'pReviews',
 })
-export class P_reviews {
+export class PReviews {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,7 +20,7 @@ export class P_reviews {
   content: string;
 
   @Column({ type: 'int', default: 0, nullable: false })
-  like_count: number;
+  likeCount: number;
 
   @Column({ type: 'varchar', nullable: false })
   writer: string;
@@ -28,12 +29,14 @@ export class P_reviews {
   rate: number;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   //**WebContents와 p_reviews는 1:N
-  //   @ManyToOne(() => Web_contents, (web_contents) => web_contents.p_reviews)
-  //   web_contents: Web_contents;
+  @ManyToOne(() => WebContents, (webContent) => webContent.pReviews, {
+    onDelete: 'CASCADE',
+  })
+  webContent: WebContents;
 
-  // @Column('int', { name: 'web_contents_id', nullable: false })
-  // web_contents_id: number;
+  @Column('int', { name: 'web_content_id', nullable: false })
+  webContentId: number;
 }

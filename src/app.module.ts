@@ -5,15 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { MainModule } from './main/main.module';
 import { ReviewController } from './review/review.controller';
 import { ReviewModule } from './review/review.module';
 import { CollectionModule } from './collection/collection.module';
 import { FollowModule } from './follow/follow.module';
 
-import { Review_likes } from './review/entities/review.likes.entity';
-import { P_reviews } from './review/entities/platform.reviews.entity';
-import { C_reviews } from './review/entities/chillinker.reivews.entity';
 import { WebContentModule } from './web-content/web-content.module';
 import { RedisModule } from './redis/redis.module';
 
@@ -54,7 +50,6 @@ const typeOrmModuleOptions = {
     AuthModule,
     UserModule,
     FollowModule,
-    MainModule,
     ReviewModule,
     CollectionModule,
     WebContentModule,

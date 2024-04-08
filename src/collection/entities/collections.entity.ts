@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { CollectionBookmark } from './collection-bookmark.entity';
 import { Users } from 'src/user/entities/user.entity';
+import { WebContents } from 'src/web-content/entities/webContents.entity';
 
 @Entity({
   name: 'collections',
@@ -41,18 +42,14 @@ export class Collections {
   @Column('int', { name: 'collection_bookmark_id', nullable: true })
   collectionBookmarkId: number;
 
-  // 컬렉션 - 웹컨텐츠
-  //   @OneToMany(() => WebContents, (webContents) => webContents.collections)
-  //   webContents: WebContents[];
-
-  //   @Column('int', { name: 'webContentsId', nullable: false })
-  //   webContentsId: number;
-
   // 컬렉션 - 유저
   @ManyToOne(() => Users, (user) => user.collections)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: Users;
 
-  @Column('int', { nullable: false })
-  userId: number;
+  // 컬렉션 - 웹컨텐츠
+  @OneToMany(() => WebContents, (webContents) => webContents.collection)
+  webContent: WebContents[];
+
+  @Column('int', { name: 'web_contents_id', nullable: false })
+  webContentsId: number;
 }
