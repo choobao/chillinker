@@ -43,11 +43,11 @@ export class Collections {
   collection_likes_id: number;
 
   // 컬렉션 - 웹컨텐츠
-  @OneToMany(() => WebContents, (webContents) => webContents.collection)
-  webContent: WebContents[];
+  // @OneToMany(() => WebContents, (webContents) => webContents.collection)
+  // webContent: WebContents[];
 
-  @Column('int', { name: 'web_contents_id', nullable: false })
-  webContentsId: number;
+  // @Column('int', { name: 'web_contents_id', nullable: false })
+  // webContentsId: number;
 
   // 컬렉션 - 유저
   @ManyToOne(() => Users, (users) => users.collections)

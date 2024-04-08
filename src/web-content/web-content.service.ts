@@ -27,10 +27,10 @@ export class WebContentService {
         .andWhere('webContents.rank IS NOT NULL')
         .groupBy('webContents.id')
         .select([
-          'webContents.id',
-          'webContents.category',
-          'webContents.title',
-          'webContents.rate',
+          'webContents.id AS id',
+          'webContents.category AS category',
+          'webContents.title AS title',
+          'webContents.image AS image',
         ])
         .addSelect('COUNT(review.id)', 'reviewCount')
         .addSelect(`JSON_EXTRACT(webContents.rank, '$.${platform}')`, 'ranking') // 플랫폼 별 랭킹
@@ -42,4 +42,14 @@ export class WebContentService {
       throw new InternalServerErrorException(err.message);
     }
   }
+
+  async searchFromUsers() {}
+
+  async searchFromCollections() {}
+
+  async searchFromAuthors() {}
+
+  async searchFromWebnovels() {}
+
+  async searchFromWebtoons() {}
 }
