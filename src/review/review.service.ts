@@ -42,16 +42,18 @@ export class ReviewService {
     order?: string,
     option?: string,
   ) {
-    const reviews = await this.chillinkerReviewsRepository.findOne({
-      where: { webContentId },
-    });
-    if (!reviews) {
-      throw new NotFoundException('작품에 작성된 리뷰가 존재하지 않습니다.');
-    }
     //option = c, p
     //order은 등록순(recent,만들어진 최신순), 인기순(popular,좋아요순)필요
     if (option == 'c') {
       if (order == 'recent') {
+        const reviews = await this.chillinkerReviewsRepository.findOne({
+          where: { webContentId },
+        });
+        if (!reviews) {
+          throw new NotFoundException(
+            '작품에 작성된 리뷰가 존재하지 않습니다.',
+          );
+        }
         const recentReviews = await this.chillinkerReviewsRepository.find({
           where: { webContentId },
           order: { createdAt: 'desc' },
@@ -61,6 +63,14 @@ export class ReviewService {
 
         return recentReviews;
       } else {
+        const reviews = await this.chillinkerReviewsRepository.findOne({
+          where: { webContentId },
+        });
+        if (!reviews) {
+          throw new NotFoundException(
+            '작품에 작성된 리뷰가 존재하지 않습니다.',
+          );
+        }
         const defaultReivews = await this.chillinkerReviewsRepository.find({
           where: { webContentId },
           order: { likeCount: 'desc' },
@@ -70,16 +80,30 @@ export class ReviewService {
         return defaultReivews;
       }
     } else {
+      const reviews = await this.platformReviewsRepository.findOne({
+        where: { webContentId },
+      });
+      if (!reviews) {
+        throw new NotFoundException('작품에 작성된 리뷰가 존재하지 않습니다.');
+      }
       if (order == 'recent') {
         const recentReviews = await this.platformReviewsRepository.find({
           where: { webContentId },
-          order: { createdAt: 'desc' },
+          order: { date: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
         });
 
         return recentReviews;
       } else {
+        const reviews = await this.platformReviewsRepository.findOne({
+          where: { webContentId },
+        });
+        if (!reviews) {
+          throw new NotFoundException(
+            '작품에 작성된 리뷰가 존재하지 않습니다.',
+          );
+        }
         const defaultReivews = await this.platformReviewsRepository.find({
           where: { webContentId },
           order: { likeCount: 'desc' },
@@ -103,7 +127,7 @@ export class ReviewService {
       where: { userId, webContentId },
     });
 
-    if (!findUserReiew) {
+    if (findUserReiew) {
       throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.');
     }
 
@@ -129,6 +153,10 @@ export class ReviewService {
       where: { id: reviewId },
     });
 
+    if (!findReivew) {
+      throw new ForbiddenException('해당 리뷰가 존재하지 않습니다.');
+    }
+
     if (findReivew.userId !== userId) {
       throw new ForbiddenException('작성자만 리뷰를 수정할 수 있습니다.');
     }
@@ -138,8 +166,6 @@ export class ReviewService {
       { id: reviewId },
       modifyCReivewDto,
     );
-
-    return modifyReivew;
   }
 
   async deleteReivew(user: Users, reviewId: number) {
@@ -147,6 +173,10 @@ export class ReviewService {
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
     });
+
+    if (!findReivew) {
+      throw new ForbiddenException('해당 리뷰가 존재하지 않습니다.');
+    }
 
     if (findReivew.userId !== userId) {
       throw new ForbiddenException('작성자만 리뷰를 삭제할 수 있습니다.');
