@@ -1,4 +1,4 @@
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../../web-content/entities/webContents.entity';
 import {
   Column,
   CreateDateColumn,
@@ -24,9 +24,6 @@ export class PReviews {
 
   @Column({ type: 'varchar', nullable: false })
   writer: string;
-
-  @Column({ type: 'int', nullable: false })
-  rate: number;
 
   @CreateDateColumn()
   createdAt: Date;
