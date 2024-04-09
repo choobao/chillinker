@@ -7,19 +7,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { DataSource, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
-
 import { Users } from 'src/user/entities/user.entity';
-import {
-  CReviewDto,
-  PaginationBuilder,
-  PaginationRequest,
-  PaginationResponse,
-} from 'src/utils/pagination';
-import { query } from 'express';
 import { ReviewLikes } from './entities/review.likes.entity';
 import { CReviews } from './entities/chillinker.reivews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
@@ -226,13 +217,10 @@ export class ReviewService {
 
         findReview.likeCount += 1;
       } else {
-        await this.reveiewLikesRepository.update(
-          {
-            userId: userId,
-            cReviewId: reviewId,
-          },
-          { like: 0 },
-        );
+        await this.reveiewLikesRepository.delete({
+          userId: userId,
+          cReviewId: reviewId,
+        });
 
         findReview.likeCount -= 1;
       }
