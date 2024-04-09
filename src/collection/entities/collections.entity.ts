@@ -30,6 +30,9 @@ export class Collections {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ type: 'int', nullable: false })
+  userId: number;
+
   // 관계 설정
 
   // 컬렉션 - 컬렉션 북마크
