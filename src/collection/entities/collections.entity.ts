@@ -2,12 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Collection_likes } from './collection.likes.entity';
+import { CollectionBookmark } from './collection-bookmark.entity';
 import { Users } from 'src/user/entities/user.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
 
@@ -15,32 +15,36 @@ import { WebContents } from 'src/web-content/entities/webContents.entity';
   name: 'collections',
 })
 export class Collections {
-  @PrimaryGeneratedColumn({ name: 'collection_id' })
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
   title: string;
 
-  @Column({ type: 'varchar', nullable: false }) // false 맞는지 따로 확인
+  @Column({ type: 'varchar', nullable: false })
   desc: string;
 
-  @Column({ type: 'boolean', default: false }) // 북마크 컬렉션과 구분하기 위해 만들었습니다
-  is_bookmarked: boolean;
+  @Column({ type: 'int', nullable: true })
+  bookmarkCount: number;
 
-  @CreateDateColumn() // 만든 순서대로 쌓이면 필요하지 않을까 하여 일단 넣음
-  created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
   // 관계 설정
 
-  // 컬렉션 - 컬렉션 좋아요
+  // 컬렉션 - 컬렉션 북마크
   @OneToMany(
-    () => Collection_likes,
-    (collection_likes) => collection_likes.collections,
+    () => CollectionBookmark,
+    (collectionBookmark) => collectionBookmark.collection,
   )
-  collection_likes: Collection_likes[];
+  collectionBookmarks: CollectionBookmark[];
 
-  @Column('int', { name: 'collection_likes_id', nullable: false })
-  collection_likes_id: number;
+  @Column('int', { name: 'collection_bookmark_id', nullable: true })
+  collectionBookmarkId: number;
+
+  // 컬렉션 - 유저
+  @ManyToOne(() => Users, (user) => user.collections)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
 
   // 컬렉션 - 웹컨텐츠
   @OneToMany(() => WebContents, (webContents) => webContents.collection)
@@ -48,11 +52,4 @@ export class Collections {
 
   @Column('int', { name: 'web_contents_id', nullable: false })
   webContentsId: number;
-
-  // 컬렉션 - 유저
-  @ManyToOne(() => Users, (users) => users.collections)
-  user: Users;
-
-  @Column('int', { name: 'user_id', nullable: false })
-  user_id: number;
 }
