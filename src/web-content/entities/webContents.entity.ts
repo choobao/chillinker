@@ -7,13 +7,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ContentType } from '../../web-content/webContent.type';
 import { IsEnum, IsInt, IsString } from 'class-validator';
-import { Collections } from '../../collection/entities/collections.entity';
-
+import { ContentType } from '../webContent.type';
+import { PReviews } from '../../review/entities/platform.reviews.entity';
 import { Bogosips } from './bogosips.entity';
-import { PReviews } from 'src/review/entities/platform.reviews.entity';
-import { CReviews } from 'src/review/entities/chillinker.reivews.entity';
+import { CReviews } from '../../review/entities/chillinker.reivews.entity';
+import { Collections } from '../../collection/entities/collections.entity';
 
 @Entity('webContents')
 export class WebContents {
@@ -38,14 +37,14 @@ export class WebContents {
    * @example "화산귀환"
    */
   @IsString()
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'varchar', length: 100 })
   title: string;
 
   /**
    * desc
    * @example "대 화산파 13대 제자. 천하삼대검수(天下三代劍手). 매화검존(梅花劍尊) 청명(靑明) 천하를 혼란에 빠뜨린 고금제일마 천마(天魔)의 목을 치고 십만대산의 정상에서 영면. 백 년의 시간을 뛰어넘어 아이의 몸으로 다시 살아나다."
    */
-  @Column({ type: 'varchar', length: 300 })
+  @Column({ type: 'text' })
   desc: string;
 
   /**
@@ -59,15 +58,8 @@ export class WebContents {
    * bogosipCount
    * @example 0
    */
-  @Column({ type: 'int' })
+  @Column({ type: 'int', default: 0 })
   bogosipCount: number;
-
-  /**
-   * rate
-   * @example 5.0
-   */
-  @Column({ type: 'float' })
-  rate: number;
 
   /**
    * rank
@@ -80,21 +72,21 @@ export class WebContents {
    * author
    * @example "비가"
    */
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 100 })
   author: string;
 
   /**
    * keyword
    * @example "['무협', '스토리']"
    */
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 500 })
   keyword?: string;
 
   /**
    * category
    * @example "무협"
    */
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 30 })
   category: string;
 
   /**
@@ -117,17 +109,13 @@ export class WebContents {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
-  bogosips: Bogosips[];
-
-  @OneToMany(() => PReviews, (pReview) => pReview.webContent)
+  @OneToMany(() => PReviews, (pReview) => pReview.webContent, {
+    cascade: true,
+  })
   pReviews: PReviews[];
 
-  @OneToMany(() => CReviews, (cReview) => cReview.webContent)
-  cReviews: CReviews[];
-
-  @ManyToOne(() => Collections, (collection) => collection.webContent, {
-    onDelete: 'CASCADE',
+  @OneToMany(() => CReviews, (cReviews) => cReviews.webContent, {
+    cascade: true,
   })
-  collection: Collections;
+  cReviews: CReviews[];
 }

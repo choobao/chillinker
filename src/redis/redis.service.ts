@@ -16,11 +16,11 @@ export class RedisService {
     return this.client;
   }
 
-  async save(key: string, value: string, expiresInSec?: number) {
+  async save(key: string, value: any, expiresInSec?: number) {
     if (expiresInSec) {
       await this.client.setex(key, expiresInSec, value);
     } else {
-      await this.client.set(key, value);
+      await this.client.setex(key, 24 * 3600, value); // 24h expire
     }
   }
 
