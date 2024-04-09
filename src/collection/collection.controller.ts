@@ -13,8 +13,9 @@ import { CollectionService } from './collection.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
-import { UserInfo } from 'utils/userinfo.decorator';
+
 import { Users } from 'src/user/entities/user.entity';
+import { UserInfo } from 'src/utils/userinfo.decorator';
 // import { Collections } from './entities/collections.entity';
 
 @Controller('collections')

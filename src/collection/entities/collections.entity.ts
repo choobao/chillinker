@@ -45,6 +45,7 @@ export class Collections {
   // 컬렉션 - 유저
   @ManyToOne(() => Users, (user) => user.collections)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: Users;
 
   // 컬렉션 - 웹컨텐츠
   @OneToMany(() => WebContents, (webContents) => webContents.collection)

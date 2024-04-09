@@ -10,6 +10,7 @@ import { Follows } from '../../follow/entities/follow.entity';
 import { ReviewLikes } from 'src/review/entities/review.likes.entity';
 import { CReviews } from 'src/review/entities/chillinker.reivews.entity';
 import { Collections } from 'src/collection/entities/collections.entity';
+import { CollectionBookmarkUser } from 'src/collection/entities/collection-bookmark-user.entity';
 
 @Entity({
   name: 'users',
@@ -58,6 +59,6 @@ export class Users {
   @OneToMany(() => Collections, (collection) => collection.user)
   collections: Collections[];
 
-  // @OneToMany(() => CollectionBookmarkUser, (bookmarkUser) => bookmarkUser.user)
-  // collectionBookmarks: CollectionBookmarkUser[];
+  @OneToMany(() => CollectionBookmarkUser, (bookmarkUser) => bookmarkUser.user)
+  collectionBookmarks: CollectionBookmarkUser[];
 }

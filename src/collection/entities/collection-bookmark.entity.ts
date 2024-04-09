@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Collections } from './collections.entity';
 import { CollectionBookmarkUser } from './collection-bookmark-user.entity';
+import { Users } from 'src/user/entities/user.entity';
 
 @Entity({
   name: 'collection_bookmark',
@@ -32,9 +33,9 @@ export class CollectionBookmark {
   bookmarkUsers: CollectionBookmarkUser[];
 
   // // 컬렉션 좋아요 - 유저
-  // @ManyToOne(() => Users, (users) => users.collections)
-  // users: Users;
+  @ManyToOne(() => Users, (users) => users.collections)
+  users: Users;
 
-  // @Column('int', { name: 'user_id', nullable: false })
-  // userId: number;
+  @Column('int', { name: 'user_id', nullable: false })
+  userId: number;
 }
