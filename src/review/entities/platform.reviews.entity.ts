@@ -16,7 +16,7 @@ export class PReviews {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'text', nullable: false })
   content: string;
 
   @Column({ type: 'int', default: 0, nullable: false })
@@ -24,6 +24,9 @@ export class PReviews {
 
   @Column({ type: 'varchar', nullable: false })
   writer: string;
+
+  @Column({ type: 'date', nullable: true })
+  date: Date;
 
   @CreateDateColumn()
   createdAt: Date;

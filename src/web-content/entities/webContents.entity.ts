@@ -79,7 +79,7 @@ export class WebContents {
    * keyword
    * @example "['무협', '스토리']"
    */
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 500 })
   keyword?: string;
 
   /**
@@ -114,14 +114,8 @@ export class WebContents {
   })
   pReviews: PReviews[];
 
-  @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
-  bogosips: Bogosips[];
-
-  @OneToMany(() => CReviews, (cReview) => cReview.webContent)
-  cReviews: CReviews[];
-
-  @ManyToOne(() => Collections, (collection) => collection.webContent, {
-    onDelete: 'CASCADE',
+  @OneToMany(() => CReviews, (cReviews) => cReviews.webContent, {
+    cascade: true,
   })
-  collection: Collections;
+  cReviews: CReviews[];
 }
