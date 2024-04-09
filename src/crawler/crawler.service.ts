@@ -51,7 +51,6 @@ export class CrawlerService {
     private readonly contentRepository: Repository<WebContents>,
     private readonly redisService: RedisService,
   ) {}
-
   @Cron('59 9 * * *')
   async createNaverSeries() {
     const currNumWebnovel =
@@ -359,7 +358,7 @@ export class CrawlerService {
   async crawlReviews(page: Page, n: number) {
     await page.waitForSelector(series_review_item);
 
-    let reviewList: any[] = [];
+    const reviewList: any[] = [];
 
     let reviewCount = 0;
 

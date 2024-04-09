@@ -2,6 +2,7 @@ import { Controller, Get, Render } from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
+import { SearchDto } from './dto/search.dto';
 
 @Controller()
 export class WebContentController {
@@ -54,5 +55,18 @@ export class WebContentController {
       // kakaoWebtoons,
       // kakaoWebnovels,
     };
+  }
+
+  @Get('search')
+  async search(searchDto: SearchDto) {
+    const keyword = searchDto.keyword;
+    const users = await this.webContentService.searchFromUsers(keyword);
+    const collections =
+      await this.webContentService.searchFromCollections(keyword);
+    const { webnovels, webtoons } =
+      await this.webContentService.searchFromWebContents(keyword);
+    const authors = await this.webContentService.searchFromAuthors(keyword);
+
+    return { users, collections, webnovels, webtoons, authors };
   }
 }

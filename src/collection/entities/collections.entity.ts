@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CollectionBookmark } from './collection-bookmark.entity';
-import { Users } from 'src/user/entities/user.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { Users } from '../../user/entities/user.entity';
+import { WebContents } from '../../web-content/entities/webContents.entity';
 
 @Entity({
   name: 'collections',
@@ -50,9 +50,9 @@ export class Collections {
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: Users;
 
-  // 컬렉션 - 웹컨텐츠
-  // @OneToMany(() => WebContents, (webContents) => webContents.collection)
-  // webContent: WebContents[];
+  //컬렉션 - 웹컨텐츠
+  @OneToMany(() => WebContents, (webContents) => webContents.collection)
+  webContent: WebContents[];
 
   @Column('int', { name: 'web_contents_id', nullable: false })
   webContentsId: number;
