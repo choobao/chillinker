@@ -18,7 +18,7 @@ export class CollectionBookmarkUser {
   @JoinColumn({ name: 'bookmark_id' })
   bookmark: CollectionBookmark;
 
-  @ManyToOne(() => Users, (user) => user.collectionBookmarks)
-  @JoinColumn({ name: 'user_id' })
-  user: Users;
+  // @ManyToOne(() => Users, (user) => user.collectionBookmarks)
+  // @JoinColumn({ name: 'user_id' })
+  // user: Users;
 }

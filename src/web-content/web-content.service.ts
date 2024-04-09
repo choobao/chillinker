@@ -26,12 +26,7 @@ export class WebContentService {
         .andWhere('webContents.contentType = :type', { type })
         .andWhere('webContents.rank IS NOT NULL')
         .groupBy('webContents.id')
-        .select([
-          'webContents.id',
-          'webContents.category',
-          'webContents.title',
-          'webContents.rate',
-        ])
+        .select(['webContents.id', 'webContents.category', 'webContents.title'])
         .addSelect('COUNT(review.id)', 'reviewCount')
         .addSelect(`JSON_EXTRACT(webContents.rank, '$.${platform}')`, 'ranking') // 플랫폼 별 랭킹
         .orderBy('ranking', 'ASC') // ranking에 따라 정렬
