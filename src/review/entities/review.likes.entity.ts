@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -22,6 +23,7 @@ export class ReviewLikes {
 
   //**Users와 Review_likes는 1:N
   @ManyToOne(() => Users, (users) => users.reviewLikes)
+  @JoinColumn({ name: 'user_id' })
   users: Users;
 
   @Column('int', { name: 'user_id', nullable: false })
@@ -29,6 +31,7 @@ export class ReviewLikes {
 
   // **C_reviews와 Review_likes는 1:N
   @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike)
+  @JoinColumn({ name: 'c_reveiw_id' })
   cReviews: CReviews;
 
   @Column('int', { name: 'c_reveiw_id', nullable: false })
