@@ -51,8 +51,8 @@ export class Collections {
   user: Users;
 
   //컬렉션 - 웹컨텐츠
-  @OneToMany(() => WebContents, (webContents) => webContents.collection)
-  webContent: WebContents[];
+  // @OneToMany(() => WebContents, (webContents) => webContents.collection)
+  // webContent: WebContents[];
 
   @Column('int', { name: 'web_contents_id', nullable: false })
   webContentsId: number;

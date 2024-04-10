@@ -12,7 +12,7 @@ import { Users } from 'src/user/entities/user.entity';
 import { CReviews } from './chillinker.reivews.entity';
 
 @Entity({
-  name: 'reviewLikes',
+  name: 'review_likes',
 })
 export class ReviewLikes {
   @PrimaryGeneratedColumn()
