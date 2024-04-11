@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateColDto {
   @IsString()
@@ -9,5 +9,11 @@ export class UpdateColDto {
   @IsNotEmpty({ message: '컬렉션 설명을 입력해주세요.' })
   desc: string;
 
-  // 추후 웹컨텐츠 코드 보고 관련 내용 추가(웹컨텐츠 추가, 삭제 등)
+  @IsOptional()
+  @IsInt({ message: '컨텐츠 아이디를 숫자로 입력해주세요.' })
+  webContentId?: number;
+
+  @IsOptional()
+  @IsInt({ message: '컨텐츠 아이디를 숫자로 입력해주세요.' })
+  removeWebContentId?: number;
 }

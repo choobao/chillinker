@@ -13,7 +13,6 @@ import { CollectionService } from './collection.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
-import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from 'src/user/entities/user.entity';
 import { UserInfo } from 'src/utils/userinfo.decorator';
 // import { Collections } from './entities/collections.entity';
@@ -64,5 +63,31 @@ export class CollectionController {
   @Delete('/:collectionId')
   async deleteCollection(collectionId: number) {
     return await this.collectionService.deleteCol(collectionId);
+  }
+
+  // 컨텐츠 추가
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/:collectionId/add-content')
+  async addContentToCollection(
+    @Param('collectionId') collectionId: number,
+    @Body() { webContentId }: { webContentId: number },
+  ) {
+    return await this.collectionService.addContentToCollection(
+      collectionId,
+      webContentId,
+    );
+  }
+
+  // 컨텐츠 삭제
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:collectionId/remove-content/:webContentId')
+  async removeContentFromCollection(
+    @Param('collectionId') collectionId: number,
+    @Param('webContentId') webContentId: number,
+  ) {
+    return await this.collectionService.removeContentFromCollection(
+      collectionId,
+      webContentId,
+    );
   }
 }

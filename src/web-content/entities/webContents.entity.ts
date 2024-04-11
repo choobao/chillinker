@@ -12,7 +12,7 @@ import { ContentType } from '../webContent.type';
 import { PReviews } from '../../review/entities/platform.reviews.entity';
 import { Bogosips } from './bogosips.entity';
 import { CReviews } from '../../review/entities/chillinker.reivews.entity';
-import { Collections } from '../../collection/entities/collections.entity';
+import { ContentCollection } from 'src/collection/entities/content-collections.entity';
 
 @Entity('webContents')
 export class WebContents {
@@ -118,4 +118,10 @@ export class WebContents {
     cascade: true,
   })
   cReviews: CReviews[];
+
+  @OneToMany(
+    () => ContentCollection,
+    (contentCollection) => contentCollection.webContent,
+  )
+  contentCollections: ContentCollection[];
 }
