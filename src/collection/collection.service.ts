@@ -67,13 +67,17 @@ export class CollectionService {
   }
 
   // 컬렉션 삭제
-  async deleteCol(collectionId: number): Promise<void> {
+  async deleteCol(userId: number, collectionId: number): Promise<void> {
     const collection = await this.colRepository.findOneBy({
       id: collectionId,
     });
 
     if (!collection) {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
+    }
+
+    if (collection.userId !== userId) {
+      throw new ForbiddenException('내 컬렉션만 삭제가 가능합니다.');
     }
 
     await this.colRepository.remove(collection);

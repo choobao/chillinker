@@ -53,6 +53,7 @@ export class CollectionController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
+    @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
     @Body() updateColDto: UpdateColDto,
   ) {
@@ -63,8 +64,12 @@ export class CollectionController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(204)
   @Delete('/:collectionId')
-  async deleteCollection(collectionId: number) {
-    return await this.collectionService.deleteCol(collectionId);
+  async deleteCollection(
+    @UserInfo() user: Users,
+    @Param('collectionId') collectionId: number,
+  ) {
+    const userId = user.id;
+    return await this.collectionService.deleteCol(userId, collectionId);
   }
 
   // 컨텐츠 추가
