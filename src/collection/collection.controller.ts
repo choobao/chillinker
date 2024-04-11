@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -68,12 +69,26 @@ export class CollectionController {
 
   // 컨텐츠 추가
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:collectionId/add-content')
+  @Post('/:collectionId/content')
   async addContentToCollection(
+    @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body() { webContentId }: { webContentId: number },
+    @Body('webContentId') webContentId: number,
   ) {
+    const userId = user.id;
+
+    const isContentExist =
+      await this.collectionService.isContentExistInCollection(
+        userId,
+        collectionId,
+        webContentId,
+      );
+    if (isContentExist) {
+      throw new BadRequestException('이미 존재하는 컨텐츠입니다.');
+    }
+
     return await this.collectionService.addContentToCollection(
+      userId,
       collectionId,
       webContentId,
     );
@@ -81,12 +96,15 @@ export class CollectionController {
 
   // 컨텐츠 삭제
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/:collectionId/remove-content/:webContentId')
+  @Delete('/:collectionId/content')
   async removeContentFromCollection(
+    @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Param('webContentId') webContentId: number,
+    @Body('webContentId') webContentId: number,
   ) {
+    const userId = user.id;
     return await this.collectionService.removeContentFromCollection(
+      userId,
       collectionId,
       webContentId,
     );
