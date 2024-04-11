@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chillinker</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>
+        <a href="#">logo</a>
+      </h1>
+      <div class="search_box">
+        <a href="#">search icon</a>
+      </div>
+      <div class="user_box">
+        <a href="#">login</a>
+        <a href="#">register</a>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="ranking_box">
+          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
+            <div class="contents_box">
+              <% naverWebtoons.forEach((item) => { %>
+              <div class="contents">
+              <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+              <h3 class="contents_title">제목: <%= item.title %></h3>
+              <h4 class="contents_category">장르: <%= item.category %></h4>
+              <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+              <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+              </div>
+              <% }); %>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹소설</h2>
+          <div class="contents_box">
+            <% naverWebnovels.forEach((item) => { %>
+              <div class="contents">
+              <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+              <h3 class="contents_title">제목: <%= item.title %></h3>
+              <h4 class="contents_category">장르: <%= item.category %></h4>
+              <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+              <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+              </div>
+              <% }); %>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">카카오 페이지 인기 순위_웹툰</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">카카오 페이지 인기 순위_웹소설</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">리디북스 인기 순위_웹툰</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">리디북스 인기 순위_웹소설</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">미스터블루 인기 순위_웹툰</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+        <div class="ranking_box">
+          <h2 class="ranking_title">미스터블루 인기 순위_웹소설</h2>
+          <div class="contents_box">
+            <div class="contents">
+              <img src="#" alt="작품 표지" />
+              <h3 class="contents_title">제목</h3>
+              <h4 class="contents_desc">작품 설명</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>

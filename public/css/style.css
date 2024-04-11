@@ -1,0 +1,87 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #e6e6fa;
+  /* background-color: #f0f0f0; */
+}
+
+header {
+  background-color: #452c63;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+header h1 a,
+.user_box a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.search_box,
+.user_box {
+  text-align: right;
+  margin: 10px;
+}
+
+.search_box a,
+.user_box a {
+  margin: 0 10px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.ranking_box {
+  background-color: #fff;
+  margin: 20px;
+  width: calc(33% - 40px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.ranking_title {
+  background-color: #d8bfd8;
+  color: #fff;
+  padding: 10px;
+  margin: 0;
+}
+
+.contents_box {
+  padding: 20px;
+}
+
+.contents {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.contents:last-child {
+  border: none;
+}
+
+.contents img {
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.contents_title,
+.contents_category,
+.contents_reviewCount,
+.contents_ranking {
+  margin: 5px 0;
+  text-align: center;
+}
+
+/* 맨 밑에 있는 footer 스타일 추가 */
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 20px;
+}
