@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -17,4 +18,7 @@ export class CreateCReviewsDto {
   @Max(5, { message: '별점은 5 이하까지 입력 가능합니다.' })
   @IsNotEmpty({ message: '별점을 입력해주세요.' })
   rate: number;
+
+  @IsBoolean()
+  isSpoiler?: boolean;
 }

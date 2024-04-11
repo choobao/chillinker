@@ -11,7 +11,7 @@ import { IsEnum, IsInt, IsString } from 'class-validator';
 import { ContentType } from '../webContent.type';
 import { PReviews } from '../../review/entities/platform.reviews.entity';
 import { Bogosips } from './bogosips.entity';
-import { CReviews } from '../../review/entities/chillinker.reivews.entity';
+import { CReviews } from '../../review/entities/chillinker.reviews.entity';
 import { Collections } from '../../collection/entities/collections.entity';
 
 @Entity('web_contents')

@@ -28,8 +28,14 @@ export class CReviews {
   @Column({ type: 'int', nullable: false })
   rate: number;
 
+  @Column({ type: 'boolean', default: false, nullable: false })
+  isSpoiler: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   // **Users와 CReviews는 1:N
   @ManyToOne(() => Users, (users) => users.cReviews)

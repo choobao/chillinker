@@ -9,7 +9,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Users } from 'src/user/entities/user.entity';
 import { CollectionBookmarkService } from './collection-bookmark.service';
-import { UserInfo } from 'src/utils/userinfo.decorator';
+import { UserInfo } from '../utils/userinfo.decorator';
 
 @Controller('bookmark')
 export class CollectionBookmarkController {
