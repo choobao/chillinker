@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Follows } from '../../follow/entities/follow.entity';
 import { ReviewLikes } from 'src/review/entities/review.likes.entity';
-import { CReviews } from 'src/review/entities/chillinker.reivews.entity';
+import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
 import { Collections } from 'src/collection/entities/collections.entity';
 import { CollectionBookmarkUser } from 'src/collection/entities/collection-bookmark-user.entity';
 
