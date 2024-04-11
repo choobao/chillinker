@@ -31,7 +31,7 @@ export class PReviews {
   @Column({ type: 'boolean', default: false, nullable: false })
   isSpoiler: boolean;
 
-  @CreateDateColumn()
+  @Column({ type: 'date' })
   createdAt: Date;
 
   //**WebContents와 p_reviews는 1:N
