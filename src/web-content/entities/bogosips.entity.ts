@@ -9,14 +9,14 @@ export class Bogosips {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @ManyToOne(() => Users, (user) => user.bogosips)
-  // user: Users;
+  @ManyToOne(() => Users, (user) => user.bogosips)
+  user: Users;
 
   @Column()
   userId: number;
 
-  // @ManyToOne(() => WebContents, (webContent) => webContent.bogosips)
-  // webContent: WebContents;
+  @ManyToOne(() => WebContents, (webContent) => webContent.bogosips)
+  webContent: WebContents;
 
   @Column()
   webContentId: number;
