@@ -14,7 +14,7 @@ import { Bogosips } from './bogosips.entity';
 import { CReviews } from '../../review/entities/chillinker.reivews.entity';
 import { ContentCollection } from 'src/collection/entities/content-collections.entity';
 
-@Entity('webContents')
+@Entity('web_contents')
 export class WebContents {
   /**
    * id

@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity({
-  name: 'pReviews',
+  name: 'p_reviews',
 })
 export class PReviews {
   @PrimaryGeneratedColumn()

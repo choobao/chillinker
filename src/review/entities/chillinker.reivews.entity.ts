@@ -13,7 +13,7 @@ import { Users } from 'src/user/entities/user.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
 
 @Entity({
-  name: 'cReviews',
+  name: 'c_reviews',
 })
 export class CReviews {
   @PrimaryGeneratedColumn()
