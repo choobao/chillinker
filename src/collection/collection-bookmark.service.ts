@@ -54,7 +54,10 @@ export class CollectionBookmarkService {
       throw new BadRequestException('이미 북마크된 컬렉션입니다.');
     }
 
-    const bookmark = this.colBookRepository.create({ collection });
+    const bookmark = this.colBookRepository.create({
+      collection,
+      userId,
+    });
     await this.colBookRepository.save(bookmark);
 
     collection.bookmarkCount += 1;
@@ -89,6 +92,4 @@ export class CollectionBookmarkService {
 
     await this.colBookUserRepository.delete(bookmark.id);
   }
-
-  //   async addCol() {} // webContents의 작품 페이지에서 컬렉션 추가 가능한 기능 -> 나중에 작성
 }
