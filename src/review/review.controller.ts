@@ -17,7 +17,6 @@ import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from 'src/utils/userinfo.decorator';
 import { Users } from 'src/user/entities/user.entity';
-import { PaginationRequest } from 'src/utils/pagination';
 
 @Controller('webContents/:webContentsId/reviews')
 export class ReviewController {
