@@ -198,6 +198,47 @@ header {
   color: #6a5acd;
 }
 
+/* main */
+.ranking_box {
+  background-color: #fff;
+  margin: 20px;
+  width: calc(33% - 40px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.ranking_title {
+  background-color: #d8bfd8;
+  color: #fff;
+  padding: 10px;
+  margin: 0;
+}
+
+.contents_box {
+  padding: 20px;
+}
+
+.contents {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.contents:last-child {
+  border: none;
+}
+
+.contents img {
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.contents_title,
+.contents_category,
+.contents_reviewCount,
+.contents_ranking {
+  margin: 5px 0;
+  text-align: center;
+}
+
 /*footer*/
 footer {
   width: 100%;
