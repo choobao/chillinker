@@ -65,4 +65,30 @@ export class CollectionController {
   async deleteCollection(collectionId: number) {
     return await this.collectionService.deleteCol(collectionId);
   }
+
+  // 컨텐츠 추가
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/:collectionId/add-content')
+  async addContentToCollection(
+    @Param('collectionId') collectionId: number,
+    @Body() { webContentId }: { webContentId: number },
+  ) {
+    return await this.collectionService.addContentToCollection(
+      collectionId,
+      webContentId,
+    );
+  }
+
+  // 컨텐츠 삭제
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:collectionId/remove-content/:webContentId')
+  async removeContentFromCollection(
+    @Param('collectionId') collectionId: number,
+    @Param('webContentId') webContentId: number,
+  ) {
+    return await this.collectionService.removeContentFromCollection(
+      collectionId,
+      webContentId,
+    );
+  }
 }
