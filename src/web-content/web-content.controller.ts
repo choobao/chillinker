@@ -10,7 +10,7 @@ export class WebContentController {
 
   @ApiOperation({ summary: '메인' })
   @Get('main')
-  @Render('main')
+  //@Render('main')
   async getBestWebContents() {
     const naverWebtoons = await this.webContentService.findBestWebContents(
       'naver',
@@ -36,14 +36,14 @@ export class WebContentController {
     //   'mrblue',
     //   ContentType.WEBNOVEL,
     // );
-    // const kakaoWebtoons = await this.webContentService.findBestWebContents(
-    //   'kakao',
-    //   ContentType.WEBTOON,
-    // );
-    // const kakaoWebnovels = await this.webContentService.findBestWebContents(
-    //   'kakao',
-    //   ContentType.WEBNOVEL,
-    // );
+    const kakaoWebtoons = await this.webContentService.findBestWebContents(
+      'kakao',
+      ContentType.WEBTOON,
+    );
+    const kakaoWebnovels = await this.webContentService.findBestWebContents(
+      'kakao',
+      ContentType.WEBNOVEL,
+    );
 
     return {
       naverWebtoons,
@@ -52,8 +52,8 @@ export class WebContentController {
       // ridiWebnovels,
       // mrblueWebtoons,
       // mrblueWebnovels,
-      // kakaoWebtoons,
-      // kakaoWebnovels,
+      kakaoWebtoons,
+      kakaoWebnovels,
     };
   }
 

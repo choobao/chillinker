@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Users } from 'src/user/entities/user.entity';
-import { CReviews } from './chillinker.reivews.entity';
+import { CReviews } from './chillinker.reviews.entity';
 
 @Entity({
   name: 'review_likes',

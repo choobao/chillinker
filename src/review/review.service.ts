@@ -12,7 +12,7 @@ import { DataSource, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { Users } from 'src/user/entities/user.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
-import { CReviews } from './entities/chillinker.reivews.entity';
+import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 
 @Injectable()
@@ -112,7 +112,7 @@ export class ReviewService {
     createReviewDto: CreateCReviewsDto,
   ) {
     const userId = user.id;
-    const { content, rate } = createReviewDto;
+    const { content, rate, isSpoiler } = createReviewDto;
 
     const findUserReiew = await this.chillinkerReviewsRepository.findOne({
       where: { userId, webContentId },
@@ -127,6 +127,7 @@ export class ReviewService {
       webContentId,
       content: content,
       rate: rate,
+      isSpoiler,
     });
 
     return createReview;
@@ -138,7 +139,7 @@ export class ReviewService {
     modifyCReivewDto: ModifyCReviewsDto,
   ) {
     const userId = user.id;
-    const { content, rate } = modifyCReivewDto;
+    const { content, rate, isSpoiler } = modifyCReivewDto;
 
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },

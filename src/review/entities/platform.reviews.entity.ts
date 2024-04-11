@@ -28,6 +28,9 @@ export class PReviews {
   @Column({ type: 'date', nullable: true })
   date: Date;
 
+  @Column({ type: 'boolean', default: false, nullable: false })
+  isSpoiler: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

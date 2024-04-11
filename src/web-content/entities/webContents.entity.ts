@@ -62,6 +62,13 @@ export class WebContents {
   bogosipCount: number;
 
   /**
+   * isAdult
+   * @example 0
+   */
+  @Column({ type: 'tinyint', default: 0 })
+  isAdult: number;
+
+  /**
    * rank
    * @example {"naver": 1}
    */
@@ -119,9 +126,14 @@ export class WebContents {
   })
   cReviews: CReviews[];
 
-  @OneToMany(
-    () => ContentCollection,
-    (contentCollection) => contentCollection.webContent,
-  )
-  contentCollections: ContentCollection[];
+  //bogosip
+  @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
+  bogosips: Bogosips[];
+
+  //collection
+  // @OneToMany(
+  //   () => ContentCollection,
+  //   (contentCollection) => contentCollection.webContent,
+  // )
+  // contentCollections: ContentCollection[];
 }
