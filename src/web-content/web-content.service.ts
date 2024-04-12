@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { WebContents } from './entities/webContents.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
@@ -25,7 +25,8 @@ export class WebContentService {
     try {
       const bestWebContents = await this.webContentRepository
         .createQueryBuilder('webContents')
-        .leftJoinAndSelect('webContents.cReviews', 'review')
+        .leftJoinAndSelect('webContents.cReviews', 'cReview')
+        .leftJoinAndSelect('webContents.pReviews', 'pReview')
         .where(
           `JSON_EXTRACT(webContents.platform, '$.${platform}') IS NOT NULL`,
         )
@@ -38,7 +39,8 @@ export class WebContentService {
           'webContents.title AS title',
           'webContents.image AS image',
         ])
-        .addSelect('COUNT(review.id)', 'reviewCount')
+        .addSelect('COUNT(pReview.id)', 'pReviewCount')
+        .addSelect('COUNT(cReview.id)', 'cReviewCount')
         .addSelect(`JSON_EXTRACT(webContents.rank, '$.${platform}')`, 'ranking') // 플랫폼 별 랭킹
         .orderBy('ranking', 'ASC') // ranking에 따라 정렬
         .getRawMany();
@@ -72,7 +74,8 @@ export class WebContentService {
   async searchFromAuthors(keyword: string) {
     const webContents = await this.webContentRepository
       .createQueryBuilder('webContents')
-      .where('webContents.author LIKE :keyword', { keyword: `%${keyword}%` });
+      .where('webContents.author LIKE :keyword', { keyword: `%${keyword}%` })
+      .getRawMany();
 
     return webContents;
   }
@@ -85,7 +88,10 @@ export class WebContentService {
       .orWhere('webContents.category LIKE :keyword', {
         keyword: `%${keyword}%`,
       })
-      .getRawMany();
+      .orWhere('webContents.keyword LIKE :keyword', {
+        keyword: `%${keyword}%`,
+      })
+      .getMany();
 
     const webnovels = webContents.filter(
       (webContent) => webContent.contentType === ContentType.WEBNOVEL,
