@@ -60,7 +60,7 @@ export class BogosipController {
   async getMyBogosips(
     @UserInfo() user: Users,
     @Param() type: string,
-    @Query('sortType') sortType: string,
+    @Query('sortType') sortType: string = 'ADD_DT',
   ) {
     return await this.bogosipService.findContents(user.id, type, sortType);
   }

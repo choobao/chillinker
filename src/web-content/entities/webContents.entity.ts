@@ -131,7 +131,7 @@ export class WebContents {
   @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
   bogosips: Bogosips[];
 
-  //collection;
+  //collection
   @OneToMany(
     () => ContentCollection,
     (contentCollection) => contentCollection.webContent,

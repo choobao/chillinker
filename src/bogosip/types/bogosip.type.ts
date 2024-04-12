@@ -10,8 +10,8 @@ export const convertToEnum = (type: string) => {
 };
 
 export const orderType = {
-  ADD_DT: { col: 'bogosips.created_at', order: 'ASC' },
-  ADD_DT_DESC: { col: 'bogosips.created_at', order: 'DESC' },
-  NEW: { col: 'webContent.pub_date', order: 'DESC' },
-  OLD: { col: 'webContent.pub_date', order: 'ASC' },
+  ADD_DT: { col: 'createdAt', order: 'ASC' },
+  ADD_DT_DESC: { col: 'createdAt', order: 'DESC' },
+  NEW: { col: 'pubDate', order: 'DESC' },
+  OLD: { col: 'pubDate', order: 'ASC' },
 };
