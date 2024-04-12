@@ -11,12 +11,17 @@ import { CollectionBookmarkController } from './collection-bookmark.controller';
 
 import { CollectionBookmarkUser } from './entities/collection-bookmark-user.entity';
 
+import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { ContentCollection } from './entities/content-collections.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Collections,
       CollectionBookmark,
       CollectionBookmarkUser,
+      ContentCollection,
+      WebContents,
     ]),
   ],
   exports: [CollectionService, CollectionBookmarkService],

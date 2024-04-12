@@ -91,7 +91,7 @@ export class BogosipService {
       //   },
       // });
 
-      return bogosips;
+      //return bogosips;
     } catch (err) {
       throw err;
     }

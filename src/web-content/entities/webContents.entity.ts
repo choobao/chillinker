@@ -13,6 +13,7 @@ import { PReviews } from '../../review/entities/platform.reviews.entity';
 import { Bogosips } from '../../bogosip/entities/bogosips.entity';
 import { CReviews } from '../../review/entities/chillinker.reviews.entity';
 import { Collections } from '../../collection/entities/collections.entity';
+import { ContentCollection } from '../../collection/entities/content-collections.entity';
 
 @Entity('web_contents')
 export class WebContents {
@@ -130,10 +131,10 @@ export class WebContents {
   @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
   bogosips: Bogosips[];
 
-  //collection
-  // @OneToMany(
-  //   () => ContentCollection,
-  //   (contentCollection) => contentCollection.webContent,
-  // )
-  // contentCollections: ContentCollection[];
+  //collection;
+  @OneToMany(
+    () => ContentCollection,
+    (contentCollection) => contentCollection.webContent,
+  )
+  contentCollections: ContentCollection[];
 }

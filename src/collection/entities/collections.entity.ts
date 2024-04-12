@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { CollectionBookmark } from './collection-bookmark.entity';
 import { Users } from '../../user/entities/user.entity';
-import { WebContents } from '../../web-content/entities/webContents.entity';
+import { ContentCollection } from './content-collections.entity';
 
 @Entity({
   name: 'collections',
@@ -39,6 +39,7 @@ export class Collections {
   @OneToMany(
     () => CollectionBookmark,
     (collectionBookmark) => collectionBookmark.collection,
+    { cascade: true },
   )
   collectionBookmarks: CollectionBookmark[];
 
@@ -51,9 +52,9 @@ export class Collections {
   user: Users;
 
   //컬렉션 - 웹컨텐츠
-  // @OneToMany(() => WebContents, (webContents) => webContents.collection)
-  // webContent: WebContents[];
-
-  @Column('int', { name: 'web_contents_id', nullable: false })
-  webContentsId: number;
+  @OneToMany(
+    () => ContentCollection,
+    (contentCollection) => contentCollection.collection,
+  )
+  contentCollections: ContentCollection[];
 }
