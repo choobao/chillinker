@@ -111,7 +111,7 @@ export class CrawlerService {
       const webContent = data.data.contentHomeOverview.content;
       const url = `https://page.kakao.com/content/${id}`;
       const title = webContent.title;
-      const desc = webContent.description;
+      const desc = webContent.descriptionription;
       const image = `https:${webContent.thumbnail}`;
       const contentType =
         webContent.category === '웹툰'
@@ -390,7 +390,7 @@ export class CrawlerService {
   //         _.isNil(webContent.author) ||
   //         _.isNil(webContent.image) ||
   //         _.isNil(webContent.category) ||
-  //         _.isNil(webContent.desc) ||
+  //         _.isNil(webContent.description) ||
   //         _.isNil(webContent.reviewList) ||
   //         _.isNil(webContent.pubDate) ||
   //         _.isNil(webContent.isAdult) ||
@@ -413,7 +413,7 @@ export class CrawlerService {
 
   //       return {
   //         title: content.title,
-  //         desc: content.desc,
+  //         description: content.description,
   //         image: content.image,
   //         author: content.author,
   //         category: content.category,
@@ -565,7 +565,7 @@ export class CrawlerService {
   //         // 그 전에 디테일 페이지가 존재하는지 체크
   //         const detail_page = await page.$(series_detail);
 
-  //         let desc = title;
+  //         let description = title;
   //         let author =
   //           detail_page === null
   //             ? await page.$eval(series_not_detail_author, (el) =>
@@ -583,9 +583,9 @@ export class CrawlerService {
   //           await setTimeout(1000);
   //           await page.goto(detail_page_url, { waitUntil: 'networkidle0' });
 
-  //           await page.waitForSelector(series_desc, { timeout: 1000 });
-  //           desc = await page.$eval(
-  //             series_desc,
+  //           await page.waitForSelector(series_description, { timeout: 1000 });
+  //           description = await page.$eval(
+  //             series_description,
   //             (el) => el.textContent || title,
   //           );
 
@@ -637,7 +637,7 @@ export class CrawlerService {
   //           author,
   //           image,
   //           category,
-  //           desc,
+  //           description,
   //           reviewList: JSON.stringify(reviewList),
   //           pubDate,
   //           isAdult,

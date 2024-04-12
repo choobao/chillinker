@@ -10,9 +10,10 @@ import {
 import { IsEnum, IsInt, IsString } from 'class-validator';
 import { ContentType } from '../webContent.type';
 import { PReviews } from '../../review/entities/platform.reviews.entity';
-import { Bogosips } from './bogosips.entity';
-import { ContentCollection } from 'src/collection/entities/content-collections.entity';
-import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
+import { Bogosips } from '../../bogosip/entities/bogosips.entity';
+import { CReviews } from '../../review/entities/chillinker.reviews.entity';
+import { Collections } from '../../collection/entities/collections.entity';
+import { ContentCollection } from '../../collection/entities/content-collections.entity';
 
 @Entity('web_contents')
 export class WebContents {
@@ -130,7 +131,7 @@ export class WebContents {
   @OneToMany(() => Bogosips, (bogosip) => bogosip.webContent)
   bogosips: Bogosips[];
 
-  collection;
+  //collection
   @OneToMany(
     () => ContentCollection,
     (contentCollection) => contentCollection.webContent,

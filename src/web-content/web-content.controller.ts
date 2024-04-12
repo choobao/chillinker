@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query, Render } from '@nestjs/common';
+import { Body, Controller, Get, Render } from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
