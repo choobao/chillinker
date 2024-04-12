@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -29,7 +33,10 @@ export class CollectionService {
 
   // 내 컬렉션 상세 조회
   async getMyCol(collectionId: number) {
-    return await this.colRepository.findOne({ where: { id: collectionId } });
+    return await this.colRepository.findOne({
+      where: { id: collectionId },
+      relations: ['contentCollections', 'contentCollections.webContent'],
+    });
   }
 
   // 컬렉션 생성
@@ -60,7 +67,7 @@ export class CollectionService {
   }
 
   // 컬렉션 삭제
-  async deleteCol(collectionId: number): Promise<void> {
+  async deleteCol(userId: number, collectionId: number): Promise<void> {
     const collection = await this.colRepository.findOneBy({
       id: collectionId,
     });
@@ -69,11 +76,16 @@ export class CollectionService {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
     }
 
+    if (collection.userId !== userId) {
+      throw new ForbiddenException('내 컬렉션만 삭제가 가능합니다.');
+    }
+
     await this.colRepository.remove(collection);
   }
 
   // 컨텐츠 추가
   async addContentToCollection(
+    userId: number,
     collectionId: number,
     webContentId: number,
   ): Promise<void> {
@@ -82,6 +94,10 @@ export class CollectionService {
     });
     if (!collection) {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
+    }
+
+    if (collection.userId !== userId) {
+      throw new ForbiddenException('내 컬렉션에만 컨텐츠 추가가 가능합니다.');
     }
 
     const webContent = await this.webContentRepository.findOne({
@@ -97,17 +113,42 @@ export class CollectionService {
     await this.contentCollectionRepository.save(contentCollection);
   }
 
+  async isContentExistInCollection(
+    userId: number,
+    collectionId: number,
+    contentId: number,
+  ): Promise<boolean> {
+    const contentCollection = await this.contentCollectionRepository.findOne({
+      where: {
+        collection: { id: collectionId },
+        webContent: { id: contentId },
+      },
+      relations: ['collection', 'webContent'],
+    });
+    return !!contentCollection;
+  }
+
   // 컨텐츠 삭제
   async removeContentFromCollection(
+    userId: number,
     collectionId: number,
     webContentId: number,
   ): Promise<void> {
+    const collection = await this.colRepository.findOne({
+      where: { id: collectionId },
+    });
+
+    if (collection.userId !== userId) {
+      throw new ForbiddenException('내 컬렉션에서만 컨텐츠 삭제가 가능합니다.');
+    }
+
     const contentCollection = await this.contentCollectionRepository.findOne({
       where: {
         collection: { id: collectionId },
         webContent: { id: webContentId },
       },
     });
+
     if (!contentCollection) {
       throw new NotFoundException('컨텐츠가 컬렉션에 존재하지 않습니다.');
     }

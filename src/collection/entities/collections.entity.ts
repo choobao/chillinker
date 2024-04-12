@@ -39,6 +39,7 @@ export class Collections {
   @OneToMany(
     () => CollectionBookmark,
     (collectionBookmark) => collectionBookmark.collection,
+    { cascade: true },
   )
   collectionBookmarks: CollectionBookmark[];
 
