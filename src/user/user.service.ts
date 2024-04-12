@@ -17,6 +17,7 @@ import { DeleteUserDto } from './dto/delete-user.dto';
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class UserService {
@@ -26,10 +27,11 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private dataSource: DataSource,
+    private readonly storageService: StorageService,
   ) {}
 
-  async register(createUserDto: CreateUserDto) {
-    const { email, password, nickname, intro, profileImage } = createUserDto;
+  async register(file: Express.Multer.File, createUserDto: CreateUserDto) {
+    const { email, password, nickname, intro } = createUserDto;
 
     const existingtUser = await this.findUserByEmail(email);
     if (existingtUser) {
@@ -39,6 +41,13 @@ export class UserService {
     }
 
     const hashedPassword = await hash(password, 10);
+
+    let profileImage = null;
+    if (file) {
+      //이미지 업로드
+      profileImage = await this.storageService.upload(file);
+    }
+
     await this.userRepository.save({
       email,
       password: hashedPassword,
@@ -97,20 +106,33 @@ export class UserService {
     return user;
   }
 
-  async updateMyInfo(id: number, updateUserDto: UpdateUserDto) {
-    const { password, nickname, intro, profileImage } = updateUserDto;
+  async updateMyInfo(
+    file: Express.Multer.File,
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ) {
+    const { nickname, intro, password } = updateUserDto;
 
-    if (!nickname && !intro && !profileImage) {
+    if (!nickname && !intro) {
       throw new BadRequestException('수정할 것을 입력해주세요.');
     }
 
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['password'],
+      select: ['profileImage', 'password'],
     });
 
     if (!(await compare(password, user.password))) {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
+    }
+
+    let profileImage = user.profileImage;
+    if (file) {
+      //이미지 업로드
+      profileImage = await this.storageService.upload(file);
+      if (user.profileImage) {
+        await this.storageService.delete(user.profileImage);
+      }
     }
 
     await this.userRepository.update(id, {
@@ -125,7 +147,7 @@ export class UserService {
 
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['email', 'password'],
+      select: ['email', 'password', 'profileImage'],
     });
 
     if (!(await compare(password, user.password))) {
@@ -144,12 +166,9 @@ export class UserService {
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
-
-      throw new InternalServerErrorException(
-        `회원 탈퇴처리 중 오류가 발생했습니다.:${err}`,
-      );
-    } finally {
-      await queryRunner.release();
+      if (user.profileImage) {
+        await this.storageService.delete(user.profileImage);
+      }
     }
   }
 
