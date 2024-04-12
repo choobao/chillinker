@@ -30,6 +30,12 @@ header h1 a,
   margin: 0 10px;
 }
 
+main {
+  width: 1200px;
+  height: auto;
+  margin: 0px auto 0px auto;
+}
+
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -49,6 +55,11 @@ header h1 a,
   color: #fff;
   padding: 10px;
   margin: 0;
+}
+
+.search_bar_list {
+  display: flex;
+  flex-direction: row;
 }
 
 .contents_box {

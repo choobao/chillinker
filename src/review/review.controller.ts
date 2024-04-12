@@ -44,6 +44,7 @@ export class ReviewController {
     @UserInfo() user: Users,
     @Body() createCReviewsDto: CreateCReviewsDto,
   ) {
+    console.log(user);
     return await this.reviewService.createReivew(
       user,
       webContentsId,

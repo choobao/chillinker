@@ -13,6 +13,17 @@
       </h1>
       <div class="search_box">
         <a href="#">search icon</a>
+        <form action="/search" method="get">
+          <input
+            class="search_text"
+            type="search"
+            placeholder="작품명, 작가 검색"
+            name="keyword"
+          />
+          <i class="fa fa-search" aria-hidden="true">
+            <input type="submit" value="검색" class="submit_btn" />
+          </i>
+        </form>
       </div>
       <div class="user_box">
         <a href="#">login</a>
@@ -71,23 +82,27 @@
         </div>
         <div class="ranking_box">
           <h2 class="ranking_title">리디북스 인기 순위_웹툰</h2>
-          <div class="contents_box">
+          <% ridiWebtoons.forEach((item) => { %>
             <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
+            <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+            <h3 class="contents_title">제목: <%= item.title %></h3>
+            <h4 class="contents_category">장르: <%= item.category %></h4>
+            <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+            <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
             </div>
-          </div>
+            <% }); %>
         </div>
         <div class="ranking_box">
           <h2 class="ranking_title">리디북스 인기 순위_웹소설</h2>
-          <div class="contents_box">
+          <% ridiWebnovels.forEach((item) => { %>
             <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
+            <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+            <h3 class="contents_title">제목: <%= item.title %></h3>
+            <h4 class="contents_category">장르: <%= item.category %></h4>
+            <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+            <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
             </div>
-          </div>
+            <% }); %>
         </div>
         <div class="ranking_box">
           <h2 class="ranking_title">미스터블루 인기 순위_웹툰</h2>
