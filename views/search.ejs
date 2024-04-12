@@ -11,7 +11,15 @@
     <script
       src="https://kit.fontawesome.com/0b832ce4c1.js"
       crossorigin="anonymous"
-    ></script>
+    >
+     document.addEventListener("DOMContentLoaded", function() {
+    $('#search').click(function () {
+      let input = $('#search-input').val();
+      window.location.replace('/search?query=' + input);
+    });
+  });
+
+    </script>
   </head>
   <body>
     <header>
@@ -45,30 +53,30 @@
         </div>
       </div>
     </header>
-    <script>
-      $('search').click(function () {
-        let input = $('#search-input').val();
-        window.location.replace('/search?query=' + input);
-      });
-    </script>
+
     <div class="wrap">
       <div
         class="search_input_bar"
-        style="height: 50px; background-color: #f5f5fa; padding: 15px">
+        style="height: 50px; background-color: #f5f5fa; padding: 15px"
+      >
         <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
       </div>
       <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
         <div class="search_btn_bar">
           <ul class="search_bar_list" style="display: flex; padding: 15px">
-            <li class="search_btn1">
+            <li class="search_btn1" style="margin-right: 10px;">
               <a href="/search?type=webnovels&query=<%= keyword %>">웹소설</a>
             </li>
-            <li class="search_btn2">
+            <li class="search_btn2"  style="margin-right: 10px;">
               <a href="/search?type=webtoons&query=<%= keyword %>">웹툰</a>
             </li>
-            <li class="search_btn3"><a href="/search?type=authors&query=<%= keyword %>">작가</a></li>
-            <li class="search_btn4"><a href="/search?type=users&query=<%= keyword %>">유저</a></li>
-            <li class="search_btn5">
+            <li class="search_btn3"  style="margin-right: 10px;">
+              <a href="/search?type=authors&query=<%= keyword %>">작가</a>
+            </li>
+            <li class="search_btn4"  style="margin-right: 10px;">
+              <a href="/search?type=users&query=<%= keyword %>">유저</a>
+            </li>
+            <li class="search_btn5" style="margin-right: 10px;">
               <a href="/search?type=collections&query=<%= keyword %>">컬렉션</a>
             </li>
           </ul>
@@ -76,80 +84,92 @@
         <div class="result_section">
           <ul class="result_list" display:flex="">
             <% if (!keyword) { %>
-              <div class="empty_search">
-                <p>검색어를 입력하세요.</p>
-              </div>
-              <% } %>
-              <script>
-       const searchParams = new URLSearchParams(); 
-              let type = searchParams.get('type') 
-              </script>
-              <%if (type == 'webtoons') { %>
-                <li>
-                  <a title="#" href="">
-                    <div class="inner">
-                      <div class="ranking_box">
-                        <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
-                        <div class="contents_box">
-                          <% webtoons.forEach((item) => { %>
-                            <div class="contents">
-                              <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
-                              <h3 class="contents_title">제목: <%= item.title %></h3>
-                              <h4 class="contents_category">장르: <%= item.category %></h4>
-                              <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-                              <h4 class="contents_authors">작가: <%= item.author %></h4>
-                              </div>
-                          <% }); %>
-                        </div>
-                      </div>
+            <div class="empty_search">
+              <p>검색어를 입력하세요.</p>
+            </div>
+            <% } %>
+            <%if (type == 'webtoons') { %>
+              <div class="result_list" >
+              <% webtoons.forEach((item) => { %>
+                <div class="card">
+                  <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
+                  <div class="card-info">
+                    <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
+                    <h4 class="card_author">
+                      <%= item.author %>
+                    </h4>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+            <% } else if (type == 'authors') { %>
+              <div class="result_list" >
+                <% authors.forEach((item) => { %>
+                  <div class="card">
+                    <img src="<%= item.webContents_image %>" alt="<%= item.title %>" class="card-image" >
+                    <div class="card-info">
+                      <h3 class="card-title" style="font-weight: 600;"><%= item.webContents_title %></h3>
+                      <h4 class="card_author">
+                        <%= item.webContents_author %>
+                      </h4>
                     </div>
-                  </a>
-                </li>
-                <% } else if (type == 'authors') { %>
-                   <li>
-                    <a title="#" href="">
-                      <div class="inner">
-                        <div class="ranking_box">
-                          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
-                          <div class="contents_box">
-                            <% authors.forEach((item) => { %>
-                              <div class="contents">
-                                <img src="<%= item.webContents_image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
-                                <h3 class="contents_title">제목: <%= item.title %></h3>
-                                <h4 class="contents_category">장르: <%= item.keyword %></h4>
-                                <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-                                <h4 class="contents_authors">작가: <%= item.author %></h4>
-                                </div>
-                            <% }); %>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <% } else if (type == 'users') { %>
-                    <% } else if (type == 'collections') { %>
-                      <% } else  { %>
-                        <li>
-                          <a title="#" href="">
-                            <div class="inner">
-                              <div class="ranking_box">
-                                <h2 class="ranking_title">네이버 시리즈 인기 웹소설</h2>
-                                <div class="contents_box">
-                                  <% webnovels.forEach((item) => { %>
-                                    <div class="contents">
-                                      <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
-                                      <h3 class="contents_title">제목: <%= item.title %></h3>
-                                      <h4 class="contents_category">장르: <%= item.category %></h4>
-                                      <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-                                      <h4 class="contents_authors">작가: <%= item.author %></h4>
-                                      </div>
-                                  <% }); %>
-                                </div>
-                              </div>
-                            </div>
-                          </a>
-                        </li>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else if (type == 'users') { %> 
+              <div class="result_list" >
+                <% users.forEach((item) => { %>
+                  <div class="card">
+                    <% if (item.users_profile_image) { %>
+                      <img src="<%= item.users_profile_image %>" alt="<%= item.title %>" class="card-image" name="profile-image">
+                    <% } else { %>
+                      <img src="https://picpac.kr/common/img/default_profile.png" alt="기본이미지" class="card-image" name="profile-image">
+                    <% } %>
+                    <div class="card-info">
+                      <h3 class="card-title" style="font-weight: 600;"><%= item.users_nickname %></h3>
+                      <h4 class="card-title" style="font-weight: 600;">리뷰 수: <%= item.title %></h4>
+                      <h4 class="card_author">
+                        <%= item.users_intro %>
+                        <% if (item.users_intro) { %>
+                          <%= item.users_intro %>
+                        <% } else { %>
+                        소개가 없습니다.
                         <% } %>
+                      </h4>
+                    </div>
+                  </div>
+                <% }); %>
+                </div>
+              <% } else if (type == 'collections') { %>
+              <div class="result_list" >
+                <% collections.forEach((item) => { %>
+                  <div class="card">
+                    <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-image" >
+                    <div class="card-info">
+                      <h3 class="card-title" style="font-weight: 600;"><%= item.collections_title %></h3>
+                      <h4 class="card_author">
+                        <%= item.collections_desc %>
+                      </h4>
+                 
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+              <% } else { %>
+              <div class="result_list" >
+                <% webnovels.forEach((item) => { %>
+                  <div class="card">
+                    <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
+                    <div class="card-info">
+                      <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
+                      <h4 class="card_author">
+                        <%= item.author %>
+                      </h4>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } %>
           </ul>
         </div>
       </main>
