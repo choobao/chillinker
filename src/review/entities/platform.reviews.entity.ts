@@ -25,14 +25,11 @@ export class PReviews {
   @Column({ type: 'varchar', nullable: false })
   writer: string;
 
-  @Column({ type: 'date', nullable: true })
-  date: Date;
-
   @Column({ type: 'boolean', default: false, nullable: false })
   isSpoiler: boolean;
 
   @Column({ type: 'date' })
-  createdAt: Date;
+  created_date: Date;
 
   //**WebContents와 p_reviews는 1:N
   @ManyToOne(() => WebContents, (webContent) => webContent.pReviews, {

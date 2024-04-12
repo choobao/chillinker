@@ -63,35 +63,46 @@ export class BogosipService {
     }
   }
 
-  async findContents(
-    userId: number,
-    type: string,
-    sortType: string = 'ADD_DT',
-  ) {
+  async findContents(userId: number, type: string, sortType: string) {
     try {
-      let order = orderType[sortType];
-      console.log(order);
+      let orderMethod = orderType[sortType];
 
       // const bogosips = await this.bogosipRepository
       //   .createQueryBuilder('bogosip')
       //   .leftJoinAndSelect('bogosip.webContent', 'webContent')
-      //   .where('bogosip.userId = :userId', { userId : userId })
-      //   .andWhere('bogosip.type = :type', { type: convertToEnum(type) })
+      //   .where('bogosip.userId = :userId', { userId })
+      //   .andWhere('bogosip.type = :type', { type: BogosipType.BOGOSIP })
       //   .orderBy(order.col, order.order) // webContent의 pubDate 기준으로 오름차순 정렬
       //   .getMany();
 
-      // const bogosips = await this.bogosipRepository.find({
-      //   where: {
-      //     userId: userId,
-      //     type: convertToEnum(type),
-      //   },
-      //   relations: ['webContent'],
-      //   order: {
-      //     'webContent.pubDate','ASC',
-      //   },
-      // });
+      let bogosips;
+      if (sortType === 'NEW' || sortType === 'OLD') {
+        bogosips = await this.bogosipRepository.find({
+          where: {
+            userId: userId,
+            type: convertToEnum(type),
+          },
+          relations: ['webContent'],
+          order: {
+            webContent: {
+              [orderMethod.col]: orderMethod.order,
+            },
+          },
+        });
+      } else {
+        bogosips = await this.bogosipRepository.find({
+          where: {
+            userId: userId,
+            type: convertToEnum(type),
+          },
+          relations: ['webContent'],
+          order: {
+            [orderMethod.col]: orderMethod.order,
+          },
+        });
+      }
 
-      //return bogosips;
+      return bogosips;
     } catch (err) {
       throw err;
     }
