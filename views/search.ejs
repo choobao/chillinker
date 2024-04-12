@@ -14,50 +14,90 @@
     ></script>
   </head>
   <body>
+    <header>
+      <div class="inner_header">
+        <h1 class="logo">
+          <a href="#">Chillinker</a>
+        </h1>
+        <div class="header_right">
+          <div class="search_box">
+            <form action="/search" method="get">
+              <input
+                class="search_text"
+                type="search"
+                placeholder="작품명, 작가 검색"
+                id="search-input"
+                name="query"
+              />
+              <i class="fa fa-search" aria-hidden="true">
+                <input
+                  type="submit"
+                  value="검색"
+                  id="search"
+                  class="submit_btn"
+              /></i>
+            </form>
+          </div>
+          <ul>
+            <li><a href="#">로그인</a></li>
+            <li><a href="#">회원가입</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <script>
+      $('search').click(function () {
+        let input = $('#search-input').val();
+        window.location.replace('/search?query=' + input);
+      });
+    </script>
     <div class="wrap">
       <div
         class="search_input_bar"
-        style="height: 50px; background-color: #f5f5fa; padding: 15px"
-      >
+        style="height: 50px; background-color: #f5f5fa; padding: 15px">
         <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
       </div>
       <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
         <div class="search_btn_bar">
           <ul class="search_bar_list" style="display: flex; padding: 15px">
             <li class="search_btn1">
-              <a href="/search?type=webnovels">웹소설</a>
+              <a href="/search?type=webnovels&query=<%= keyword %>">웹소설</a>
             </li>
             <li class="search_btn2">
-              <a href="/search?type=webtoons">웹툰</a>
+              <a href="/search?type=webtoons&query=<%= keyword %>">웹툰</a>
             </li>
-            <li class="search_btn3"><a href="/search?type=authors">작가</a></li>
-            <li class="search_btn4"><a href="/search?type=users">유저</a></li>
+            <li class="search_btn3"><a href="/search?type=authors&query=<%= keyword %>">작가</a></li>
+            <li class="search_btn4"><a href="/search?type=users&query=<%= keyword %>">유저</a></li>
             <li class="search_btn5">
-              <a href="/search?type=collections">컬렉션</a>
+              <a href="/search?type=collections&query=<%= keyword %>">컬렉션</a>
             </li>
           </ul>
         </div>
-
         <div class="result_section">
           <ul class="result_list" display:flex="">
-            <!-- <% if (!keyword) { %>
+            <% if (!keyword) { %>
               <div class="empty_search">
                 <p>검색어를 입력하세요.</p>
               </div>
-              <% } else { %>
+              <% } %>
+              <script>
+       const searchParams = new URLSearchParams(); 
+              let type = searchParams.get('type') 
+              </script>
+              <%if (type == 'webtoons') { %>
                 <li>
                   <a title="#" href="">
                     <div class="inner">
                       <div class="ranking_box">
                         <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
                         <div class="contents_box">
-                          <% webnovels.forEach((item) => { %>
+                          <% webtoons.forEach((item) => { %>
                             <div class="contents">
                               <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
                               <h3 class="contents_title">제목: <%= item.title %></h3>
                               <h4 class="contents_category">장르: <%= item.category %></h4>
                               <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-                              <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                              <h4 class="contents_authors">작가: <%= item.author %></h4>
                               </div>
                           <% }); %>
                         </div>
@@ -65,8 +105,51 @@
                     </div>
                   </a>
                 </li>
-              <% } %>
-           -->
+                <% } else if (type == 'authors') { %>
+                   <li>
+                    <a title="#" href="">
+                      <div class="inner">
+                        <div class="ranking_box">
+                          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
+                          <div class="contents_box">
+                            <% authors.forEach((item) => { %>
+                              <div class="contents">
+                                <img src="<%= item.webContents_image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+                                <h3 class="contents_title">제목: <%= item.title %></h3>
+                                <h4 class="contents_category">장르: <%= item.keyword %></h4>
+                                <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                                <h4 class="contents_authors">작가: <%= item.author %></h4>
+                                </div>
+                            <% }); %>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <% } else if (type == 'users') { %>
+                    <% } else if (type == 'collections') { %>
+                      <% } else  { %>
+                        <li>
+                          <a title="#" href="">
+                            <div class="inner">
+                              <div class="ranking_box">
+                                <h2 class="ranking_title">네이버 시리즈 인기 웹소설</h2>
+                                <div class="contents_box">
+                                  <% webnovels.forEach((item) => { %>
+                                    <div class="contents">
+                                      <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
+                                      <h3 class="contents_title">제목: <%= item.title %></h3>
+                                      <h4 class="contents_category">장르: <%= item.category %></h4>
+                                      <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                                      <h4 class="contents_authors">작가: <%= item.author %></h4>
+                                      </div>
+                                  <% }); %>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        </li>
+                        <% } %>
           </ul>
         </div>
       </main>
