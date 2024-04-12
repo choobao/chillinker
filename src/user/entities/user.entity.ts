@@ -11,7 +11,7 @@ import { ReviewLikes } from 'src/review/entities/review.likes.entity';
 import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
 import { Collections } from 'src/collection/entities/collections.entity';
 import { CollectionBookmarkUser } from 'src/collection/entities/collection-bookmark-user.entity';
-import { Bogosips } from '../../web-content/entities/bogosips.entity';
+import { Bogosips } from '../../bogosip/entities/bogosips.entity';
 
 @Entity({
   name: 'users',

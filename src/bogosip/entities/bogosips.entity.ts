@@ -1,7 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BogosipType } from '../webContent.type';
-
-import { WebContents } from './webContents.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { BogosipType } from '../types/bogosip.type';
+import { WebContents } from '../../web-content/entities/webContents.entity';
 import { Users } from '../../user/entities/user.entity';
 
 @Entity('bogosips')
@@ -23,4 +28,7 @@ export class Bogosips {
 
   @Column({ type: 'enum', enum: BogosipType })
   type: BogosipType;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

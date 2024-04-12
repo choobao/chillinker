@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Body, Controller, Get, Render } from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
@@ -58,7 +58,7 @@ export class WebContentController {
   }
 
   @Get('search')
-  async search(searchDto: SearchDto) {
+  async search(@Body() searchDto: SearchDto) {
     const keyword = searchDto.keyword;
     const users = await this.webContentService.searchFromUsers(keyword);
     const collections =
