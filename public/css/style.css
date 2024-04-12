@@ -303,8 +303,34 @@ footer ul li {
   display: inline;
   margin: 0 10px;
 }
+
 footer p {
   font-size: 12px;
   text-align: center;
   margin: 20px;
+}
+
+.search_input_text {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.result_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+  width: 200px;
+  /* border: 1px solid #ccc; */
+  background-color: #f5f5fa;
+  margin: 10px;
+}
+
+.card_author {
+  word-wrap: break-word; /* 텍스트 줄바꿈 설정 */
 }

@@ -42,13 +42,4 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty({ example: '갤럭시 씁니다.', description: '소개' })
   intro: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
-    example:
-      'https://img.freepik.com/free-photo/delicious-red-apples-in-studio_23-2150811013.jpg?size=626&ext=jpg&ga=GA1.1.2113030492.1711756800&semt=ais',
-    description: '프로필사진',
-  })
-  profileImage: string;
 }

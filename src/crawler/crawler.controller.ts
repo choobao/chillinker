@@ -9,4 +9,9 @@ export class CrawlerController {
   async getKakao() {
     return await this.crawlService.createKakaopages();
   }
+
+  @Get('ridibooks')
+  async getRidi() {
+    return await this.crawlService.createRidibooks();
+  }
 }

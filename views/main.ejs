@@ -22,10 +22,16 @@
           </h1>
           <div class="header_right">
             <div class="search_box">
-              <form action="#" method="get">
-                <input class="search_text" type="search" placeholder="작품명, 작가 검색" />
+              <form action="/search" method="get">
+                <input
+                  class="search_text"
+                  type="search"
+                  placeholder="작품명, 작가 검색"
+                  name="query"
+                />
                 <i class="fa fa-search" aria-hidden="true">
-                <input type="submit" value="검색" class="submit_btn"/></i>
+                  <input type="submit" value="검색" class="submit_btn" />
+                </i>
               </form>
             </div>
             <ul>
@@ -33,11 +39,9 @@
               <li><a href="#">회원가입</a></li>
             </ul>
           </div>
-          
         </div>
       </header>
       <main>
-        
         <div class="inner">
           <div class="ranking_box">
             <div class="naver_webtoon_rank">
@@ -215,8 +219,8 @@
               </div>
             </div>
           </div>
+          <script src="/js/script.js"></script>
         </div>
-        <script src="/js/script.js"></script>
       </main>
       <footer>
         <ul>
