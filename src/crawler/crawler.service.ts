@@ -731,4 +731,81 @@ export class CrawlerService {
   //   }
   //   return reviewList;
   // }
+
+  async createRidibooks() {
+    const startTime = new Date().getTime();
+
+    const currPageWebnovel = 0;
+    const currPageWebtoon = 0;
+
+    try {
+      console.log('start!');
+      const rankingWebnovels = await this.getDailyRank_20_WebContents(
+        Type.WEBNOVEL,
+      );
+      await this.createDtosAndSave(rankingWebnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingWebtoons = await this.getDailyRank_20_WebContents(
+        Type.WEBTOON,
+      );
+      await this.createDtosAndSave(rankingWebtoons);
+      console.log('done!');
+
+      console.log('start!');
+      const allWebnovels = await this.getAll_96_WebContents(
+        Type.WEBNOVEL,
+        currPageWebnovel,
+      );
+      await this.createDtosAndSave(allWebnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const allWebtoons = await this.getAll_96_WebContents(
+        Type.WEBTOON,
+        currPageWebtoon,
+      );
+      await this.createDtosAndSave(allWebtoons);
+      console.log('done!');
+
+      const endTime = new Date().getTime();
+      console.log(`총 시간 : ${endTime - startTime}ms`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async rank20_webContents(contentType) {
+    let items = await this.requestDailyRanking(contentType);
+  }
+
+  async requestRanking(contentType) {
+    try {
+      const { data } = await axios({
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+          Referer: 'https://page.kakao.com',
+        },
+        url: kakao_api_url,
+        data: {
+          query: webcontent_ranking_daily_query,
+          variables: {
+            sectionId: `static-landing-Ranking-section-Landing-${contentType}-0-daily`,
+            param: {
+              categoryUid: contentType,
+              rankingType: 'daily',
+              subcategoryUid: '0',
+              screenUid: null,
+              page: 0,
+            },
+          },
+        },
+      });
+      return data.data.staticLandingRankingSection.groups[0].items;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
