@@ -4,113 +4,229 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <header>
-      <h1>
-        <a href="#">logo</a>
-      </h1>
-      <div class="search_box">
-        <a href="#">search icon</a>
-      </div>
-      <div class="user_box">
-        <a href="#">login</a>
-        <a href="#">register</a>
-      </div>
-    </header>
-    <main>
-      <div class="container">
-        <div class="ranking_box">
-          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
-            <div class="contents_box">
-              <% naverWebtoons.forEach((item) => { %>
-              <div class="contents">
-              <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
-              <h3 class="contents_title">제목: <%= item.title %></h3>
-              <h4 class="contents_category">장르: <%= item.category %></h4>
-              <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-              <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+    <div class="wrap">
+      <header>
+        <div class="inner_header">
+          <h1 class="logo">
+            <a href="#">Chillinker</a>
+          </h1>
+          <div class="header_right">
+            <div class="search_box">
+              <form action="#" method="get">
+                <input class="search_text" type="search" placeholder="작품명, 작가 검색" />
+                <i class="fa fa-search" aria-hidden="true">
+                <input type="submit" value="검색" class="submit_btn"/></i>
+              </form>
+            </div>
+            <ul>
+              <li><a href="#">로그인</a></li>
+              <li><a href="#">회원가입</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </header>
+      <main>
+        
+        <div class="inner">
+          <div class="ranking_box">
+            <div class="naver_webtoon_rank">
+              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% naverWebtoons.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
               </div>
-              <% }); %>
+            </div>
           </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">네이버 시리즈 인기 순위_웹소설</h2>
-          <div class="contents_box">
-            <% naverWebnovels.forEach((item) => { %>
-              <div class="contents">
-              <img src="<%= item.image %>" alt="작품 표지" style="width: 70px; height: 100px;"/>
-              <h3 class="contents_title">제목: <%= item.title %></h3>
-              <h4 class="contents_category">장르: <%= item.category %></h4>
-              <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
-              <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+          <div class="ranking_box">
+            <div class="naver_webnovel_rank">
+              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹소설</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% naverWebnovels.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
               </div>
-              <% }); %>
+            </div>
           </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">카카오 페이지 인기 순위_웹툰</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
+          <div class="ranking_box">
+            <div class="kakao_webtoon_rank">
+              <h2 class="ranking_title">카카오 페이지 인기 순위_웹툰</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% kakaoWebtoons.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="kakao_webnovel_rank">
+              <h2 class="ranking_title">카카오 페이지 인기 순위_웹소설</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% kakaoWebnovels.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="ridi_webtoon_rank">
+              <h2 class="ranking_title">리디북스 인기 순위_웹툰</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% ridiWebtoons.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="ridi_webnovel_rank">
+              <h2 class="ranking_title">리디북스 인기 순위_웹소설</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% ridiWebnovels.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="mrblue_webtoon_rank">
+              <h2 class="ranking_title">미스터블루 인기 순위_웹툰</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% mrblueWebtoons.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="mrblue_webnovel_rank">
+              <h2 class="ranking_title">미스터블루 인기 순위_웹소설</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% mrblueWebnovels.forEach((item) => { %>
+                      <div class="contents">
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
             </div>
           </div>
         </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">카카오 페이지 인기 순위_웹소설</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
-            </div>
-          </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">리디북스 인기 순위_웹툰</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
-            </div>
-          </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">리디북스 인기 순위_웹소설</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
-            </div>
-          </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">미스터블루 인기 순위_웹툰</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
-            </div>
-          </div>
-        </div>
-        <div class="ranking_box">
-          <h2 class="ranking_title">미스터블루 인기 순위_웹소설</h2>
-          <div class="contents_box">
-            <div class="contents">
-              <img src="#" alt="작품 표지" />
-              <h3 class="contents_title">제목</h3>
-              <h4 class="contents_desc">작품 설명</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-    <footer></footer>
+        <script src="/js/script.js"></script>
+      </main>
+      <footer>
+        <ul>
+          <li>
+            <a href="https://github.com/choobao/chillinker"
+              ><i class="fa fa-github" aria-hidden="true"></i
+            ></a>
+          </li>
+        <p>Copyright © 2024 회빙환. All rights reserved.</p>
+      </footer>
+    </div>
   </body>
 </html>

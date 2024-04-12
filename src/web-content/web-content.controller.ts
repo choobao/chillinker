@@ -10,7 +10,7 @@ export class WebContentController {
 
   @ApiOperation({ summary: '메인' })
   @Get('main')
-  //@Render('main')
+  @Render('main')
   async getBestWebContents() {
     const naverWebtoons = await this.webContentService.findBestWebContents(
       'naver',
@@ -20,22 +20,22 @@ export class WebContentController {
       'naver',
       ContentType.WEBNOVEL,
     );
-    // const ridiWebtoons = await this.webContentService.findBestWebContents(
-    //   'ridibooks',
-    //   ContentType.WEBTOON,
-    // );
-    // const ridiWebnovels = await this.webContentService.findBestWebContents(
-    //   'ridibooks',
-    //   ContentType.WEBNOVEL,
-    // );
-    // const mrblueWebtoons = await this.webContentService.findBestWebContents(
-    //   'mrblue',
-    //   ContentType.WEBTOON,
-    // );
-    // const mrblueWebnovels = await this.webContentService.findBestWebContents(
-    //   'mrblue',
-    //   ContentType.WEBNOVEL,
-    // );
+    const ridiWebtoons = await this.webContentService.findBestWebContents(
+      'ridibooks',
+      ContentType.WEBTOON,
+    );
+    const ridiWebnovels = await this.webContentService.findBestWebContents(
+      'ridibooks',
+      ContentType.WEBNOVEL,
+    );
+    const mrblueWebtoons = await this.webContentService.findBestWebContents(
+      'mrblue',
+      ContentType.WEBTOON,
+    );
+    const mrblueWebnovels = await this.webContentService.findBestWebContents(
+      'mrblue',
+      ContentType.WEBNOVEL,
+    );
     const kakaoWebtoons = await this.webContentService.findBestWebContents(
       'kakao',
       ContentType.WEBTOON,
@@ -48,10 +48,10 @@ export class WebContentController {
     return {
       naverWebtoons,
       naverWebnovels,
-      // ridiWebtoons,
-      // ridiWebnovels,
-      // mrblueWebtoons,
-      // mrblueWebnovels,
+      ridiWebtoons,
+      ridiWebnovels,
+      mrblueWebtoons,
+      mrblueWebnovels,
       kakaoWebtoons,
       kakaoWebnovels,
     };
