@@ -27,7 +27,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.useStaticAssets('public/css');
+  app.useStaticAssets('public');
   app.setBaseViewsDir('views');
   app.setViewEngine('ejs');
 
