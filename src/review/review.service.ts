@@ -80,7 +80,7 @@ export class ReviewService {
       if (order == 'recent') {
         const recentReviews = await this.platformReviewsRepository.find({
           where: { webContentId },
-          order: { created_date: 'desc' },
+          order: { createDate: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
         });
