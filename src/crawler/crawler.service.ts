@@ -57,7 +57,9 @@ import axios from 'axios';
 import {
   get20BestRanking,
   get60WebtoonRanking,
-  getContentsData,
+
+  getReviews10,
+
 } from './platform/ridibooks';
 import { GENRE, TYPE } from './utils/ridi.constants';
 
@@ -66,6 +68,8 @@ export class CrawlerService {
   constructor(
     @InjectRepository(WebContents)
     private readonly contentRepository: Repository<WebContents>,
+    @InjectRepository(PReviews)
+    private readonly reviewRepostiroy: Repository<PReviews>,
     //private readonly redisService: RedisService,
   ) {}
 
@@ -837,7 +841,11 @@ export class CrawlerService {
         // webContent.keyword = JSON.stringify(content.keyword);
         // webContent.rank = content.rank;
         webContent.contentType = ContentType.WEBTOON;
-        // webContent.pReviews = content.pReviews;
+
+        if (content.pReviews.length !== 0) {
+          webContent.pReviews = content.pReviews;
+        }
+
         return webContent;
       });
 
@@ -858,7 +866,9 @@ export class CrawlerService {
     console.log('Rank 업데이트 완료');
   }
 
-  async save20Db(data: WebContents[]) {
+
+  async save20Db(data) {
+
     try {
       const createContentDtos = data.map((content) => {
         const webContent = new WebContents();
@@ -874,7 +884,12 @@ export class CrawlerService {
         // webContent.keyword = JSON.stringify(content.keyword);
         webContent.rank = content.rank;
         webContent.contentType = content.contentType;
-        // webContent.pReviews = content.pReviews;
+
+        if (content.pReviews.length !== 0) {
+          webContent.pReviews = content.pReviews;
+        }
+
+
         return webContent;
       });
 

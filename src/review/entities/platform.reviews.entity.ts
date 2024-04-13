@@ -29,7 +29,7 @@ export class PReviews {
   isSpoiler: boolean;
 
   @Column({ type: 'date' })
-  created_date: Date;
+  createDate: Date;
 
   //**WebContents와 p_reviews는 1:N
   @ManyToOne(() => WebContents, (webContent) => webContent.pReviews, {
