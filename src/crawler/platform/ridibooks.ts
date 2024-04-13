@@ -9,14 +9,16 @@ import { ContentType } from 'src/web-content/webContent.type';
 import { HTMLToJSON } from 'html-to-json-parser';
 import * as cheerio from 'cheerio';
 
+
 export async function get60WebtoonRanking(type: TYPE, page: number) {
   try {
     const { data } = await axios({
       method: 'get',
       url: `https://ridibooks.com/_next/data/3.8.172-ecfb8c7/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
-    });
+
 
     const books = data.pageProps.dehydratedState.queries[2].state.data;
+
 
     const data60ranking = await Promise.all(
       books.map(async (bookData) => {
@@ -74,6 +76,7 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
       }),
     );
 
+
     return data60ranking;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -89,6 +92,7 @@ export async function get20BestRanking(gerne: GENRE) {
 
     const items =
       data.pageProps.dehydratedState.queries[0].state.data.bestsellers.items;
+
 
     const data20ranking = await Promise.all(
       items.slice(0, 20).map(async (bookData, index) => {
@@ -151,11 +155,13 @@ export async function get20BestRanking(gerne: GENRE) {
       }),
     );
 
+
     return data20ranking;
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 }
+
 
 export async function getReviews10(booksId) {
   let offset = 0;
@@ -285,3 +291,4 @@ export async function getReviews20(booksId) {
 
   return reviews;
 }
+
