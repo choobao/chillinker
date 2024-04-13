@@ -3,7 +3,7 @@ import { CreateUserDto } from './create-user.dto';
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(
-  PickType(CreateUserDto, ['nickname', 'intro', 'profileImage']),
+  PickType(CreateUserDto, ['nickname', 'intro']),
 ) {
   @IsString()
   @MinLength(6)

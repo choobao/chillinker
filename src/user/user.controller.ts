@@ -8,10 +8,13 @@ import {
   Param,
   Patch,
   Post,
+  Render,
   Req,
   Res,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +26,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Users } from './entities/user.entity';
 import { UserInfo } from 'src/utils/userinfo.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('USER')
 @Controller('users')
@@ -30,15 +34,19 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '회원가입' })
+  @UseInterceptors(FileInterceptor('profileImage'))
   @Post('register')
   @HttpCode(201)
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     const { password, confirmPassword } = createUserDto;
     if (password !== confirmPassword) {
       throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
     }
 
-    return await this.userService.register(createUserDto);
+    return await this.userService.register(file, createUserDto);
   }
 
   @ApiOperation({ summary: '로그인' })
@@ -81,14 +89,16 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })
+  @UseInterceptors(FileInterceptor('profileImage'))
   @UseGuards(AuthGuard('jwt'))
   @Patch('mypage/update')
   async updateMyInfo(
+    @UploadedFile() file: Express.Multer.File,
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
   ) {
     const { id } = user;
-    await this.userService.updateMyInfo(id, updateUserDto);
+    await this.userService.updateMyInfo(file, id, updateUserDto);
   }
 
   @ApiOperation({ summary: '회원탈퇴' })

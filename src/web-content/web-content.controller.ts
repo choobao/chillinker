@@ -11,7 +11,7 @@ export class WebContentController {
 
   @ApiOperation({ summary: '메인' })
   @Get('main')
-  @Render('main.ejs')
+  @Render('main')
   async getBestWebContents() {
     const naverWebtoons = await this.webContentService.findBestWebContents(
       'naver',
@@ -22,11 +22,11 @@ export class WebContentController {
       ContentType.WEBNOVEL,
     );
     const ridiWebtoons = await this.webContentService.findBestWebContents(
-      'Ridi',
+      'ridibooks',
       ContentType.WEBTOON,
     );
     const ridiWebnovels = await this.webContentService.findBestWebContents(
-      'Ridi',
+      'ridibooks',
       ContentType.WEBNOVEL,
     );
     const mrblueWebtoons = await this.webContentService.findBestWebContents(

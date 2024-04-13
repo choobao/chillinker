@@ -14,6 +14,7 @@ import { WebContentModule } from './web-content/web-content.module';
 //import { RedisModule } from './redis/redis.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { BogosipModule } from './bogosip/bogosip.module';
+import { StorageModule } from './storage/storage.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -60,6 +61,7 @@ const typeOrmModuleOptions = {
     ScheduleModule.forRoot(),
     CrawlerModule,
     BogosipModule,
+    StorageModule,
   ],
   controllers: [ReviewController],
   providers: [],
