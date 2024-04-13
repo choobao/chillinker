@@ -54,6 +54,12 @@ import {
   webcontent_review_query,
 } from './utils/kakaopage';
 import axios from 'axios';
+import {
+  get20BestRanking,
+  get60WebtoonRanking,
+  getContentsData,
+} from './platform/ridibooks';
+import { GENRE, TYPE } from './utils/ridi.constants';
 
 @Injectable()
 export class CrawlerService {
@@ -735,38 +741,61 @@ export class CrawlerService {
   async createRidibooks() {
     const startTime = new Date().getTime();
 
-    const currPageWebnovel = 0;
-    const currPageWebtoon = 0;
+    const currPage = 0;
 
     try {
+      // 일간랭킹;
+      await this.rankUpdet();
+
       console.log('start!');
-      const rankingWebnovels = await this.getDailyRank_20_WebContents(
-        Type.WEBNOVEL,
-      );
-      await this.createDtosAndSave(rankingWebnovels);
+      const rankingRnovels = await get20BestRanking(GENRE.R);
+      await this.save20Db(rankingRnovels);
       console.log('done!');
 
       console.log('start!');
-      const rankingWebtoons = await this.getDailyRank_20_WebContents(
-        Type.WEBTOON,
-      );
-      await this.createDtosAndSave(rankingWebtoons);
+      const rankingRFnovels = await get20BestRanking(GENRE.RF);
+      await this.save20Db(rankingRFnovels);
       console.log('done!');
 
       console.log('start!');
-      const allWebnovels = await this.getAll_96_WebContents(
-        Type.WEBNOVEL,
-        currPageWebnovel,
-      );
-      await this.createDtosAndSave(allWebnovels);
+      const rankingFnovels = await get20BestRanking(GENRE.F);
+      await this.save20Db(rankingFnovels);
       console.log('done!');
 
       console.log('start!');
-      const allWebtoons = await this.getAll_96_WebContents(
-        Type.WEBTOON,
-        currPageWebtoon,
-      );
-      await this.createDtosAndSave(allWebtoons);
+      const rankingBnovels = await get20BestRanking(GENRE.B);
+      await this.save20Db(rankingBnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingWebtoons = await get20BestRanking(GENRE.WB);
+      await this.save20Db(rankingWebtoons);
+      console.log('done!');
+
+      //전체랭킹
+      console.log('start!');
+      const Rnovels = await get60WebtoonRanking(TYPE.R, currPage);
+      await this.save60Db(Rnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const RFnovels = await get60WebtoonRanking(TYPE.RF, currPage);
+      await this.save60Db(RFnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Fnovels = await get60WebtoonRanking(TYPE.F, currPage);
+      await this.save60Db(Fnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Bnovels = await get60WebtoonRanking(TYPE.B, currPage);
+      await this.save60Db(Bnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Webtoons = await get60WebtoonRanking(TYPE.WB, currPage);
+      await this.save60Db(Webtoons);
       console.log('done!');
 
       const endTime = new Date().getTime();
@@ -774,36 +803,83 @@ export class CrawlerService {
     } catch (err) {
       throw err;
     }
+    // const crawlerData = await crawlerRidibooks();
+
+    // const daily60DataWebtoon = await get60WebtoonRanking();
+    // const daily60DataWeNovel = await get60WebtoonRanking();
+    // const dailyBestId = await get20BestRanking();
+
+    // await this.save60Db(daily60DataWebtoon);
+    // await this.save60Db(daily60DataWeNovel);
+
+    // const dataBest20 = await getContentsData(dailyBestId);
+
+    // const reviews10 = await getReviews10(dailyBestId);
+    // const reviews10Results = await Promise.all(
+    //   daily60Id.map((dailyBestId) => getReviews10(dailyBestId)),
+    // );
+    // const reviews20 = await getReviews20(dailyBestId);
   }
 
-  async rank20_webContents(contentType) {
-    let items = await this.requestDailyRanking(contentType);
-  }
-
-  async requestRanking(contentType) {
+  async save60Db(data: WebContents[]) {
     try {
-      const { data } = await axios({
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-          Referer: 'https://page.kakao.com',
-        },
-        url: kakao_api_url,
-        data: {
-          query: webcontent_ranking_daily_query,
-          variables: {
-            sectionId: `static-landing-Ranking-section-Landing-${contentType}-0-daily`,
-            param: {
-              categoryUid: contentType,
-              rankingType: 'daily',
-              subcategoryUid: '0',
-              screenUid: null,
-              page: 0,
-            },
-          },
-        },
+      const createContentDtos = data.map((content) => {
+        const webContent = new WebContents();
+
+        webContent.title = content.title;
+        webContent.desc = content.desc;
+        webContent.image = content.image;
+        webContent.author = content.author;
+        webContent.category = content.category;
+        webContent.isAdult = content.isAdult;
+        webContent.platform = content.platform;
+        webContent.pubDate = new Date(content.pubDate);
+        // webContent.keyword = JSON.stringify(content.keyword);
+        // webContent.rank = content.rank;
+        webContent.contentType = ContentType.WEBTOON;
+        // webContent.pReviews = content.pReviews;
+        return webContent;
       });
-      return data.data.staticLandingRankingSection.groups[0].items;
+
+      // DB에 저장
+      await this.contentRepository.save(createContentDtos);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async rankUpdet() {
+    const resetRank = await this.contentRepository
+      .createQueryBuilder()
+      .update(WebContents)
+      .set({ rank: null })
+      .execute();
+
+    console.log('Rank 업데이트 완료');
+  }
+
+  async save20Db(data: WebContents[]) {
+    try {
+      const createContentDtos = data.map((content) => {
+        const webContent = new WebContents();
+
+        webContent.title = content.title;
+        webContent.desc = content.desc;
+        webContent.image = content.image;
+        webContent.author = content.author;
+        webContent.category = content.category;
+        webContent.isAdult = content.isAdult;
+        webContent.platform = content.platform;
+        webContent.pubDate = new Date();
+        // webContent.keyword = JSON.stringify(content.keyword);
+        webContent.rank = content.rank;
+        webContent.contentType = content.contentType;
+        // webContent.pReviews = content.pReviews;
+        return webContent;
+      });
+
+      // DB에 저장
+      await this.contentRepository.save(createContentDtos);
     } catch (err) {
       throw err;
     }
