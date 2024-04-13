@@ -1,12 +1,12 @@
-import { PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(
   PickType(CreateUserDto, ['nickname', 'intro']),
 ) {
   @IsString()
-  @MinLength(6)
   @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
+  @ApiProperty({ example: 'Aaaa@1234', description: '비밀번호' })
   password: string;
 }

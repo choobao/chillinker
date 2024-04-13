@@ -22,7 +22,7 @@ export class CreateUserDto {
         '비밀번호는 영문 알파벳 대,소문자, 숫자, 특수문자(!@#$%^&*)를 포함해야 합니다.',
     },
   )
-  @MinLength(8, { message: '비밀번호는 6글자 이상이어야합니다.' })
+  @MinLength(8, { message: '비밀번호는 8글자 이상이어야합니다.' })
   @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
   @ApiProperty({ example: 'Aaaa@1234', description: '비밀번호' })
   password: string;
