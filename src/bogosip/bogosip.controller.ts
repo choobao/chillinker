@@ -26,7 +26,7 @@ export class BogosipController {
   @HttpCode(201)
   async addContent(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('contentId') contentId: number,
   ) {
     return await this.bogosipService.addContent(user.id, contentId, type);
@@ -37,7 +37,7 @@ export class BogosipController {
   @HttpCode(200)
   async deleteContent(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('contentId') contentId: number,
   ) {
     return await this.bogosipService.deleteContent(user.id, contentId, type);
@@ -47,7 +47,7 @@ export class BogosipController {
   @Get('bogosips/:type')
   @HttpCode(200)
   async getBogosips(
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('userId') userId: number,
     @Query('sortType') sortType: string,
   ) {
@@ -59,7 +59,7 @@ export class BogosipController {
   @HttpCode(200)
   async getMyBogosips(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('sortType') sortType: string = 'ADD_DT',
   ) {
     return await this.bogosipService.findContents(user.id, type, sortType);
