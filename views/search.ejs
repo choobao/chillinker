@@ -12,14 +12,8 @@
       src="https://kit.fontawesome.com/0b832ce4c1.js"
       crossorigin="anonymous"
     >
-     document.addEventListener("DOMContentLoaded", function() {
-    $('#search').click(function () {
-      let input = $('#search-input').val();
-      window.location.replace('/search?query=' + input);
-    });
-  });
-
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <header>
@@ -61,7 +55,7 @@
       >
         <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
       </div>
-      <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
+    <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
         <div class="search_btn_bar">
           <ul class="search_bar_list" style="display: flex; padding: 15px">
             <li class="search_btn1" style="margin-right: 10px;">
@@ -172,8 +166,9 @@
             <% } %>
           </ul>
         </div>
-      </main>
-      <footer>
+    </main>
+    <script src="/js/click.js"></script>
+    <footer>
         <ul>
           <li>
             <a href="https://github.com/choobao/chillinker">
@@ -182,7 +177,7 @@
           </li>
         </ul>
         <p>Copyright © 2024 회빙환. All rights reserved.</p>
-      </footer>
+    </footer>
     </div>
   </body>
 </html>

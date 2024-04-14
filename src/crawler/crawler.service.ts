@@ -57,9 +57,7 @@ import axios from 'axios';
 import {
   get20BestRanking,
   get60WebtoonRanking,
-
   getReviews10,
-
 } from './platform/ridibooks';
 import { GENRE, TYPE } from './utils/ridi.constants';
 
@@ -742,6 +740,7 @@ export class CrawlerService {
   //   return reviewList;
   // }
 
+  @Cron('0 17 * * *') //오후 다섯시 예약
   async createRidibooks() {
     const startTime = new Date().getTime();
 
@@ -807,22 +806,6 @@ export class CrawlerService {
     } catch (err) {
       throw err;
     }
-    // const crawlerData = await crawlerRidibooks();
-
-    // const daily60DataWebtoon = await get60WebtoonRanking();
-    // const daily60DataWeNovel = await get60WebtoonRanking();
-    // const dailyBestId = await get20BestRanking();
-
-    // await this.save60Db(daily60DataWebtoon);
-    // await this.save60Db(daily60DataWeNovel);
-
-    // const dataBest20 = await getContentsData(dailyBestId);
-
-    // const reviews10 = await getReviews10(dailyBestId);
-    // const reviews10Results = await Promise.all(
-    //   daily60Id.map((dailyBestId) => getReviews10(dailyBestId)),
-    // );
-    // const reviews20 = await getReviews20(dailyBestId);
   }
 
   async save60Db(data: WebContents[]) {
@@ -866,9 +849,7 @@ export class CrawlerService {
     console.log('Rank 업데이트 완료');
   }
 
-
   async save20Db(data) {
-
     try {
       const createContentDtos = data.map((content) => {
         const webContent = new WebContents();
@@ -888,7 +869,6 @@ export class CrawlerService {
         if (content.pReviews.length !== 0) {
           webContent.pReviews = content.pReviews;
         }
-
 
         return webContent;
       });
