@@ -115,4 +115,22 @@ export class WebContentService {
       webtoons,
     };
   }
+
+  async findContent(id: number, type: ContentType) {
+    // const content = await this.webContentRepository
+    //   .createQueryBuilder('webContents')
+    //   .leftJoinAndSelect('webContents.bogosips', 'bogosips')
+    //   .where('webContents.id LIKE :id', { id }).getOne;
+
+    const content = await this.webContentRepository.findOne({
+      where: { id, contentType: type },
+      //보고 기준 더 추가?
+    });
+
+    if (!content) {
+      throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
+    }
+
+    return content;
+  }
 }

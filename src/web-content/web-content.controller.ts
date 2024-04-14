@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Query, Render } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  Render,
+} from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
@@ -96,5 +104,16 @@ export class WebContentController {
     } else {
       return { type, keyword, webnovels };
     }
+  }
+
+  @Get('books/:webContentId')
+  @Render('detailContent')
+  async getContent(
+    @Param('webContentId', ParseIntPipe) id: number,
+    @Query('type') type: ContentType,
+  ) {
+    const findContent = await this.webContentService.findContent(id, type);
+    console.log(findContent);
+    return findContent;
   }
 }

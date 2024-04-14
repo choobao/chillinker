@@ -1,3 +1,4 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <header>
   <div class="inner_header">
     <img class="logo_image" src="/logo_image/chillinker_logo(2).png" href="#" />
@@ -11,11 +12,12 @@
             class="search_text"
             type="search"
             placeholder="작품명, 작가 검색"
+            id="search-input"
             name="query"
           />
-          <i class="fa fa-search" aria-hidden="true">
-            <input type="submit" value="검색" class="submit_btn" />
-          </i>
+          <i class="fa fa-search" id="search" aria-hidden="true">
+            <input type="submit" value="검색" class="submit_btn"
+          /></i>
         </form>
       </div>
       <ul id="userMenu">
@@ -40,3 +42,4 @@
     // accessToken이 없으면 기본 메뉴 유지
   });
 </script>
+<script src="/js/click.js"></script>

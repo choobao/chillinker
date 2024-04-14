@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chillinker</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+  
+    <%- include('header.ejs') %>
+    <main>
+      <div class="detail-page-container">
+        <div class="content-container">
+          <article class="detail-header">
+            <div class="header-thumbnail">
+              <div class="header-thumnail-image">
+                <img class="thumbnail" src="<%= image %>" />
+              </div>
+              <div class="header-preference">
+                <button type="button" class="preference-button">
+                  <span class="button-contents">
+                    <span class="button-icon">💜</span>
+                    <span class="button-text"><%= bogosipCount %></span>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="header-info-wrap">
+              <p class="info-category-wrap">
+                <a><%= category %></a>
+              </p>
+              <div class="info-title-wrap">
+                <h1 class="info-title"><%= title %></h1>
+              </div>
+              <div class="info-metadata-wrap">
+                <p class="metadata-rate">
+                  <span class="bookMeta-starRate">
+                    <span class="star"></span>
+                    <span class="starRate-score">rate 만들거임 별점표시</span>
+                  </span>
+                </p>
+                <p class="metadataa metadata-writer"><%= author %></p>
+                <p class="metadataa publisher-info"></p>
+              </div>
+              <div class="dk-block-title">
+              </div>
+              <p class="go-link-text">보러가기</p>
+              <!-- <h2 class="title-text">보러가기</h2> -->
+              <div class="info-go-link">
+                <% Object.entries(platform).forEach(([key, value]) => { %>
+                  <a href="<%= value %>" target="_blank">
+                    <img class="platform-image" src="/images/<%= key %>_icon.png" alt="<%= key %>">
+                  </a>
+                <% }); %>
+              </div>
+              
+            </div>
+          </article>
+          <article class="detail-keyword">
+            <div class="dk-block-title">
+              <h2 class="title-text">이 책의 키워드</h2>
+            </div>
+            <ul class="keyword-list">
+              <% if (keyword && keyword.length > 0) { %>
+                <ul class="keyword-list">
+                  <% keyword.forEach((item) => { %>
+                    <li class="keyword-item"><%= item %></li>
+                  <% }); %>
+                </ul>
+              <% } %>
+            </ul>
+          </article>
+          <article class="detail-introduce">
+            <div class="dk-block-title">
+              <h2 class="title-text">
+                <span class="book-title"><%= title %></span>
+                <span class="title-text">작품 소개</span>
+              </h2>
+            </div>
+            <div class="introduce-book">
+              <p class="introduce-paragraph"><%- desc %></p>
+            </div>
+          </article>
+        </div>
+        <div class="review-container"><%- include('detailReview.ejs') %></div>
+      </div>
+      
+    </main>
+    <footer>
+      <ul>
+        <li>
+          <a href="https://github.com/choobao/chillinker">
+            <i class="fa fa-github" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+      <p>Copyright © 2024 회빙환. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
