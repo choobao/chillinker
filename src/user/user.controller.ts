@@ -90,7 +90,7 @@ export class UserController {
 
   @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('logout')
+  @Get('logout')
   async logout(@Res() res) {
     res.clearCookie('accessToken').clearCookie('refreshToken');
     res.redirect('/main');
@@ -114,7 +114,6 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
   ) {
-    console.log('시발: ', updateUserDto);
     const { id } = user;
     await this.userService.updateMyInfo(file, id, updateUserDto);
   }

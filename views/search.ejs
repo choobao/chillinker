@@ -16,38 +16,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <header>
-      <div class="inner_header">
-        <h1 class="logo">
-          <a href="#">Chillinker</a>
-        </h1>
-        <div class="header_right">
-          <div class="search_box">
-            <form action="/search" method="get">
-              <input
-                class="search_text"
-                type="search"
-                placeholder="작품명, 작가 검색"
-                id="search-input"
-                name="query"
-              />
-              <i class="fa fa-search" aria-hidden="true">
-                <input
-                  type="submit"
-                  value="검색"
-                  id="search"
-                  class="submit_btn"
-              /></i>
-            </form>
-          </div>
-          <ul>
-            <li><a href="#">로그인</a></li>
-            <li><a href="#">회원가입</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
-
+    <%- include('header.ejs') %>
     <div class="wrap">
       <div
         class="search_input_bar"
@@ -86,6 +55,7 @@
               <div class="result_list" >
               <% webtoons.forEach((item) => { %>
                 <div class="card">
+                  <a href="/books/<%= item.id %>" class="card">
                   <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
                   <div class="card-info">
                     <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
@@ -93,6 +63,7 @@
                       <%= item.author %>
                     </h4>
                   </div>
+                  </a>
                 </div>
               <% }); %>
             </div>
@@ -100,6 +71,7 @@
               <div class="result_list" >
                 <% authors.forEach((item) => { %>
                   <div class="card">
+                    <a href="/books/<%= item.id %>" class="card">
                     <img src="<%= item.webContents_image %>" alt="<%= item.title %>" class="card-image" >
                     <div class="card-info">
                       <h3 class="card-title" style="font-weight: 600;"><%= item.webContents_title %></h3>
@@ -107,6 +79,7 @@
                         <%= item.webContents_author %>
                       </h4>
                     </div>
+                    </a>
                   </div>
                 <% }); %>
               </div>
@@ -114,6 +87,7 @@
               <div class="result_list" >
                 <% users.forEach((item) => { %>
                   <div class="card">
+                    <a href="#" class="card">
                     <% if (item.users_profile_image) { %>
                       <img src="<%= item.users_profile_image %>" alt="<%= item.title %>" class="card-image" name="profile-image">
                     <% } else { %>
@@ -131,6 +105,7 @@
                         <% } %>
                       </h4>
                     </div>
+                    </a>
                   </div>
                 <% }); %>
                 </div>
@@ -138,14 +113,15 @@
               <div class="result_list" >
                 <% collections.forEach((item) => { %>
                   <div class="card">
+                    <a href="#" class="card">
                     <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-image" >
                     <div class="card-info">
                       <h3 class="card-title" style="font-weight: 600;"><%= item.collections_title %></h3>
                       <h4 class="card_author">
                         <%= item.collections_desc %>
                       </h4>
-                 
                     </div>
+                    </a>
                   </div>
                 <% }); %>
               </div>
@@ -153,6 +129,7 @@
               <div class="result_list" >
                 <% webnovels.forEach((item) => { %>
                   <div class="card">
+                    <a href="/books/<%= item.id %>" class="card">
                     <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
                     <div class="card-info">
                       <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
@@ -160,6 +137,7 @@
                         <%= item.author %>
                       </h4>
                     </div>
+                    </a>
                   </div>
                 <% }); %>
               </div>
@@ -167,7 +145,6 @@
           </ul>
         </div>
     </main>
-    <script src="/js/click.js"></script>
     <footer>
         <ul>
           <li>

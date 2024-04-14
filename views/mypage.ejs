@@ -26,7 +26,11 @@
     <!-- <span class="material-symbols-outlined"
       ><a href="/users/mypage/update"> settings </a></span
     > -->
-    <img src="<%= user.profileImage %>" class="profile-img" />
+    <img
+      src="<%= user.profileImage %>"
+      alt="/logo_image/chillinker_logo(2).png"
+      class="profile-img"
+    />
     <h2><%= user.nickname %></h2>
     <h5><span class="profile-intro"><%= user.intro %></span></h5>
     <button class="profile-btn" onclick="">팔로잉/팔로워</button>
@@ -43,7 +47,10 @@
       <span class="close">&times;</span>
       <form id="profile-form">
         <label class="profile-update-img-label">
-          <img src="<%= user.profileImage %>" class="profile-update-img" />
+          <img
+            src="<%= user.profileImage %>"
+            alt="/logo_image/chillinker_logo(2).png"
+            class="profile-update-img" />
           <input
             type="file"
             id="profile-update-img-input"

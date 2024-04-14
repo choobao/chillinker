@@ -15,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import _ from 'lodash';
+import { BogosipType } from './types/bogosip.type';
 
 @Controller()
 @UseGuards(AuthGuard('jwt'))
