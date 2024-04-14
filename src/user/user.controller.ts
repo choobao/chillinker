@@ -60,6 +60,10 @@ export class UserController {
   @Get('register')
   showRegisterPage() {}
 
+  @Render('mypage-update')
+  @Get('mypage/update')
+  showUpdatePage() {}
+
   @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {

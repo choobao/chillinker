@@ -346,6 +346,7 @@ footer p {
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
 }
 
 .login-wrapper > h2,
@@ -386,11 +387,44 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 footer {
   margin-top: auto;
 }
 
-/* mypage */
+.profile-btn {
+  width: 200px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
 
+.profile-btn:hover {
+  background-color: #e6e6fa;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-intro {
+  font-size: 14px;
+}
+
+.material-symbols-outlined {
+  position: absolute; /* 절대 위치 설정 */
+  top: 0; /* 위쪽 경계에서부터의 위치 */
+  right: 50px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 40px; /* 상단 패딩 고려 */
+}
