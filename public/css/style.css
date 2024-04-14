@@ -334,3 +334,63 @@ footer p {
 .card_author {
   word-wrap: break-word; /* 텍스트 줄바꿈 설정 */
 }
+
+/* login, register */
+
+.login-wrapper,
+.register-wrapper,
+.mypage-wrapper {
+  width: 400px;
+  height: 350px;
+  padding: 40px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-wrapper > h2,
+.register-wrapper > h2,
+.mypage-wrapper {
+  font-size: 24px;
+  color: #7b68ee;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#login-form > input,
+#register-form > input {
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+}
+
+#login-form > input::placeholder,
+#register-form > input::placeholder {
+  color: #d2d2d2;
+}
+
+#login-form > input[type='submit'],
+#register-form > input[type='submit'] {
+  color: #fff;
+  font-size: 16px;
+  background-color: #7b68ee;
+  margin-top: 20px;
+  text-align: center;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+}
+
+/* mypage */
+

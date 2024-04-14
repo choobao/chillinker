@@ -1,0 +1,42 @@
+<header>
+  <div class="inner_header">
+    <h1 class="logo">
+      <a href="/main">Chillinker</a>
+    </h1>
+    <div class="header_right">
+      <div class="search_box">
+        <form action="/search" method="get">
+          <input
+            class="search_text"
+            type="search"
+            placeholder="작품명, 작가 검색"
+            name="query"
+          />
+          <i class="fa fa-search" aria-hidden="true">
+            <input type="submit" value="검색" class="submit_btn" />
+          </i>
+        </form>
+      </div>
+      <ul id="userMenu">
+        <li><a href="/users/login">로그인</a></li>
+        <li><a href="/users/register">회원가입</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 쿠키에서 accessToken 존재 여부 확인
+      const hasAccessToken = document.cookie
+        .split(';')
+        .some((item) => item.trim().startsWith('accessToken='));
+
+      if (hasAccessToken) {
+        // accessToken이 존재하면 메뉴 변경
+        document.getElementById('userMenu').innerHTML =
+          '<li><a href="/users/mypage">마이페이지</a></li><li><a href="/users/logout">로그아웃</a></li>';
+      }
+      // accessToken이 없으면 기본 메뉴 유지
+    });
+  
+</script>

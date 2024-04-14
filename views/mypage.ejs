@@ -1,0 +1,51 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+</head>
+
+<body>
+  <%- include('header.ejs') %>
+  <div class="profile-container">
+    <div class="my-profile-container">
+      <div class="profile-img-btns">
+        <div class="profile-img">
+          <img src="<%= user.profileImage %>" />
+        </div>
+        <div class="profile-btns">
+          <button class="follower-btn">
+            <a href="/users/follower">내 팔로워</a>
+            <!--좀있다 마저함-->
+          </button>
+          <button class="following-btn">
+            <a href="/users/following">팔로우 보기</a>
+          </button>
+        </div>
+      </div>
+      <div class="profile-content">
+        <div class="profile-name"><%= user.name %></div>
+        <div class="profile-gender"><%= user.gender %></div>
+        <div class="profile-birth"><%= user.birth %></div>
+        <div class="profile-phone"><%= user.phone %></div>
+        <div class="profile-email"><%= user.email %></div>
+      </div>
+      <div class="profile-edit">
+        <button class="profile-edit-btn">
+          <a href="/profile/edit">수정</a>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <%- include('footer.ejs') %>
+</body>

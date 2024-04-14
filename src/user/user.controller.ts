@@ -15,6 +15,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,6 +36,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '회원가입' })
+  @Render('register')
   @UseInterceptors(FileInterceptor('profileImage'))
   @Post('register')
   @HttpCode(201)
@@ -49,11 +52,19 @@ export class UserController {
     return await this.userService.register(file, createUserDto);
   }
 
+  @Render('login')
+  @Get('login')
+  showLoginPage() {}
+
+  @Render('register')
+  @Get('register')
+  showRegisterPage() {}
+
   @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
     const tokens = await this.userService.login(loginDto);
-    return res
+    res
       .cookie('accessToken', `Bearer ${tokens.accessToken}`)
       .cookie('refreshToken', `Bearer ${tokens.refreshToken}`)
       .end();
@@ -77,12 +88,14 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   async logout(@Res() res) {
-    return res.clearCookie('accessToken').clearCookie('refreshToken').end();
+    res.clearCookie('accessToken').clearCookie('refreshToken');
+    res.redirect('/main');
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('mypage')
+  @Render('mypage')
   async getMyInfo(@UserInfo() user: Users) {
     const { id } = user;
     return await this.userService.getUserInfoById(id);

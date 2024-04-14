@@ -76,7 +76,7 @@ export class WebContentController {
   @Render('search')
   async search(@Query('query') query: string, @Query('type') type: string) {
     const keyword = query;
-    const { webtoons } =
+    const { webtoons, webnovels } =
       await this.webContentService.searchFromWebContents(keyword);
     const authors = await this.webContentService.searchFromAuthors(keyword);
     const users = await this.webContentService.searchFromUsers(keyword);
@@ -84,8 +84,6 @@ export class WebContentController {
       await this.webContentService.searchFromCollections(keyword);
     // const collectionUser =
     //   await this.webContentService.collectionUser(collections);
-    const { webnovels } =
-      await this.webContentService.searchFromWebContents(keyword);
     console.log(collections);
     if (type == 'webtoons') {
       return { type, keyword, webtoons };
