@@ -9,13 +9,6 @@
     - The "symbol *" part is to solve Firefox SVG sprite bug
     - The "html" attribute is exclud, because otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
  */
-@font-face {
-  font-family: 'Cafe24Ssurround';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
-    format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
 
 *:where(
     :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
