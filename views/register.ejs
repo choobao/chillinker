@@ -1,0 +1,39 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+</head>
+
+<body>
+  <%- include('header.ejs') %>
+
+  <div class="register-wrapper">
+    <h2>Login</h2>
+    <form method="post" action="/users/register" id="register-form">
+      <input type="text" name="nickname" placeholder="닉네임" required />
+      <input type="text" name="intro" placeholder="소개글" required />
+      <input type="email" name="email" placeholder="이메일" required />
+      <input type="password" name="password" placeholder="비밀번호" required />
+      <input
+        type="password"
+        name="confirmPassword"
+        placeholder="비밀번호 확인"
+        required
+      />
+      <input type="submit" value="회원가입" />
+    </form>
+  </div>
+
+  <%- include('footer.ejs') %>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/register.js"></script>
+</body>

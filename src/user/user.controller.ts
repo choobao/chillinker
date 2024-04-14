@@ -8,10 +8,15 @@ import {
   Param,
   Patch,
   Post,
+  Render,
   Req,
   Res,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +28,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Users } from './entities/user.entity';
 import { UserInfo } from 'src/utils/userinfo.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('USER')
 @Controller('users')
@@ -30,22 +36,35 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '회원가입' })
+  @Render('register')
+  @UseInterceptors(FileInterceptor('profileImage'))
   @Post('register')
   @HttpCode(201)
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     const { password, confirmPassword } = createUserDto;
     if (password !== confirmPassword) {
       throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
     }
 
-    return await this.userService.register(createUserDto);
+    return await this.userService.register(file, createUserDto);
   }
+
+  @Render('login')
+  @Get('login')
+  showLoginPage() {}
+
+  @Render('register')
+  @Get('register')
+  showRegisterPage() {}
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
     const tokens = await this.userService.login(loginDto);
-    return res
+    res
       .cookie('accessToken', `Bearer ${tokens.accessToken}`)
       .cookie('refreshToken', `Bearer ${tokens.refreshToken}`)
       .end();
@@ -69,26 +88,30 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   async logout(@Res() res) {
-    return res.clearCookie('accessToken').clearCookie('refreshToken').end();
+    res.clearCookie('accessToken').clearCookie('refreshToken');
+    res.redirect('/main');
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('mypage')
+  @Render('mypage')
   async getMyInfo(@UserInfo() user: Users) {
     const { id } = user;
     return await this.userService.getUserInfoById(id);
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })
+  @UseInterceptors(FileInterceptor('profileImage'))
   @UseGuards(AuthGuard('jwt'))
   @Patch('mypage/update')
   async updateMyInfo(
+    @UploadedFile() file: Express.Multer.File,
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
   ) {
     const { id } = user;
-    await this.userService.updateMyInfo(id, updateUserDto);
+    await this.userService.updateMyInfo(file, id, updateUserDto);
   }
 
   @ApiOperation({ summary: '회원탈퇴' })

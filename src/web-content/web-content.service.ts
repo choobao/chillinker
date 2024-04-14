@@ -68,8 +68,18 @@ export class WebContentService {
       .orWhere('collections.desc LIKE :keyword', { keyword: `%${keyword}%` })
       .getRawMany();
 
+    // const user = await this.collectionUser(collections);
+
     return collections;
   }
+
+  // async collectionUser(collections: any) {
+  //   const user = await this.userRepository.findOne({
+  //     where: { id: collections.collections_user_id },
+  //   });
+
+  //   return user;
+  // }
 
   async searchFromAuthors(keyword: string) {
     const webContents = await this.webContentRepository

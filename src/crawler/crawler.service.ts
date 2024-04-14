@@ -54,12 +54,20 @@ import {
   webcontent_review_query,
 } from './utils/kakaopage';
 import axios from 'axios';
+import {
+  get20BestRanking,
+  get60WebtoonRanking,
+  getReviews10,
+} from './platform/ridibooks';
+import { GENRE, TYPE } from './utils/ridi.constants';
 
 @Injectable()
 export class CrawlerService {
   constructor(
     @InjectRepository(WebContents)
     private readonly contentRepository: Repository<WebContents>,
+    @InjectRepository(PReviews)
+    private readonly reviewRepostiroy: Repository<PReviews>,
     //private readonly redisService: RedisService,
   ) {}
 
@@ -731,4 +739,144 @@ export class CrawlerService {
   //   }
   //   return reviewList;
   // }
+
+  @Cron('0 17 * * *') //오후 다섯시 예약
+  async createRidibooks() {
+    const startTime = new Date().getTime();
+
+    const currPage = 0;
+
+    try {
+      // 일간랭킹;
+      await this.rankUpdet();
+
+      console.log('start!');
+      const rankingRnovels = await get20BestRanking(GENRE.R);
+      await this.save20Db(rankingRnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingRFnovels = await get20BestRanking(GENRE.RF);
+      await this.save20Db(rankingRFnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingFnovels = await get20BestRanking(GENRE.F);
+      await this.save20Db(rankingFnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingBnovels = await get20BestRanking(GENRE.B);
+      await this.save20Db(rankingBnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const rankingWebtoons = await get20BestRanking(GENRE.WB);
+      await this.save20Db(rankingWebtoons);
+      console.log('done!');
+
+      //전체랭킹
+      console.log('start!');
+      const Rnovels = await get60WebtoonRanking(TYPE.R, currPage);
+      await this.save60Db(Rnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const RFnovels = await get60WebtoonRanking(TYPE.RF, currPage);
+      await this.save60Db(RFnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Fnovels = await get60WebtoonRanking(TYPE.F, currPage);
+      await this.save60Db(Fnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Bnovels = await get60WebtoonRanking(TYPE.B, currPage);
+      await this.save60Db(Bnovels);
+      console.log('done!');
+
+      console.log('start!');
+      const Webtoons = await get60WebtoonRanking(TYPE.WB, currPage);
+      await this.save60Db(Webtoons);
+      console.log('done!');
+
+      const endTime = new Date().getTime();
+      console.log(`총 시간 : ${endTime - startTime}ms`);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async save60Db(data: WebContents[]) {
+    try {
+      const createContentDtos = data.map((content) => {
+        const webContent = new WebContents();
+
+        webContent.title = content.title;
+        webContent.desc = content.desc;
+        webContent.image = content.image;
+        webContent.author = content.author;
+        webContent.category = content.category;
+        webContent.isAdult = content.isAdult;
+        webContent.platform = content.platform;
+        webContent.pubDate = new Date(content.pubDate);
+        // webContent.keyword = JSON.stringify(content.keyword);
+        // webContent.rank = content.rank;
+        webContent.contentType = ContentType.WEBTOON;
+
+        if (content.pReviews.length !== 0) {
+          webContent.pReviews = content.pReviews;
+        }
+
+        return webContent;
+      });
+
+      // DB에 저장
+      await this.contentRepository.save(createContentDtos);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async rankUpdet() {
+    const resetRank = await this.contentRepository
+      .createQueryBuilder()
+      .update(WebContents)
+      .set({ rank: null })
+      .execute();
+
+    console.log('Rank 업데이트 완료');
+  }
+
+  async save20Db(data) {
+    try {
+      const createContentDtos = data.map((content) => {
+        const webContent = new WebContents();
+
+        webContent.title = content.title;
+        webContent.desc = content.desc;
+        webContent.image = content.image;
+        webContent.author = content.author;
+        webContent.category = content.category;
+        webContent.isAdult = content.isAdult;
+        webContent.platform = content.platform;
+        webContent.pubDate = new Date();
+        // webContent.keyword = JSON.stringify(content.keyword);
+        webContent.rank = content.rank;
+        webContent.contentType = content.contentType;
+
+        if (content.pReviews.length !== 0) {
+          webContent.pReviews = content.pReviews;
+        }
+
+        return webContent;
+      });
+
+      // DB에 저장
+      await this.contentRepository.save(createContentDtos);
+    } catch (err) {
+      throw err;
+    }
+  }
 }

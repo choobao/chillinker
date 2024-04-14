@@ -131,6 +131,7 @@ header {
   background: #e6e6fa;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
+  z-index: 10;
 }
 .inner_header {
   width: 1200px;
@@ -202,22 +203,69 @@ header {
 .ranking_box {
   background-color: #fff;
   margin: 20px;
-  width: calc(33% - 40px);
+  width: calc(100% - 40px);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.prev-button {
+  background-color: #ccbeff;
+  margin: auto 10px auto 10px;
+  width: 50px;
+  height: 50px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+}
+
+.next-button {
+  background-color: #ccbeff;
+  margin: auto 10px auto 10px;
+  width: 50px;
+  height: 50px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+}
+
 .ranking_title {
-  background-color: #d8bfd8;
+  background-color: #a791ff;
   color: #fff;
   padding: 10px;
   margin: 0;
+  border-radius: 5px;
+}
+
+.card_container {
+  width: 100%;
+  /* max-width: 960px; */
+  margin: 0 auto;
+  display: flex;
+}
+
+.slider {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .contents_box {
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  margin: 0 auto;
+  width: calc(100% + 40px); /* 카드 너비 4개 + 여백 */
+  transition: transform 0.5s ease-in-out;
 }
 
 .contents {
+  flex: 0 0 240px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
   border-bottom: 1px solid #eee;
   padding: 10px 0;
 }
@@ -255,8 +303,93 @@ footer ul li {
   display: inline;
   margin: 0 10px;
 }
+
 footer p {
   font-size: 12px;
   text-align: center;
   margin: 20px;
 }
+
+.search_input_text {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.result_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+  width: 200px;
+  /* border: 1px solid #ccc; */
+  background-color: #f5f5fa;
+  margin: 10px;
+}
+
+.card_author {
+  word-wrap: break-word; /* 텍스트 줄바꿈 설정 */
+}
+
+/* login, register */
+
+.login-wrapper,
+.register-wrapper,
+.mypage-wrapper {
+  width: 400px;
+  height: 350px;
+  padding: 40px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-wrapper > h2,
+.register-wrapper > h2,
+.mypage-wrapper {
+  font-size: 24px;
+  color: #7b68ee;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#login-form > input,
+#register-form > input {
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+}
+
+#login-form > input::placeholder,
+#register-form > input::placeholder {
+  color: #d2d2d2;
+}
+
+#login-form > input[type='submit'],
+#register-form > input[type='submit'] {
+  color: #fff;
+  font-size: 16px;
+  background-color: #7b68ee;
+  margin-top: 20px;
+  text-align: center;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+}
+
+/* mypage */

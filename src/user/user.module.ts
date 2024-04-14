@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
+import { StorageService } from '../storage/storage.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { Users } from './entities/user.entity';
     }),
     TypeOrmModule.forFeature([Users]),
   ],
-  providers: [UserService],
+  providers: [UserService, StorageService],
   controllers: [UserController],
   exports: [UserService],
 })

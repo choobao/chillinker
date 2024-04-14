@@ -17,11 +17,14 @@ import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from 'src/utils/userinfo.decorator';
 import { Users } from 'src/user/entities/user.entity';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('REVIEW')
 @Controller('webContents/:webContentsId/reviews')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
+  @ApiOperation({ summary: '리뷰 조회' })
   @Get()
   async getCReivew(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
@@ -37,6 +40,7 @@ export class ReviewController {
     );
   }
 
+  @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
   @Post()
   async createReview(
@@ -44,6 +48,7 @@ export class ReviewController {
     @UserInfo() user: Users,
     @Body() createCReviewsDto: CreateCReviewsDto,
   ) {
+    console.log(user);
     return await this.reviewService.createReivew(
       user,
       webContentsId,
@@ -51,6 +56,7 @@ export class ReviewController {
     );
   }
 
+  @ApiOperation({ summary: '리뷰 수정' })
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:reviewId')
   async modifyReview(
@@ -65,6 +71,7 @@ export class ReviewController {
     );
   }
 
+  @ApiOperation({ summary: '리뷰 삭제' })
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:reviewId')
   @HttpCode(204)
@@ -75,6 +82,7 @@ export class ReviewController {
     await this.reviewService.deleteReivew(user, reviewId);
   }
 
+  @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
   @Post('/:reviewId/likes')
   async likeReview(
