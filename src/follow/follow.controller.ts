@@ -34,8 +34,11 @@ export class FollowController {
 
   @ApiOperation({ summary: '팔로잉 목록 조회' })
   @Get('followingList')
+  @Render('following.ejs')
   async getFollowingList(@Param('id') followerId: number) {
-    return await this.followService.getFollowingList(followerId);
+    // return await this.followService.getFollowingList(followerId);
+    const followingList = await this.followService.getFollowingList(followerId);
+    return { followingList };
   }
 
   @ApiOperation({ summary: '팔로워 목록 조회' })

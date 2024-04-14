@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chillinker following list</title>
-    <link rel="stylesheet" href="/public/css/style.css" />
-    <link rel="stylesheet" href="/public/css/following.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/following.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
       </style>
@@ -42,30 +42,20 @@
                 <span>팔로잉</span>
             </div>
             <ul class="following_list">
+              <% followingList.forEach(function(following) { %>
                 <li>
                     <a class="profile_link" href="#">
                         <img src="profile_sample.png" alt="profile image">
-                        <span class="name">혜원</span>
-                        <span class="desc">최혜원입니다</span>
+                        <span class="name"><%= following.followings_nickname %></span>
+                        <span class="intro"><%= following.followings_email %></span>
                     </a>
-                    <a class="unfollowing_btn" href="#">언팔로우</a>
+                    <% if (following.isFollowing) { %>
+                      <a class="unfollowing_btn" href="#">언팔로우</a>
+                  <% } else { %>
+                      <a class="unfollowing_btn" href="#">팔로잉</a>
+                  <% } %>
                 </li>
-                <li>
-                    <a class="profile_link" href="#">
-                        <img src="profile_sample.png" alt="profile image">
-                        <span class="name">혜원</span>
-                        <span class="desc">최혜원입니다</span>
-                    </a>
-                    <a class="unfollowing_btn" href="#">언팔로우</a>
-                </li>
-                <li>
-                    <a class="profile_link" href="#">
-                        <img src="profile_sample.png" alt="profile image">
-                        <span class="name">혜원</span>
-                        <span class="desc">최혜원입니다</span>
-                    </a>
-                    <a class="unfollowing_btn" href="#">언팔로우</a>
-                </li>
+                <% }); %>
             </ul>
           </div>
         </main>
