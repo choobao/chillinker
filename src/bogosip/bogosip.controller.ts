@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  Render,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -26,7 +27,7 @@ export class BogosipController {
   @HttpCode(201)
   async addContent(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('contentId') contentId: number,
   ) {
     return await this.bogosipService.addContent(user.id, contentId, type);
@@ -37,7 +38,7 @@ export class BogosipController {
   @HttpCode(200)
   async deleteContent(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('contentId') contentId: number,
   ) {
     return await this.bogosipService.deleteContent(user.id, contentId, type);
@@ -46,8 +47,9 @@ export class BogosipController {
   @ApiOperation({ summary: '보는중/보고싶어요 조회(타인)' })
   @Get('bogosips/:type')
   @HttpCode(200)
+  // @Render('liked_list.ejs')
   async getBogosips(
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('userId') userId: number,
     @Query('sortType') sortType: string,
   ) {
@@ -57,9 +59,10 @@ export class BogosipController {
   @ApiOperation({ summary: '보는중/보고싶어요 조회(본인)' })
   @Get('user/bogosips/:type')
   @HttpCode(200)
+  // @Render('liked_list.ejs')
   async getMyBogosips(
     @UserInfo() user: Users,
-    @Param() type: string,
+    @Param('type') type: string,
     @Query('sortType') sortType: string = 'ADD_DT',
   ) {
     return await this.bogosipService.findContents(user.id, type, sortType);

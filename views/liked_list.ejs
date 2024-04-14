@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contents Liked List</title>
-    <link rel="stylesheet" href="/public/css/style.css" />
-    <link rel="stylesheet" href="/public/css/reviewed_list.css" />
+    <title>Contents Like List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/reviewed_list.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
       </style>
@@ -49,39 +49,18 @@
             </select>
             </div>
             <div class="contents_container">
+              <% for (let i = 0; i < contents.length; i++) { %>
               <div class="content">
                 <a href="#">
-                  <img src="https://dn-img-page.kakao.com/download/resource?kid=9Q0BV/hzHNDtY7Sv/p6PzKRKasy510QSFXcCINk&amp;filename=th3" alt="썸네일">
+                  <img src="<%= contents[i].thumbnail %>" alt="썸네일">
                 </a>
                 <a href="#">
                   <div class="bottom_box">
-                    <p class="title">나 혼자만 레벨업</p>
-                    <p class="rate">평가함: 4.5</p>
+                    <p class="title"><%= contents[i].title %></p>
                   </div>
                 </a>
               </div>
-              <div class="content">
-                <a href="#">
-                  <img src="https://page-images.kakaoentcdn.com/download/resource?kid=Du5oG/hzVqEy9QjX/lN2aZRgLz8pegvqODVjfE1&filename=o1" alt="썸네일">
-                </a>
-                <a href="#">
-                  <div class="bottom_box">
-                    <p class="title">나 혼자만 레벨업</p>
-                    <p class="rate">평가함: 4.5</p>
-                  </div>
-                </a>
-              </div>
-              <div class="content">
-                <a href="#">
-                  <img src="https://dn-img-page.kakao.com/download/resource?kid=daQ6UM/hAC1M2hHqm/IVhHDJkkj2kH23JSQYAXRK&amp;filename=th3" alt="썸네일">
-                </a>
-                <a href="#">
-                  <div class="bottom_box">
-                    <p class="title">나 혼자만 레벨업</p>
-                    <p class="rate">평가함: 4.5</p>
-                  </div>
-                </a>
-              </div>
+              <% } %>
             </div>
           </div>
         </main>
