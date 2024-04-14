@@ -20,9 +20,12 @@
   <%- include('header.ejs') %>
 
   <div class="mypage-wrapper">
-    <span class="material-symbols-outlined"
+    <span class="material-symbols-outlined" id="profile-edit-btn">
+      settings
+    </span>
+    <!-- <span class="material-symbols-outlined"
       ><a href="/users/mypage/update"> settings </a></span
-    >
+    > -->
     <img src="<%= user.profileImage %>" class="profile-img" />
     <h2><%= user.nickname %></h2>
     <h5><span class="profile-intro"><%= user.intro %></span></h5>
@@ -32,6 +35,41 @@
     <button class="profile-btn" onclick="">내 컬렉션</button>
     <button class="profile-btn" onclick="">내가 북마크한 컬렉션</button>
   </div>
+
+  <!-- 모달 창 -->
+  <div id="mypage-update" class="modal">
+    <!-- 모달 컨텐츠 -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="profile-form">
+        <label class="profile-update-img-label">
+          <img src="<%= user.profileImage %>" class="profile-update-img" />
+          <input
+            type="file"
+            id="profile-update-img-input"
+            name="profileImage"
+            accept="image/*"
+            style="display: none" /></label
+        ><br />
+        <label for="nickname">닉네임:</label>
+        <input
+          type="text"
+          id="nickname"
+          name="nickname"
+          value="<%= user.nickname %>"
+        /><br />
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" /><br />
+
+        <label for="intro">소개글:</label>
+        <textarea id="intro" name="intro"><%= user.intro %></textarea>
+        <input type="submit" value="저장" />
+      </form>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/mypage-update.js"></script>
 
   <%- include('footer.ejs') %>
 </body>

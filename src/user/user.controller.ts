@@ -114,6 +114,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
   ) {
+    console.log('시발: ', updateUserDto);
     const { id } = user;
     await this.userService.updateMyInfo(file, id, updateUserDto);
   }
