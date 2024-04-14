@@ -492,3 +492,150 @@ textarea#intro {
 .profile-update-img-label:hover {
   filter: grayscale(50%);
 }
+
+.detail-page-container {
+  display: flex;
+  margin: 0 auto;
+  width: 1200px;
+  height: 1600px;
+  flex-direction: column;
+}
+
+.review-info-sedtion {
+  display: flex;
+}
+.detail-introduce {
+  padding: 0 30px 70px 30px;
+}
+.review-container {
+  width: 1200px;
+}
+
+.info-metadata-wrap {
+  margin: 20px 0;
+}
+
+.review-input-left {
+  background-color: red;
+  display: table-cell;
+  width: 120px;
+  padding: 32px 0 20px 0;
+  text-align: center;
+  cursor: default;
+}
+
+.review-input-right {
+  background-color: black;
+  display: table-cell;
+  vertical-align: top;
+}
+
+.detail-keyword {
+  padding: 0 30px 70px 30px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: center;
+  width: 1200px;
+  padding: 40px 30px;
+  position: relative;
+}
+
+.title-text {
+  display: inline-block;
+  font-size: 20px;
+  /* color: #59667a; */
+  color: #000;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 24px;
+}
+
+.header-thumbnail {
+  width: 220px;
+  float: left;
+}
+.book-title {
+  display: block;
+  font-size: 17px;
+  color: #59667a;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thumbnail {
+  width: 180px;
+  max-height: 313px;
+}
+
+.header-info-wrap {
+  width: 635px;
+}
+
+.header-thumnail-image {
+  color: #666;
+  line-height: 1em;
+}
+
+.header-preference {
+  margin-top: 12px;
+  width: 180px;
+  text-align: center;
+}
+
+.preference-button {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 130px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
+}
+
+.dk-block-title {
+  margin-bottom: 15px;
+  padding: 10px 0 8px 0;
+  border-bottom: 2px solid #7b68ee;
+}
+
+.info-title {
+  font-size: 30px;
+  line-height: 1.3em;
+  color: #333;
+  font-weight: 700;
+  word-break: keep-all;
+  word-wrap: break-word;
+  margin-top: 8px;
+}
+
+.info-category-wrap {
+  height: 14px;
+  font-size: 12px;
+  color: #333;
+}
+
+.metadataa metadata-writer {
+  font-size: 13px;
+  color: #666;
+  line-height: 17px;
+  padding-bottom: 5px;
+}
+
+.platform-image {
+  width: 100px;
+  height: 40px;
+}

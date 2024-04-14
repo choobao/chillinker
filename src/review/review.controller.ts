@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Render,
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
@@ -25,6 +26,7 @@ export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
+  @Render('detailReview')
   @Get()
   async getCReivew(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
@@ -42,6 +44,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
+  @Render('detailReview')
   @Post()
   async createReview(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
@@ -58,6 +61,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 수정' })
   @UseGuards(AuthGuard('jwt'))
+  @Render('detailReview')
   @Patch('/:reviewId')
   async modifyReview(
     @UserInfo() user: Users,
@@ -73,6 +77,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 삭제' })
   @UseGuards(AuthGuard('jwt'))
+  @Render('detailReview')
   @Delete('/:reviewId')
   @HttpCode(204)
   async deleteReivew(
@@ -84,6 +89,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
+  @Render('detailReview')
   @Post('/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,

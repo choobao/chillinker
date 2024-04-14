@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bogosips } from './entities/bogosips.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import _ from 'lodash';
 import { BogosipType, convertToEnum, orderType } from './types/bogosip.type';
 
@@ -14,6 +14,7 @@ export class BogosipService {
   constructor(
     @InjectRepository(Bogosips)
     private readonly bogosipRepository: Repository<Bogosips>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findContent(userId: number, contentId: number, type: string) {
