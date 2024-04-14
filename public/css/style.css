@@ -9,6 +9,14 @@
     - The "symbol *" part is to solve Firefox SVG sprite bug
     - The "html" attribute is exclud, because otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
  */
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 *:where(
     :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
   ) {
@@ -140,10 +148,19 @@ header {
   display: flex;
   align-items: center;
 }
+.inner_header img {
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  max-width: 50px;
+  max-height: 50px;
+}
 .inner_header h1 {
+  margin-top: 10px;
   font-size: 40px;
   font-family: 'Sriracha', cursive;
-  color: #000;
+  color: #7b62cc;
   font-weight: 400;
   padding: 10px 0;
 }
@@ -307,32 +324,8 @@ footer ul li {
 footer p {
   font-size: 12px;
   text-align: center;
-  margin: 20px;
-}
-
-.search_input_text {
-  width: 1200px;
-  margin: 0 auto;
-}
-
-.result_list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
-  width: 200px;
-  /* border: 1px solid #ccc; */
-  background-color: #f5f5fa;
-  margin: 10px;
-}
-
-.card_author {
-  word-wrap: break-word; /* 텍스트 줄바꿈 설정 */
+  padding: 20px 0;
+  margin-top: 20px;
 }
 
 /* login, register */
@@ -346,6 +339,7 @@ footer p {
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
 }
 
 .login-wrapper > h2,
@@ -358,7 +352,8 @@ footer p {
 }
 
 #login-form > input,
-#register-form > input {
+#register-form > input,
+#profile-form > input {
   width: 100%;
   height: 48px;
   padding: 0 10px;
@@ -369,12 +364,14 @@ footer p {
 }
 
 #login-form > input::placeholder,
-#register-form > input::placeholder {
+#register-form > input::placeholder,
+#profile-form > input::placeholder {
   color: #d2d2d2;
 }
 
 #login-form > input[type='submit'],
-#register-form > input[type='submit'] {
+#register-form > input[type='submit'],
+#profile-form > input[type='submit'] {
   color: #fff;
   font-size: 16px;
   background-color: #7b68ee;
@@ -386,6 +383,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 footer {
@@ -393,3 +391,104 @@ footer {
 }
 
 /* mypage */
+.profile-btn {
+  width: 200px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
+
+.profile-btn:hover {
+  background-color: #e6e6fa;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-intro {
+  font-size: 14px;
+}
+
+.material-symbols-outlined {
+  position: absolute; /* 절대 위치 설정 */
+  top: 0; /* 위쪽 경계에서부터의 위치 */
+  right: 50px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 40px; /* 상단 패딩 고려 */
+}
+
+/* profile edit */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #e6e6fa;
+  width: 40%;
+  position: relative;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #7b68ee;
+  cursor: pointer;
+}
+
+/* 폼 요소 스타일 */
+.modal > form {
+  margin-top: 20px;
+}
+
+textarea#intro {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.profile-update-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  opacity: 0.5;
+}
+
+.profile-update-img-label:hover {
+  filter: grayscale(50%);
+}

@@ -34,11 +34,11 @@ export class BogosipService {
       if (!_.isNil(existingContent)) {
         throw new ConflictException('이미 추가된 작품입니다.');
       }
-
+      
       await this.bogosipRepository.save({
         userId,
         webContentId: contentId,
-        type: BogosipType[type],
+        type: convertToEnum(type),
       });
 
       return { message: '성공적으로 추가되었습니다.' };
@@ -89,7 +89,7 @@ export class BogosipService {
             },
           },
         });
-      } else {
+      } else if (sortType === 'ADD_DT' || sortType === 'ADD_DT_DESC') {
         bogosips = await this.bogosipRepository.find({
           where: {
             userId: userId,

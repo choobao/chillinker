@@ -60,6 +60,10 @@ export class UserController {
   @Get('register')
   showRegisterPage() {}
 
+  @Render('mypage-update')
+  @Get('mypage/update')
+  showUpdatePage() {}
+
   @ApiOperation({ summary: '로그인' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res) {
@@ -110,6 +114,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @UserInfo() user: Users,
   ) {
+    console.log('시발: ', updateUserDto);
     const { id } = user;
     await this.userService.updateMyInfo(file, id, updateUserDto);
   }

@@ -2,9 +2,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chillinker</title>
-
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
   <link rel="stylesheet" href="/css/style.css" />
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -16,36 +18,58 @@
 
 <body>
   <%- include('header.ejs') %>
-  <div class="profile-container">
-    <div class="my-profile-container">
-      <div class="profile-img-btns">
-        <div class="profile-img">
-          <img src="<%= user.profileImage %>" />
-        </div>
-        <div class="profile-btns">
-          <button class="follower-btn">
-            <a href="/users/follower">내 팔로워</a>
-            <!--좀있다 마저함-->
-          </button>
-          <button class="following-btn">
-            <a href="/users/following">팔로우 보기</a>
-          </button>
-        </div>
-      </div>
-      <div class="profile-content">
-        <div class="profile-name"><%= user.name %></div>
-        <div class="profile-gender"><%= user.gender %></div>
-        <div class="profile-birth"><%= user.birth %></div>
-        <div class="profile-phone"><%= user.phone %></div>
-        <div class="profile-email"><%= user.email %></div>
-      </div>
-      <div class="profile-edit">
-        <button class="profile-edit-btn">
-          <a href="/profile/edit">수정</a>
-        </button>
-      </div>
+
+  <div class="mypage-wrapper">
+    <span class="material-symbols-outlined" id="profile-edit-btn">
+      settings
+    </span>
+    <!-- <span class="material-symbols-outlined"
+      ><a href="/users/mypage/update"> settings </a></span
+    > -->
+    <img src="<%= user.profileImage %>" class="profile-img" />
+    <h2><%= user.nickname %></h2>
+    <h5><span class="profile-intro"><%= user.intro %></span></h5>
+    <button class="profile-btn" onclick="">팔로잉/팔로워</button>
+    <button class="profile-btn" onclick="">내 리뷰</button>
+    <button class="profile-btn" onclick="">보고싶어요/보는중</button>
+    <button class="profile-btn" onclick="">내 컬렉션</button>
+    <button class="profile-btn" onclick="">내가 북마크한 컬렉션</button>
+  </div>
+
+  <!-- 모달 창 -->
+  <div id="mypage-update" class="modal">
+    <!-- 모달 컨텐츠 -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="profile-form">
+        <label class="profile-update-img-label">
+          <img src="<%= user.profileImage %>" class="profile-update-img" />
+          <input
+            type="file"
+            id="profile-update-img-input"
+            name="profileImage"
+            accept="image/*"
+            style="display: none" /></label
+        ><br />
+        <label for="nickname">닉네임:</label>
+        <input
+          type="text"
+          id="nickname"
+          name="nickname"
+          value="<%= user.nickname %>"
+        /><br />
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" /><br />
+
+        <label for="intro">소개글:</label>
+        <textarea id="intro" name="intro"><%= user.intro %></textarea>
+        <input type="submit" value="저장" />
+      </form>
     </div>
   </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/mypage-update.js"></script>
 
   <%- include('footer.ejs') %>
 </body>
