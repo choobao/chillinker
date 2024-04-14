@@ -9,6 +9,14 @@
     - The "symbol *" part is to solve Firefox SVG sprite bug
     - The "html" attribute is exclud, because otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
  */
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 *:where(
     :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
   ) {
@@ -140,10 +148,19 @@ header {
   display: flex;
   align-items: center;
 }
+.inner_header img {
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  max-width: 50px;
+  max-height: 50px;
+}
 .inner_header h1 {
+  margin-top: 10px;
   font-size: 40px;
   font-family: 'Sriracha', cursive;
-  color: #000;
+  color: #7b62cc;
   font-weight: 400;
   padding: 10px 0;
 }
@@ -307,32 +324,8 @@ footer ul li {
 footer p {
   font-size: 12px;
   text-align: center;
-  margin: 20px;
-}
-
-.search_input_text {
-  width: 1200px;
-  margin: 0 auto;
-}
-
-.result_list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
-  width: 200px;
-  /* border: 1px solid #ccc; */
-  background-color: #f5f5fa;
-  margin: 10px;
-}
-
-.card_author {
-  word-wrap: break-word; /* 텍스트 줄바꿈 설정 */
+  padding: 20px 0;
+  margin-top: 20px;
 }
 
 /* login, register */
