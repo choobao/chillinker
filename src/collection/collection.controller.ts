@@ -31,6 +31,14 @@ export class CollectionController {
     return await myColList;
   }
 
+  // 타 유저 컬렉션 목록 조회
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/:userId')
+  async userCollections(@Param('userId') userId: number) {
+    const userColList = await this.collectionService.getUserColList(userId);
+    return await userColList;
+  }
+
   // 내 컬렉션 상세 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('/:collectionId')
