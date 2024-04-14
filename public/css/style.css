@@ -157,7 +157,6 @@ header {
   max-height: 50px;
 }
 .inner_header h1 {
-  margin-top: 10px;
   font-size: 40px;
   font-family: 'Sriracha', cursive;
   color: #7b62cc;
@@ -254,11 +253,39 @@ header {
   border-radius: 5px;
 }
 
+.searched-card-thumbnail {
+  width: 170px;
+}
+
 .card_container {
   width: 100%;
   /* max-width: 960px; */
   margin: 0 auto;
   display: flex;
+}
+
+.searched-card {
+  margin: 20px;
+}
+
+.card-info-title {
+  color: rgb(31, 31, 31);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-info-card_author {
+  color: rgb(160, 160, 160);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .slider {
@@ -611,6 +638,12 @@ textarea#intro {
   border-bottom: 2px solid #7b68ee;
 }
 
+.search-dk-block-title {
+  margin-bottom: 15px;
+
+  border-bottom: 2px solid #7b68ee;
+}
+
 .info-title {
   font-size: 30px;
   line-height: 1.3em;
@@ -637,4 +670,9 @@ textarea#intro {
 .platform-image {
   width: 100px;
   height: 40px;
+}
+
+.result_list {
+  display: flex;
+  flex-wrap: wrap;
 }

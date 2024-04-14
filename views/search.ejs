@@ -44,49 +44,65 @@
             </li>
           </ul>
         </div>
+        <div class="search-dk-block-title">
+        </div>
         <div class="result_section">
-          <ul class="result_list" display:flex="">
+          <ul class="result_section_list">
             <% if (!keyword) { %>
             <div class="empty_search">
               <p>검색어를 입력하세요.</p>
             </div>
             <% } %>
-            <%if (type == 'webtoons') { %>
-              <div class="result_list" >
-              <% webtoons.forEach((item) => { %>
-                <div class="card">
-                  <a href="/books/<%= item.id %>" class="card">
-                  <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
-                  <div class="card-info">
-                    <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
-                    <h4 class="card_author">
-                      <%= item.author %>
-                    </h4>
-                  </div>
-                  </a>
-                </div>
-              <% }); %>
+            <% if (type == 'webtoons') { %>
+              <div class="result_list">
+                <% webtoons.forEach((item) => { %>
+                  <li class="searched-card">
+                    <a title = <%= item.title %> href="/books/<%= item.id %>">
+                      <div class="searched-card-image">
+                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
+                      </div>
+                      <div class="searched-card-info">
+                        <div class="card-info-title">
+                          <% if (item.title.length > 9) { %>
+                            <%= item.title.slice(0, 9) + '...' %>
+                          <% } else { %>
+                            <%= item.title %>
+                          <% } %>
+                        </div>
+                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-star">별점</div>
+                      </div>
+                    </a>
+                  </li>
+                <% }); %>
             </div>
             <% } else if (type == 'authors') { %>
               <div class="result_list" >
                 <% authors.forEach((item) => { %>
-                  <div class="card">
-                    <a href="/books/<%= item.id %>" class="card">
-                    <img src="<%= item.webContents_image %>" alt="<%= item.title %>" class="card-image" >
-                    <div class="card-info">
-                      <h3 class="card-title" style="font-weight: 600;"><%= item.webContents_title %></h3>
-                      <h4 class="card_author">
-                        <%= item.webContents_author %>
-                      </h4>
-                    </div>
+                  <li class="searched-card">
+                    <a title = <%= item.title %> href="/books/<%= item.webContents_id %>">
+                      <div class="searched-card-image">
+                        <img class="searched-card-thumbnail" src="<%= item.webContents_image %>" alt="<%= item.webContents_title %>"/>
+                      </div>
+                      <div class="searched-card-info">
+                        <div class="card-info-title">
+                          <% if (item.webContents_title.length > 9) { %>
+                            <%= item.webContents_title.slice(0, 9) + '...' %>
+                          <% } else { %>
+                            <%= item.webContents_title %>
+                          <% } %>
+                        </div>
+                        <div class="card-info-card_author"> <%= item.webContents_author %></div>
+                        <div class="card-info-star">별점</div>
+                      </div>
                     </a>
-                  </div>
+                  </li>
                 <% }); %>
               </div>
             <% } else if (type == 'users') { %> 
               <div class="result_list" >
                 <% users.forEach((item) => { %>
-                  <div class="card">
+                  <div class="search-card">
                     <a href="#" class="card">
                     <% if (item.users_profile_image) { %>
                       <img src="<%= item.users_profile_image %>" alt="<%= item.title %>" class="card-image" name="profile-image">
@@ -112,9 +128,9 @@
               <% } else if (type == 'collections') { %>
               <div class="result_list" >
                 <% collections.forEach((item) => { %>
-                  <div class="card">
+                  <div class="search-card">
                     <a href="#" class="card">
-                    <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-image" >
+                    <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-thumbnail-image" >
                     <div class="card-info">
                       <h3 class="card-title" style="font-weight: 600;"><%= item.collections_title %></h3>
                       <h4 class="card_author">
@@ -128,17 +144,24 @@
               <% } else { %>
               <div class="result_list" >
                 <% webnovels.forEach((item) => { %>
-                  <div class="card">
-                    <a href="/books/<%= item.id %>" class="card">
-                    <img src="<%= item.image %>" alt="<%= item.title %>" class="card-image" >
-                    <div class="card-info">
-                      <h3 class="card-title" style="font-weight: 600;"><%= item.title %></h3>
-                      <h4 class="card_author">
-                        <%= item.author %>
-                      </h4>
-                    </div>
+                  <li class="searched-card">
+                    <a title = <%= item.title %> href="/books/<%= item.id %>">
+                      <div class="searched-card-image">
+                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
+                      </div>
+                      <div class="searched-card-info">
+                        <div class="card-info-title">
+                          <% if (item.title.length > 9) { %>
+                            <%= item.title.slice(0, 9) + '...' %>
+                          <% } else { %>
+                            <%= item.title %>
+                          <% } %>
+                        </div>
+                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-star">별점</div>
+                      </div>
                     </a>
-                  </div>
+                  </li>
                 <% }); %>
               </div>
             <% } %>
