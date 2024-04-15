@@ -48,24 +48,36 @@ export class BogosipController {
   @ApiOperation({ summary: '보는중/보고싶어요 조회(타인)' })
   @Get('bogosips/:type')
   @HttpCode(200)
-  // @Render('liked_list.ejs')
+  @Render('liked_list.ejs')
   async getBogosips(
     @Param('type') type: string,
     @Query('userId') userId: number,
     @Query('sortType') sortType: string,
   ) {
-    return await this.bogosipService.findContents(userId, type, sortType);
+    // return await this.bogosipService.findContents(userId, type, sortType);
+    const content = await this.bogosipService.findContents(
+      userId,
+      type,
+      sortType,
+    );
+    return { content };
   }
 
   @ApiOperation({ summary: '보는중/보고싶어요 조회(본인)' })
   @Get('user/bogosips/:type')
   @HttpCode(200)
-  // @Render('liked_list.ejs')
+  @Render('liked_list.ejs')
   async getMyBogosips(
     @UserInfo() user: Users,
     @Param('type') type: string,
     @Query('sortType') sortType: string = 'ADD_DT',
   ) {
-    return await this.bogosipService.findContents(user.id, type, sortType);
+    // return await this.bogosipService.findContents(user.id, type, sortType);
+    const content = await this.bogosipService.findContents(
+      user.id,
+      type,
+      sortType,
+    );
+    return { content };
   }
 }

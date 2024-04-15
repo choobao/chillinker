@@ -16,63 +16,66 @@
 </head>
 <body>
     <div class="wrap">
-        <header>
-          <div class="inner_header">
-            <h1 class="logo">
-              <a href="#">Chillinker</a>
-            </h1>
-            <div class="header_right">
-              <div class="search_box">
-                <form action="#" method="get">
-                  <input class="search_text" type="search" placeholder="작품명, 작가 검색" />
-                  <i class="fa fa-search" aria-hidden="true">
-                  <input type="submit" value="검색" class="submit_btn"/></i>
-                </form>
-              </div>
-              <ul>
-                <li><a href="#">로그인</a></li>
-                <li><a href="#">회원가입</a></li>
-              </ul>
-            </div>
-          </div>
-        </header>
+      <%- include('header.ejs') %>
         <main>
           <div class="inner">
             <div class="category">
               <ul>
-                <li><a href="#">보고싶어요</a></li>
-                <li><a href="#">보는중</a></li>
+                <li><a href="/user/bogosips/wishes">보고싶어요</a></li>
+                <li><a href="/user/bogosips/watchings">보는중</a></li>
               </ul>
-            <select name="sort">
-                <option value="date"><i class="fa fa-caret-down" aria-hidden="true"></i><span>순차</span>담은 순</option>
-                <option value="date"><i class="fa fa-caret-up" aria-hidden="true"></i><span>역순</span>담은 순</option>
+            <select name="sort" onchange="updateOrderType(this)">
+                <option value="ADD_DT"><i class="fa fa-caret-down" aria-hidden="true"></i>추가 오름차순</option>
+                <option value="ADD_DT_DESC"><i class="fa fa-caret-up" aria-hidden="true"></i>추가 내림차순</option>
+                <option value="NEW"><i class="fa fa-caret-up" aria-hidden="true"></i>발매 오름차순</option>
+                <option value="OLD"><i class="fa fa-caret-up" aria-hidden="true"></i>발매 내림차순</option>
             </select>
+            <script>
+              function updateOrderType(selectElement) {
+                  // 선택한 옵션의 값
+                  var selectedValue = selectElement.value;
+          
+                  // 선택한 값에 해당하는 orderType 가져오기
+                  var orderTypeInfo = getOrderTypeInfo(selectedValue);
+          
+                  // orderTypeInfo를 사용하여 필요한 작업 수행
+                  console.log(orderTypeInfo);
+              }
+          
+              // 선택한 값에 따라 적절한 orderType 반환
+              function getOrderTypeInfo(selectedValue) {
+                  switch(selectedValue) {
+                      case 'ADD_DT':
+                          return orderType.ADD_DT;
+                      case 'ADD_DT_DESC':
+                          return orderType.ADD_DT_DESC;
+                      case 'NEW':
+                          return orderType.NEW;
+                      case 'OLD':
+                          return orderType.OLD;
+                      default:
+                          return null;
+                  }
+              }
+          </script>
             </div>
             <div class="contents_container">
-              <% for (let i = 0; i < contents.length; i++) { %>
+              <% content.forEach(function(content) { %>
               <div class="content">
                 <a href="#">
-                  <img src="<%= contents[i].thumbnail %>" alt="썸네일">
+                  <img src="<%= content.webContent.image %>" alt="썸네일">
                 </a>
                 <a href="#">
                   <div class="bottom_box">
-                    <p class="title"><%= contents[i].title %></p>
+                    <p class="title"><%= content.webContent.title %></p>
                   </div>
                 </a>
               </div>
-              <% } %>
+              <% }) %>
             </div>
           </div>
         </main>
-        <footer>
-          <ul>
-            <li>
-              <a href="https://github.com/choobao/chillinker"
-                ><i class="fa fa-github" aria-hidden="true"></i
-              ></a>
-            </li>
-          <p>Copyright © 2024 회빙환. All rights reserved.</p>
-        </footer>
+        <%- include('footer.ejs') %>
       </div>
     </body>
 </html>
