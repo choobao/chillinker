@@ -72,7 +72,7 @@
             <ul class="keyword-list">
               <% if (keyword && keyword.length > 0) { %>
                 <ul class="keyword-list">
-                  <% keyword.forEach((item) => { %>
+                  <% keyword.split(', ').forEach((item) => { %>
                     <li class="keyword-item"><%= item %></li>
                   <% }); %>
                 </ul>
