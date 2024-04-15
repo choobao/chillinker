@@ -20,51 +20,47 @@
     />
   </head>
   <body>
-    <header>
-      <div class="inner_header">
-        <img
-          class="logo_image"
-          src="/logo_image/chillinker_logo(2).png"
-          href="#"
-        />
-        <h1 class="logo">
-          <a href="#">Chillinker</a>
-        </h1>
-        <div class="header_right">
-          <div class="search_box">
-            <form action="/search" method="get">
-              <input
-                class="search_text"
-                type="search"
-                placeholder="작품명, 작가 검색"
-                id="search-input"
-                name="query"
-              />
-              <i class="fa fa-search" aria-hidden="true">
-                <input
-                  type="submit"
-                  value="검색"
-                  id="search"
-                  class="submit_btn"
-              /></i>
-            </form>
-          </div>
+    <%- include('header.ejs') %>
+    <main>
+      <div class="collection_wrap">
+        <div class="collection_detail_info">
           <ul>
-            <li><a href="#">마이페이지</a></li>
+            <li class="collection_title"><%= ${collections_title} /%></li>
+            <li class="collection_desc"><%= ${collections_desc} /%></li>
+            <li class="collection_user_nickname">만든이:<%= ${collections_user.users_nickname} /%></li>
+            <li class="contents_number">작품수: <%= ${webContents.length} /%></li>
+            <li class="collection_bookmarked_number">북마크수:<%= ${collections_bookmarks.length} /%></li>
           </ul>
+          <div class="update_collection_modal">
+            <h2>컬렉션 수정</h2>
+            <form>
+              <input title/>
+              <input desc/>
+            </form>
+            <button class="add_col_cancle_btn">취소</button>
+            <button class="add_col_execute_btn" href="#?맞나?">확인</button>
+          </div>
+          <button class="collection_modify_btn">컬렉션 수정</button>
+          <button class="collection_delete_btn">컬렉션 삭제</button>
+        </div>
+        <div class="contents_container">
+          <div class="content" href="#작품상세페이지">
+            <img src="<%= item.image %>" alt="작품 표지"/>
+            <h3 class="contents_title">제목: <%= item.title %></h3>
+            <h4 class="contents_category">장르: <%= item.category %></h4>
+            <h4 class="contents_author">작가: <%= item.author %></h4>
+            <h6 class="remove_content_in_col">컬렉션에서 삭제</h6>
+          </div>
+          <div class="content" href="#작품상세페이지">
+            <img src="<%= item.image %>" alt="작품 표지"/>
+            <h3 class="contents_title">제목: <%= item.title %></h3>
+            <h4 class="contents_category">장르: <%= item.category %></h4>
+            <h4 class="contents_author">작가: <%= item.author %></h4>
+            <h6 class="remove_content_in_col">컬렉션에서 삭제</h6>
+          </div>
         </div>
       </div>
-    </header>
-    <main></main>
-    <footer>
-      <ul>
-        <li>
-          <a href="https://github.com/choobao/chillinker">
-            <i class="fa fa-github" aria-hidden="true"></i>
-          </a>
-        </li>
-      </ul>
-      <p>Copyright © 2024 회빙환. All rights reserved.</p>
-    </footer>
+    </main>
+    <%- include('footer.ejs') %>
   </body>
 </html>

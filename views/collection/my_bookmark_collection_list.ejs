@@ -20,51 +20,46 @@
     />
   </head>
   <body>
-    <header>
-      <div class="inner_header">
-        <img
-          class="logo_image"
-          src="/logo_image/chillinker_logo(2).png"
-          href="#"
-        />
-        <h1 class="logo">
-          <a href="#">Chillinker</a>
-        </h1>
-        <div class="header_right">
-          <div class="search_box">
-            <form action="/search" method="get">
-              <input
-                class="search_text"
-                type="search"
-                placeholder="작품명, 작가 검색"
-                id="search-input"
-                name="query"
-              />
-              <i class="fa fa-search" aria-hidden="true">
-                <input
-                  type="submit"
-                  value="검색"
-                  id="search"
-                  class="submit_btn"
-              /></i>
-            </form>
+    <%- include('header.ejs') %>
+    <main>
+      <h3><%= ${users_nickname} /%>님이 북마크한 컬렉션</h3>
+      <div class="collections_container">
+        <div class="collection" href="#컬렉션상세페이지">
+          <div class="collection_upper">
+            <img class="collection_img"
+              src="#제일처음담은작품의 썸네일(이 collectionId의 contents-collection.id가 가장 작은 숫자인 contents의 썸네일)"
+              alt="/logo_image/chillinker_logo(2).png"
+            />
+            <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
           </div>
-          <ul>
-            <li><a href="#">마이페이지</a></li>
-          </ul>
+          <div class="collection_info">
+            <ul>
+              <li class="collection_title"><%= ${collections_title} /%></li>
+              <li class="collection_desc"><%= ${collections_desc} /%></li>
+              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
+            </ul>
+            <a class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</a>
+          </div>
+        </div>
+        <div class="collection" href="#컬렉션상세페이지">
+          <div class="collection_upper">
+            <img class="collection_img"
+              src="#제일처음담은작품의 썸네일(이 collectionId의 contents-collection.id가 가장 작은 숫자인 contents의 썸네일)"
+              alt="/logo_image/chillinker_logo(2).png"
+            />
+            <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
+          </div>
+          <div class="collection_info">
+            <ul>
+              <li class="collection_title"><%= ${collections_title} /%></li>
+              <li class="collection_desc"><%= ${collections_desc} /%></li>
+              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
+            </ul>
+            <a class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</a>
+          </div>
         </div>
       </div>
-    </header>
-    <main></main>
-    <footer>
-      <ul>
-        <li>
-          <a href="https://github.com/choobao/chillinker">
-            <i class="fa fa-github" aria-hidden="true"></i>
-          </a>
-        </li>
-      </ul>
-      <p>Copyright © 2024 회빙환. All rights reserved.</p>
-    </footer>
+    </main>
+    <%- include('footer.ejs') %>
   </body>
 </html>
