@@ -19,6 +19,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from 'src/utils/userinfo.decorator';
 import { Users } from 'src/user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ReviewSummaryDto } from './dto/review.summary.dto';
 
 @ApiTags('REVIEW')
 @Controller('webContents/:webContentsId/reviews')
@@ -26,7 +27,7 @@ export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
-  @Render('detailReview')
+  // @Render('detailReview')
   @Get()
   async getCReivew(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
@@ -42,9 +43,22 @@ export class ReviewController {
     );
   }
 
+  @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  @Render('reviewed_list.ejs')
+  @Get('reviewedTitles/:userId')
+  async getTitlesWithReviews(@Param('userId') userId: number) {
+    const reviews = await this.reviewService.getTitlesWithReviews(userId);
+
+    const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
+      return new ReviewSummaryDto(review.image, review.title, review.rate);
+    });
+
+    return { reviewedWorks: reviewSummaries };
+  }
+
   @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
+  // @Render('detailReview')
   @Post()
   async createReview(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
