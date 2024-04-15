@@ -11,7 +11,7 @@ import { CollectionModule } from './collection/collection.module';
 import { FollowModule } from './follow/follow.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WebContentModule } from './web-content/web-content.module';
-//import { RedisModule } from './redis/redis.module';
+import { RedisModule } from './redis/redis.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { BogosipModule } from './bogosip/bogosip.module';
 import { StorageModule } from './storage/storage.module';
@@ -57,7 +57,7 @@ const typeOrmModuleOptions = {
     ReviewModule,
     CollectionModule,
     WebContentModule,
-    //RedisModule,
+    RedisModule,
     ScheduleModule.forRoot(),
     CrawlerModule,
     BogosipModule,

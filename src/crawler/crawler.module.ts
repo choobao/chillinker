@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { PReviews } from '../review/entities/platform.reviews.entity';
 import { CrawlerController } from './crawler.controller';
+import { RedisService } from '../redis/redis.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WebContents, PReviews])],
-  providers: [CrawlerService],
+  providers: [CrawlerService, RedisService],
   controllers: [CrawlerController],
 })
 export class CrawlerModule {}

@@ -38,7 +38,7 @@ import {
   series_first_page_next_btn,
 } from './utils/constants';
 import { login } from './utils/login';
-// import { RedisService } from '../redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 import _ from 'lodash';
 import { ContentType } from '../web-content/webContent.type';
 import { PReviews } from '../review/entities/platform.reviews.entity';
@@ -68,7 +68,7 @@ export class CrawlerService {
     private readonly contentRepository: Repository<WebContents>,
     @InjectRepository(PReviews)
     private readonly reviewRepostiroy: Repository<PReviews>,
-    //private readonly redisService: RedisService,
+    private readonly redisService: RedisService,
   ) {}
 
   // 50위까지의 랭킹 정보 요청
@@ -312,16 +312,16 @@ export class CrawlerService {
   }
 
   //@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  @Cron('38 15 * * *')
+  @Cron('58 11 * * *')
   async createKakaopages() {
     const startTime = new Date().getTime();
 
-    const currPageWebnovel = 0;
-    //+(await this.redisService.getValue('kakao_webnovel')) || 0;
-    const currPageWebtoon = 0;
-    // +(await this.redisService.getValue('kakao_webtoon')) || 0;
+    const currPageWebnovel =
+      +(await this.redisService.getValue('kakao_webnovel')) || 0;
+    const currPageWebtoon =
+      +(await this.redisService.getValue('kakao_webtoon')) || 0;
 
-    console.log(currPageWebnovel, currPageWebtoon);
+    console.log('레디스:', currPageWebnovel, currPageWebtoon);
 
     try {
       console.log('start!');
@@ -855,7 +855,7 @@ export class CrawlerService {
         const webContent = new WebContents();
 
         webContent.title = content.title;
-        webContent.desc = content.desc;
+        webContent.desc = content.description;
         webContent.image = content.image;
         webContent.author = content.author;
         webContent.category = content.category;
