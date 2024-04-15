@@ -19,6 +19,9 @@
   display: flex;
   justify-content: space-around;
 }
+.following_list li a {
+  text-align: left;
+}
 .following_list li .profile_link {
   width: 500px;
 }
