@@ -15,6 +15,7 @@ import { ReviewLikes } from './entities/review.likes.entity';
 import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { ReviewSummaryDto } from './dto/review.summary.dto';
 
 @Injectable()
 export class ReviewService {
@@ -109,14 +110,38 @@ export class ReviewService {
     }
   }
 
-  async getTitlesWithReviews(userId: number) {
-    const reviews = await this.webContentRepository
-      .createQueryBuilder('webContent')
-      .leftJoinAndSelect('webContent.cReviews', 'review')
+  // async getTitlesWithReviews(userId: number) {
+  //   const reviews = await this.webContentRepository
+  //     .createQueryBuilder('webContent')
+  //     .leftJoinAndSelect('webContent.cReviews', 'review')
+  //     .select(['webContent.image', 'webContent.title', 'review.rate'])
+  //     .where('review.userId = :userId', { userId })
+  //     .getRawMany();
+
+  //   const reviewSummaries = reviews.map((review) => ({
+  //     image: review.webContent_image,
+  //     title: review.webContent_title,
+  //     rate: review.review_rate,
+  //   }));
+
+  //   return reviewSummaries;
+  // }
+
+  // async getAllReviewedWorks(userId: number): Promise<CReviews[]> {
+  //   // Assuming you have a method to retrieve all reviewed works
+  //   return await this.chillinkerReviewsRepository.find({ where: { userId } });
+  // }
+
+  async getTitlesWithReviews(userId: number): Promise<ReviewSummaryDto[]> {
+    // Fetch reviews along with necessary data (thumbnail, title, rate)
+    const reviews = await this.chillinkerReviewsRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.webContent', 'webContent')
       .select(['webContent.image', 'webContent.title', 'review.rate'])
       .where('review.userId = :userId', { userId })
       .getRawMany();
 
+    // Map the retrieved data to objects containing thumbnail, title, and rate
     const reviewSummaries = reviews.map((review) => ({
       image: review.webContent_image,
       title: review.webContent_title,
@@ -124,6 +149,11 @@ export class ReviewService {
     }));
 
     return reviewSummaries;
+  }
+
+  async getAllReviewedWorks(userId: number): Promise<CReviews[]> {
+    // Assuming you have a method to retrieve all reviewed works
+    return await this.chillinkerReviewsRepository.find({ where: { userId } });
   }
 
   async createReivew(
