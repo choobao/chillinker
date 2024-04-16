@@ -740,11 +740,9 @@ export class CrawlerService {
   //   return reviewList;
   // }
 
-  @Cron('0 17 * * *') //오후 다섯시 예약
+  @Cron('01 23 * * *') //오후 다섯시 예약
   async createRidibooks() {
     const startTime = new Date().getTime();
-
-    const currPage = 0;
 
     try {
       // 일간랭킹;
@@ -776,29 +774,54 @@ export class CrawlerService {
       console.log('done!');
 
       //전체랭킹
+      const change = await this.redisService.save(`ridi_curr1650`, 2);
+
+      const currRnovels =
+        +(await this.redisService.getValue('ridi_curr1650')) || 1;
+      const currRFnovels =
+        +(await this.redisService.getValue('ridi_curr6050')) || 1;
+      const currFnovels =
+        +(await this.redisService.getValue('ridi_curr1750')) || 1;
+      const currBnovels =
+        +(await this.redisService.getValue('ridi_curr4150')) || 1;
+      const currWebtoons =
+        +(await this.redisService.getValue('ridi_curr1600')) || 1;
+
+      const test = await this.redisService.getValue('ridi_curr1650');
+
+      console.log(test);
+      console.log(
+        '가져온정보',
+        currRnovels,
+        currRFnovels,
+        currFnovels,
+        currBnovels,
+        currWebtoons,
+      );
+
       console.log('start!');
-      const Rnovels = await get60WebtoonRanking(TYPE.R, currPage);
-      await this.save60Db(Rnovels);
+      const Rnovels = await get60WebtoonRanking(TYPE.R, currRnovels);
+      await this.save60Db(Rnovels, TYPE.R, currRnovels);
       console.log('done!');
 
       console.log('start!');
-      const RFnovels = await get60WebtoonRanking(TYPE.RF, currPage);
-      await this.save60Db(RFnovels);
+      const RFnovels = await get60WebtoonRanking(TYPE.RF, currRFnovels);
+      await this.save60Db(RFnovels, TYPE.RF, currRFnovels);
       console.log('done!');
 
       console.log('start!');
-      const Fnovels = await get60WebtoonRanking(TYPE.F, currPage);
-      await this.save60Db(Fnovels);
+      const Fnovels = await get60WebtoonRanking(TYPE.F, currFnovels);
+      await this.save60Db(Fnovels, TYPE.F, currFnovels);
       console.log('done!');
 
       console.log('start!');
-      const Bnovels = await get60WebtoonRanking(TYPE.B, currPage);
-      await this.save60Db(Bnovels);
+      const Bnovels = await get60WebtoonRanking(TYPE.B, currBnovels);
+      await this.save60Db(Bnovels, TYPE.B, currBnovels);
       console.log('done!');
 
       console.log('start!');
-      const Webtoons = await get60WebtoonRanking(TYPE.WB, currPage);
-      await this.save60Db(Webtoons);
+      const Webtoons = await get60WebtoonRanking(TYPE.WB, currWebtoons);
+      await this.save60Db(Webtoons, TYPE.WB, currWebtoons);
       console.log('done!');
 
       const endTime = new Date().getTime();
@@ -808,10 +831,13 @@ export class CrawlerService {
     }
   }
 
-  async save60Db(data: WebContents[]) {
+  async save60Db(data: WebContents[], type: TYPE, page: any) {
     try {
+      console.log(page);
       const createContentDtos = data.map((content) => {
         const webContent = new WebContents();
+
+        console.log(content);
 
         webContent.title = content.title;
         webContent.desc = content.desc;
@@ -820,10 +846,9 @@ export class CrawlerService {
         webContent.category = content.category;
         webContent.isAdult = content.isAdult;
         webContent.platform = content.platform;
-        webContent.pubDate = new Date(content.pubDate);
-        // webContent.keyword = JSON.stringify(content.keyword);
-        // webContent.rank = content.rank;
-        webContent.contentType = ContentType.WEBTOON;
+        webContent.pubDate = content.pubDate;
+        webContent.keyword = content.keyword;
+        webContent.contentType = content.contentType;
 
         if (content.pReviews.length !== 0) {
           webContent.pReviews = content.pReviews;
@@ -834,6 +859,11 @@ export class CrawlerService {
 
       // DB에 저장
       await this.contentRepository.save(createContentDtos);
+
+      const change = await this.redisService.save(`ridi_curr${type}`, page + 1);
+      const currRnovels = await this.redisService.getValue('ridi_curr1650');
+      console.log('들어온정보', type, page, currRnovels);
+      console.log('저장할거', change);
     } catch (err) {
       throw err;
     }
@@ -854,15 +884,16 @@ export class CrawlerService {
       const createContentDtos = data.map((content) => {
         const webContent = new WebContents();
 
+        console.log(content);
         webContent.title = content.title;
-        webContent.desc = content.description;
+        webContent.desc = content.desc;
         webContent.image = content.image;
         webContent.author = content.author;
         webContent.category = content.category;
         webContent.isAdult = content.isAdult;
         webContent.platform = content.platform;
-        webContent.pubDate = new Date();
-        // webContent.keyword = JSON.stringify(content.keyword);
+        webContent.pubDate = content.pubDate;
+        webContent.keyword = content.keyword;
         webContent.rank = content.rank;
         webContent.contentType = content.contentType;
 
