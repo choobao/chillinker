@@ -69,7 +69,11 @@
                             <%= item.title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-card_author">
+                          <% const arr = item.author.split(',') %>
+                          <% const a = Array.isArray(arr) %>
+                          <%= arr[0] %>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
@@ -92,7 +96,11 @@
                             <%= item.webContents_title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.webContents_author %></div>
+                        <div class="card-info-card_author">
+                            <% const arr = item.webContents_author.split(',') %>
+                            <% const a = Array.isArray(arr) %>
+                            <%= arr[0] %>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
@@ -157,7 +165,11 @@
                             <%= item.title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-card_author">
+                          <% const arr = item.author.split(',') %>
+                          <% const a = Array.isArray(arr) %>
+                          <%= arr[0] %>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
@@ -169,14 +181,14 @@
         </div>
     </main>
     <footer>
-        <ul>
-          <li>
-            <a href="https://github.com/choobao/chillinker">
-              <i class="fa fa-github" aria-hidden="true"></i>
-            </a>
-          </li>
-        </ul>
-        <p>Copyright © 2024 회빙환. All rights reserved.</p>
+      <ul>
+        <li>
+          <a href="https://github.com/choobao/chillinker">
+            <i class="fa fa-github" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+      <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     </div>
   </body>
