@@ -7,11 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Follows } from '../../follow/entities/follow.entity';
-import { ReviewLikes } from 'src/review/entities/review.likes.entity';
-import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
-import { Collections } from 'src/collection/entities/collections.entity';
-// import { CollectionBookmarkUser } from 'src/collection/entities/collection-bookmark-user.entity';
-import { Bogosips } from '../../bogosip/entities/bogosips.entity';
+import { ReviewLikes } from '../../review/entities/review.likes.entity';
+import { CReviews } from '../../review/entities/chillinker.reviews.entity';
+import { Collections } from '../../collection/entities/collections.entity';
+import { Likes } from '../../like/entities/likes.entity';
 
 @Entity({
   name: 'users',
@@ -60,10 +59,6 @@ export class Users {
   @OneToMany(() => Collections, (collection) => collection.user)
   collections: Collections[];
 
-  // @OneToMany(() => CollectionBookmarkUser, (bookmarkUser) => bookmarkUser.user)
-  // collectionBookmarks: CollectionBookmarkUser[];
-
-  // bogisip
-  @OneToMany(() => Bogosips, (bogosip) => bogosip.user)
-  bogosips: Bogosips[];
+  @OneToMany(() => Likes, (like) => like.user)
+  likes: Likes[];
 }

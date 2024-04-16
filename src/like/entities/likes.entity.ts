@@ -5,29 +5,25 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BogosipType } from '../types/bogosip.type';
 import { WebContents } from '../../web-content/entities/webContents.entity';
 import { Users } from '../../user/entities/user.entity';
 
-@Entity('bogosips')
-export class Bogosips {
+@Entity('likes')
+export class Likes {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Users, (user) => user.bogosips)
+  @ManyToOne(() => Users, (user) => user.likes)
   user: Users;
 
   @Column()
   userId: number;
 
-  @ManyToOne(() => WebContents, (webContent) => webContent.bogosips)
+  @ManyToOne(() => WebContents, (webContent) => webContent.likes)
   webContent: WebContents;
 
   @Column()
   webContentId: number;
-
-  @Column({ type: 'enum', enum: BogosipType })
-  type: BogosipType;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -13,8 +13,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { WebContentModule } from './web-content/web-content.module';
 import { RedisModule } from './redis/redis.module';
 import { CrawlerModule } from './crawler/crawler.module';
-import { BogosipModule } from './bogosip/bogosip.module';
 import { StorageModule } from './storage/storage.module';
+import { LikeModule } from './like/like.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -60,7 +60,7 @@ const typeOrmModuleOptions = {
     RedisModule,
     ScheduleModule.forRoot(),
     CrawlerModule,
-    BogosipModule,
+    LikeModule,
     StorageModule,
   ],
   controllers: [ReviewController],
