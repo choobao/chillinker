@@ -21,7 +21,7 @@ window.onclick = function (event) {
 // 버튼 클릭 이벤트
 // 팔로잉/팔로워
 $('#profile-follow').click(function () {
-  window.location.href = '/user/follow';
+  window.location.href = '/main'; // 임시로 메인으로 이동함. 추후 수정 요망.
 });
 
 // 내 리뷰
