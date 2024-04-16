@@ -25,18 +25,28 @@
                 <li><a href="/user/bogosips/watchings">보는중</a></li>
               </ul>
             <select name="sort" onchange="updateOrderType(this)">
-                <option value="ADD_DT"><i class="fa fa-caret-down" aria-hidden="true"></i>추가 오름차순</option>
-                <option value="ADD_DT_DESC"><i class="fa fa-caret-up" aria-hidden="true"></i>추가 내림차순</option>
-                <option value="NEW"><i class="fa fa-caret-up" aria-hidden="true"></i>발매 오름차순</option>
-                <option value="OLD"><i class="fa fa-caret-up" aria-hidden="true"></i>발매 내림차순</option>
+                <option value="ADD_DT">추가 오름차순</option>
+                <option value="ADD_DT_DESC">추가 내림차순</option>
+                <option value="NEW">발매 오름차순</option>
+                <option value="OLD">발매 내림차순</option>
             </select>
             <script>
-              function updateOrderType(selectElement) {
-                  // 선택한 옵션의 값
-                  var selectedValue = selectElement.value;
+              // Define orderType object with sorting types
+              const orderType = {
+                  ADD_DT: 'ADD_DT',
+                  ADD_DT_DESC: 'ADD_DT_DESC',
+                  NEW: 'NEW',
+                  OLD: 'OLD'
+              };
           
+              function updateOrderType(selectElement) {
+                  console.log("updateOrderType function called");
+          
+                  // 선택한 옵션의 값
+                  const selectedValue = selectElement.value;
+                  
                   // 선택한 값에 해당하는 orderType 가져오기
-                  var orderTypeInfo = getOrderTypeInfo(selectedValue);
+                  const orderTypeInfo = getOrderTypeInfo(selectedValue);
           
                   // orderTypeInfo를 사용하여 필요한 작업 수행
                   console.log(orderTypeInfo);
