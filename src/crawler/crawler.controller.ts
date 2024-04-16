@@ -14,4 +14,9 @@ export class CrawlerController {
   async getRidi() {
     return await this.crawlService.createRidibooks();
   }
+
+  @Get('mrblue')
+  async getMrblue() {
+    return await this.crawlService.createMrblue();
+  }
 }

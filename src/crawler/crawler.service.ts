@@ -31,13 +31,16 @@ import {
 import KakaopageAxios from './platform/kakaopage';
 import { ConfigService } from '@nestjs/config';
 
+import MrbluePuppeteer from './platform/mr.blue';
+import { ContentType } from 'src/web-content/webContent.type';
+
 @Injectable()
 export class CrawlerService {
   constructor(
     @InjectRepository(WebContents)
     private readonly contentRepository: Repository<WebContents>,
     @InjectRepository(PReviews)
-    private readonly reviewRepostiroy: Repository<PReviews>,
+    private readonly reviewRepository: Repository<PReviews>,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
   ) {}
@@ -366,5 +369,210 @@ export class CrawlerService {
     } catch (err) {
       throw err;
     }
+  }
+
+  ////////////////////////////////////////////////////////
+  mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
+  async saveReviews(title: string, author: string, reviews: any[]) {
+    if (reviews.length >= 1) {
+      const contents = await this.contentRepository.findOneBy({
+        title,
+        author,
+      });
+      for (let j = 0; j < reviews.length; j++) {
+        const { content, writerId, createDate, likeCount } = reviews[j];
+
+        const review = await this.reviewRepository.findOneBy({
+          webContentId: contents.id,
+          writer: writerId,
+          content,
+        });
+
+        if (review) {
+          continue;
+        }
+        await this.reviewRepository.save({
+          webContentId: +contents.id,
+          content,
+          likeCount,
+          writer: writerId,
+          createDate,
+        });
+      }
+    }
+  }
+
+  async saveWebContentsData(contentType: ContentType, data: any[]) {
+    for (let i = 0; i < data.length; i++) {
+      const {
+        platform,
+        image,
+        category,
+        title,
+        author,
+        isAdult,
+        pubDate,
+        desc,
+        keywordList,
+        reviews,
+      } = data[i];
+
+      if (contentType === '웹툰') {
+        if (category.includes('에로')) continue;
+      }
+      if (contentType === '웹소설') {
+        if (category === '일반') continue;
+      }
+
+      const existedContents = await this.contentRepository.findOneBy({
+        title,
+        author,
+      });
+
+      if (existedContents) {
+        const existPlatform = existedContents.platform;
+        if (!existPlatform['mrblue']) {
+          const newPlatform = { ...existPlatform, ...platform };
+          await this.contentRepository.update(existedContents.id, {
+            platform: newPlatform,
+          });
+        }
+
+        if (keywordList) {
+          let existKeyword = existedContents.keyword;
+          if (existKeyword) {
+            for (let keyword of keywordList) {
+              if (!existKeyword.includes(keyword)) {
+                existKeyword = existKeyword + keyword;
+              }
+            }
+            await this.contentRepository.update(existedContents.id, {
+              keyword: existKeyword,
+            });
+          } else if (!existKeyword) {
+            await this.contentRepository.update(existedContents.id, {
+              keyword: keywordList.join(', '),
+            });
+          }
+        }
+      } else {
+        await this.contentRepository.save({
+          contentType: ContentType.WEBNOVEL,
+          title,
+          desc,
+          image,
+          author,
+          isAdult,
+          keyword: keywordList.join(', '),
+          category,
+          platform,
+          pubDate,
+        });
+      }
+
+      await this.saveReviews(title, author, reviews);
+    }
+    console.log('저장완료');
+  }
+
+  //웹소설, 웹툰 랭킹 저장
+  async saveWebContentsRank(contentType: ContentType, data: any[]) {
+    for (let i = 0; i < data.length; i++) {
+      const {
+        rank,
+        platform,
+        image,
+        category,
+        title,
+        author,
+        isAdult,
+        pubDate,
+        desc,
+        keywordList,
+        reviews,
+      } = data[i];
+
+      if (contentType === '웹툰') {
+        if (category.includes('에로')) continue;
+      }
+      if (contentType === '웹소설') {
+        if (category === '일반') continue;
+      }
+
+      const existedContents = await this.contentRepository.findOneBy({
+        title,
+        author,
+      });
+
+      if (existedContents) {
+        const existPlatform = existedContents.platform;
+        if (!existPlatform['mrblue']) {
+          const newPlatform = { ...existPlatform, ...platform };
+          await this.contentRepository.update(existedContents.id, {
+            platform: newPlatform,
+          });
+        }
+
+        if (keywordList) {
+          let existKeyword = existedContents.keyword;
+          if (existKeyword) {
+            for (let keyword of keywordList) {
+              if (!existKeyword.includes(keyword)) {
+                existKeyword = existKeyword + keyword;
+              }
+            }
+            await this.contentRepository.update(existedContents.id, {
+              keyword: existKeyword,
+            });
+          } else if (!existKeyword) {
+            await this.contentRepository.update(existedContents.id, {
+              keyword: keywordList.join(', '),
+            });
+          }
+        }
+
+        if (existedContents.rank) {
+          const existRank = existedContents.rank;
+          const newRank = { ...existRank, ...rank };
+          await this.contentRepository.update(existedContents.id, {
+            rank: newRank,
+          });
+        } else {
+          await this.contentRepository.update(existedContents.id, {
+            rank,
+          });
+        }
+      } else {
+        await this.contentRepository.save({
+          rank,
+          platform,
+          contentType,
+          title,
+          desc,
+          image,
+          author,
+          isAdult,
+          keyword: keywordList.join(', '),
+          category,
+          pubDate,
+        });
+      }
+      await this.saveReviews(title, author, reviews);
+    }
+    console.log('저장완료');
+  }
+
+  async createMrblue() {
+    const crawlWebnovelAll = await this.mrbluePuppeteer.crawlWebnovels();
+    await this.saveWebContentsData(ContentType.WEBNOVEL, crawlWebnovelAll);
+
+    const crawlWebtoonAll = await this.mrbluePuppeteer.crawlWebtoons();
+    await this.saveWebContentsData(ContentType.WEBTOON, crawlWebtoonAll);
+
+    const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
+    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
+
+    const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
+    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
   }
 }
