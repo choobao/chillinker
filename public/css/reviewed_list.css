@@ -1,0 +1,30 @@
+.category ul li {
+  display: inline-block;
+  margin: 40px 10px;
+}
+.category ul li a {
+  background-color: #e6e6fa;
+  padding: 10px;
+  border-radius: 5px;
+  display: block;
+  width: 100px;
+  text-align: center;
+}
+.category select option span {
+  display: none;
+}
+
+.content {
+  display: inline-block;
+  margin: 30px;
+}
+.content img {
+  width: 250px;
+  border-radius: 10px;
+}
+.content .bottom_box {
+  padding: 10px;
+}
+.content .bottom_box .title {
+  font-size: 20px;
+}

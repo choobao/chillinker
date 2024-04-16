@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Render,
   Req,
   Res,
   UseGuards,
@@ -33,13 +34,20 @@ export class FollowController {
 
   @ApiOperation({ summary: '팔로잉 목록 조회' })
   @Get('followingList')
+  @Render('following.ejs')
   async getFollowingList(@Param('id') followerId: number) {
-    return await this.followService.getFollowingList(followerId);
+    // return await this.followService.getFollowingList(followerId);
+    const followingList = await this.followService.getFollowingList(followerId);
+    return { followingList };
   }
 
   @ApiOperation({ summary: '팔로워 목록 조회' })
   @Get('followerList')
+  @Render('follower.ejs')
   async getFollowerList(@Param('id') followingId: number) {
-    return await this.followService.getFollowerList(followingId);
+    // 린님 기존 코드(json 데이터를 반환하고 있어서 렌더링에 사용될수 없다고 함)
+    // return await this.followService.getFollowerList(followingId);
+    const followerList = await this.followService.getFollowerList(followingId);
+    return { followerList };
   }
 }

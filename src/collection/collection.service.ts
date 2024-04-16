@@ -31,6 +31,14 @@ export class CollectionService {
     });
   }
 
+  // 타 유저 컬렉션 목록 조회
+  async getUserColList(userId: number): Promise<Collections[]> {
+    return await this.colRepository.find({
+      where: { userId },
+      select: ['id', 'title', 'desc'],
+    });
+  }
+
   // 내 컬렉션 상세 조회
   async getMyCol(collectionId: number) {
     return await this.colRepository.findOne({

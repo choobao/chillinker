@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chillinker following list</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/following.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+      </style>
+      <script
+        src="https://kit.fontawesome.com/0b832ce4c1.js"
+        crossorigin="anonymous"
+      ></script>
+</head>
+<body>
+    <div class="wrap">
+      <%- include('header.ejs') %>
+        <main>
+          <div class="inner">
+            <div class="following_title">
+                <span>팔로잉</span>
+            </div>
+            <ul class="following_list">
+              <% followingList.forEach(function(following) { %>
+                <li>
+                    <a class="profile_link" href="#">
+                        <img src="profile_sample.png" alt="profile image">
+                        <span class="name"><%= following.followings_nickname %></span>
+                        <span class="intro"><%= following.followings_email %></span>
+                    </a>
+                    <% if (following.isFollowing) { %>
+                      <a class="unfollowing_btn" href="#">언팔로우</a>
+                  <% } else { %>
+                      <a class="unfollowing_btn" href="#">팔로잉</a>
+                  <% } %>
+                </li>
+                <% }); %>
+            </ul>
+          </div>
+        </main>
+        <%- include('footer.ejs') %>
+      </div>
+    </body>
+</html>
