@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Collections } from './collections.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
 
@@ -8,8 +14,13 @@ export class ContentCollection {
   id: number;
 
   @ManyToOne(() => Collections, (collection) => collection.contentCollections)
+  @JoinColumn({ name: 'collection_id' })
   collection: Collections;
 
   @ManyToOne(() => WebContents, (webContent) => webContent.contentCollections)
+  @JoinColumn({ name: 'webContent_id' })
   webContent: WebContents;
+
+  @Column('int', { name: 'collection_id', nullable: false })
+  collectionId: number;
 }
