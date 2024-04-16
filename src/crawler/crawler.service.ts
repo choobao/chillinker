@@ -197,13 +197,13 @@ export class CrawlerService {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  @Cron('01 23 * * *') //오후 다섯시 예약
+  @Cron('26 11 * * *') //오후 다섯시 예약
   async createRidibooks() {
     const startTime = new Date().getTime();
 
     try {
       // 일간랭킹;
-      await this.rankUpdet();
+      // await this.rankUpdet();
 
       console.log('start!');
       const rankingRnovels = await get20BestRanking(GENRE.R);
@@ -215,10 +215,10 @@ export class CrawlerService {
       await this.save20Db(rankingRFnovels);
       console.log('done!');
 
-      console.log('start!');
-      const rankingFnovels = await get20BestRanking(GENRE.F);
-      await this.save20Db(rankingFnovels);
-      console.log('done!');
+      // console.log('start!');
+      // const rankingFnovels = await get20BestRanking(GENRE.F);
+      // await this.save20Db(rankingFnovels);
+      // console.log('done!');
 
       console.log('start!');
       const rankingBnovels = await get20BestRanking(GENRE.B);

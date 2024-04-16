@@ -626,6 +626,24 @@ textarea#intro {
   background: #e6e6fa;
 }
 
+.bonenjung-button {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 45px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
+}
+
 .dk-block-title {
   margin-bottom: 15px;
   padding: 10px 0 8px 0;
@@ -669,4 +687,8 @@ textarea#intro {
 .result_list {
   display: flex;
   flex-wrap: wrap;
+}
+
+.bonenjung-wrap {
+  float: right;
 }

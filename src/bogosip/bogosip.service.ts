@@ -8,6 +8,7 @@ import { Bogosips } from './entities/bogosips.entity';
 import { DataSource, Repository } from 'typeorm';
 import _ from 'lodash';
 import { BogosipType, convertToEnum, orderType } from './types/bogosip.type';
+import { WebContents } from 'src/web-content/entities/webContents.entity';
 
 @Injectable()
 export class BogosipService {
@@ -15,6 +16,8 @@ export class BogosipService {
     @InjectRepository(Bogosips)
     private readonly bogosipRepository: Repository<Bogosips>,
     private readonly dataSource: DataSource,
+    @InjectRepository(WebContents)
+    private readonly webContentRepository: Repository<WebContents>,
   ) {}
 
   async findContent(userId: number, contentId: number, type: string) {
