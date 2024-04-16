@@ -146,7 +146,7 @@ export class CrawlerService {
     }
   }
 
-  @Cron('26 11 * * *')
+  @Cron('8 0 * * *')
   async createKakaopages() {
     const startTime = new Date().getTime();
 
