@@ -16,14 +16,16 @@ import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // import { Collections } from './entities/collections.entity';
 
+@ApiTags('COLLECTION')
 @Controller('collections')
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
-  //   내 컬렉션 목록 조회
+  @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
   async myCollections(@UserInfo() user: Users) {
@@ -31,7 +33,7 @@ export class CollectionController {
     return await myColList;
   }
 
-  // 타 유저 컬렉션 목록 조회
+  @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/:userId')
   async userCollections(@Param('userId') userId: number) {
@@ -39,7 +41,7 @@ export class CollectionController {
     return await userColList;
   }
 
-  // 내 컬렉션 상세 조회
+  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/:collectionId')
   async myCollection(@Param('collectionId') collectionId: number) {
@@ -47,7 +49,7 @@ export class CollectionController {
     return myCol;
   }
 
-  // 컬렉션 생성
+  @ApiOperation({ summary: '컬렉션 생성' })
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
   async addCollection(
@@ -57,7 +59,7 @@ export class CollectionController {
     return await this.collectionService.createCol(createColDto, user.id);
   }
 
-  // 컬렉션 수정
+  @ApiOperation({ summary: '컬렉션 수정' })
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
@@ -68,7 +70,7 @@ export class CollectionController {
     return await this.collectionService.updateCol(collectionId, updateColDto);
   }
 
-  // 컬렉션 삭제
+  @ApiOperation({ summary: '컬렉션 삭제' })
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(204)
   @Delete('/:collectionId')
@@ -80,7 +82,7 @@ export class CollectionController {
     return await this.collectionService.deleteCol(userId, collectionId);
   }
 
-  // 컨텐츠 추가
+  @ApiOperation({ summary: '컬렉션 컨텐츠 추가' })
   @UseGuards(AuthGuard('jwt'))
   @Post('/:collectionId/content')
   async addContentToCollection(
@@ -107,7 +109,7 @@ export class CollectionController {
     );
   }
 
-  // 컨텐츠 삭제
+  @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:collectionId/content')
   async removeContentFromCollection(

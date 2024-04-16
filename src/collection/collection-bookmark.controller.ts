@@ -10,14 +10,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { Users } from 'src/user/entities/user.entity';
 import { CollectionBookmarkService } from './collection-bookmark.service';
 import { UserInfo } from '../utils/userinfo.decorator';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('COLLECTION-BOOKMARK')
 @Controller('bookmark')
 export class CollectionBookmarkController {
   constructor(
     private readonly collectionBookmarkService: CollectionBookmarkService,
   ) {}
 
-  // 컬렉션 북마크 목록 조회
+  @ApiOperation({ summary: '컬렉션 북마크 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
   async getBookmarkCollections(@UserInfo() user: Users) {
@@ -26,7 +28,7 @@ export class CollectionBookmarkController {
     return myBookmarkList;
   }
 
-  // 컬렉션 북마크 추가
+  @ApiOperation({ summary: '컬렉션 북마크 추가' })
   @UseGuards(AuthGuard('jwt'))
   @Post('/:collectionId')
   async addBookmarkCollection(
@@ -39,7 +41,7 @@ export class CollectionBookmarkController {
     );
   }
 
-  // 컬렉션 북마크 취소
+  @ApiOperation({ summary: '컬렉션 북마크 취소' })
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:collectionId')
   async deleteBookmarkCollection(
