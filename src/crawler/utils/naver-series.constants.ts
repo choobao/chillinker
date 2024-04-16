@@ -59,8 +59,6 @@ export const review_content = 'span.u_cbox_contents';
 export const review_createdAt = 'span.u_cbox_date';
 export const review_likeCount = 'em.u_cbox_cnt_recomm';
 
-/////////////
-
 export const series_webtoon_url =
   'https://m.series.naver.com/comic/categoryProductList.series?categoryTypeCode=all&genreCode=&orderTypeCode=sale';
 export const series_webtoon_top100_daily_url =
