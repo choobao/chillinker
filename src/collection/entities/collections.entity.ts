@@ -43,9 +43,6 @@ export class Collections {
   )
   collectionBookmarks: CollectionBookmark[];
 
-  @Column('int', { name: 'collection_bookmark_id', nullable: true })
-  collectionBookmarkId: number;
-
   // 컬렉션 - 유저
   @ManyToOne(() => Users, (user) => user.collections)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])

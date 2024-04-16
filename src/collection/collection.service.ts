@@ -39,12 +39,19 @@ export class CollectionService {
     });
   }
 
-  // 내 컬렉션 상세 조회
+  // 컬렉션 상세 조회
   async getMyCol(collectionId: number) {
-    return await this.colRepository.findOne({
-      where: { id: collectionId },
-      relations: ['contentCollections', 'contentCollections.webContent'],
-    });
+    // return await this.contentCollectionRepository.find({
+    //   where: { collectionId },
+    //   relations: { webContent: true },
+    //   // select: ['contentCollections.webcontent'],
+    // });
+    return await this.colRepository
+      .createQueryBuilder('collections')
+      .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
+      .leftJoinAndSelect('contentCollection.webContent', 'webContent')
+      .where('collections.id = :id', { id: collectionId })
+      .getOne();
   }
 
   // 컬렉션 생성

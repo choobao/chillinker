@@ -33,20 +33,19 @@ export class CollectionController {
     return await myColList;
   }
 
-  @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
+  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
   @UseGuards(AuthGuard('jwt'))
+  @Get('/info/:collectionId')
+  async myCollection(@Param('collectionId') collectionId: number) {
+    const myCol = await this.collectionService.getMyCol(collectionId);
+    return myCol;
+  }
+
+  @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
   @Get('/:userId')
   async userCollections(@Param('userId') userId: number) {
     const userColList = await this.collectionService.getUserColList(userId);
     return await userColList;
-  }
-
-  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/:collectionId')
-  async myCollection(@Param('collectionId') collectionId: number) {
-    const myCol = await this.collectionService.getMyCol(collectionId);
-    return myCol;
   }
 
   @ApiOperation({ summary: '컬렉션 생성' })
