@@ -250,6 +250,10 @@ header {
   width: 170px;
 }
 
+.card-thumbnail-image {
+  width: 170px;
+}
+
 .card_container {
   width: 100%;
   /* max-width: 960px; */
@@ -691,4 +695,40 @@ textarea#intro {
 
 .bonenjung-wrap {
   float: right;
+}
+
+.keyword-item {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 3px;
+  padding: 0 10px;
+  background: #f3f4f5;
+}
+
+.keyword {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.metadata-item- .author-item-wrapper {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.author-detail {
+  /* font-size: 13px; */
+  color: #666;
+  line-height: 1em;
+  font-weight: 700;
+  /* cursor: pointer; */
+}
+
+.search-card {
+  padding: 15px;
+}
+
+.card-image {
+  width: 200px;
+  height: 200px;
 }
