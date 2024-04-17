@@ -22,6 +22,8 @@ export class ReviewService {
   constructor(
     @InjectRepository(CReviews)
     private readonly chillinkerReviewsRepository: Repository<CReviews>,
+    @InjectRepository(Users)
+    private readonly userRepository: Repository<Users>,
     @InjectRepository(PReviews)
     private readonly platformReviewsRepository: Repository<PReviews>,
     @InjectRepository(ReviewLikes)
@@ -37,75 +39,95 @@ export class ReviewService {
     order?: string,
     option?: string,
   ) {
-    //option = c, p
-    //order은 등록순(recent,만들어진 최신순), 인기순(popular,좋아요순)필요
+    const take = 10;
+
+    const content = await this.webContentRepository.findOne({
+      where: { id: webContentId },
+      //보고 기준 더 추가?
+    });
+
+    if (!content) {
+      throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
+    }
+
     if (option == 'c') {
       if (order == 'recent') {
         const reviews = await this.chillinkerReviewsRepository.findOne({
           where: { webContentId },
         });
-        if (!reviews) {
-          throw new NotFoundException(
-            '작품에 작성된 리뷰가 존재하지 않습니다.',
-          );
-        }
-        const recentReviews = await this.chillinkerReviewsRepository.find({
-          where: { webContentId },
-          order: { createdAt: 'desc' },
-          take: 10,
-          skip: (page - 1) * 10,
-        });
 
-        return recentReviews;
+        const totalCount = await this.chillinkerReviewsRepository.count({
+          where: { webContentId },
+        });
+        const totalPages = Math.ceil(totalCount / take);
+
+        const reviewList = await this.chillinkerReviewsRepository
+          .createQueryBuilder('review')
+          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
+          .select(['review', 'user.nickname']) // "review"와 "user.nickname" 선택
+          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
+          .orderBy('review.createdAt', 'DESC') // 정렬 조건
+          .take(take)
+          .skip((page - 1) * take)
+          .getMany();
+
+        return { content, reviewList, totalPages };
       } else {
         const reviews = await this.chillinkerReviewsRepository.findOne({
           where: { webContentId },
         });
-        if (!reviews) {
-          throw new NotFoundException(
-            '작품에 작성된 리뷰가 존재하지 않습니다.',
-          );
-        }
-        const defaultReivews = await this.chillinkerReviewsRepository.find({
+
+        const totalCount = await this.chillinkerReviewsRepository.count({
           where: { webContentId },
-          order: { likeCount: 'desc' },
-          take: 10,
-          skip: (page - 1) * 10,
         });
-        return defaultReivews;
+        const totalPages = Math.ceil(totalCount / take);
+
+        const reviewList = await this.chillinkerReviewsRepository
+          .createQueryBuilder('review')
+          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
+          .select(['review', 'user.nickname']) // "review"와 "user.nickname" 선택
+          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
+          .orderBy('review.rate', 'DESC') // 정렬 조건
+          .take(take)
+          .skip((page - 1) * take)
+          .getMany();
+
+        return { content, reviewList, totalPages };
       }
     } else {
       const reviews = await this.platformReviewsRepository.findOne({
         where: { webContentId },
       });
-      if (!reviews) {
-        throw new NotFoundException('작품에 작성된 리뷰가 존재하지 않습니다.');
-      }
+
+      const totalCount = await this.platformReviewsRepository.count({
+        where: { webContentId },
+      });
+      const totalPages = Math.ceil(totalCount / take);
       if (order == 'recent') {
-        const recentReviews = await this.platformReviewsRepository.find({
+        const reviewList = await this.platformReviewsRepository.find({
           where: { webContentId },
           order: { createDate: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
         });
 
-        return recentReviews;
+        return { content, reviewList, totalPages };
       } else {
         const reviews = await this.platformReviewsRepository.findOne({
           where: { webContentId },
         });
-        if (!reviews) {
-          throw new NotFoundException(
-            '작품에 작성된 리뷰가 존재하지 않습니다.',
-          );
-        }
-        const defaultReivews = await this.platformReviewsRepository.find({
+
+        const totalCount = await this.platformReviewsRepository.count({
+          where: { webContentId },
+        });
+        const totalPages = Math.ceil(totalCount / take);
+        const reviewList = await this.platformReviewsRepository.find({
           where: { webContentId },
           order: { likeCount: 'desc' },
           take: 10,
           skip: (page - 1) * 10,
         });
-        return defaultReivews;
+        return { content, reviewList, totalPages };
       }
     }
   }
@@ -163,7 +185,6 @@ export class ReviewService {
   ) {
     const userId = user.id;
     const { content, rate, isSpoiler } = createReviewDto;
-
     const findUserReiew = await this.chillinkerReviewsRepository.findOne({
       where: { userId, webContentId },
     });
