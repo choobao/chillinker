@@ -84,6 +84,14 @@ class KakaopageAxios {
         reviewList = reviewList.concat(reviews);
       }
 
+      const reviewMap = new Map();
+      reviewList.forEach((review) => {
+        const uniqueKey = `${review.writer}_${review.createDate}_${review.likeCount}`;
+        if (!reviewMap.has(uniqueKey)) {
+          reviewMap.set(uniqueKey, review);
+        }
+      });
+
       return {
         platform: { kakao: url },
         title,
@@ -95,7 +103,7 @@ class KakaopageAxios {
         isAdult,
         pubDate,
         keyword,
-        pReviews: reviewList,
+        pReviews: Array.from(reviewMap.values()),
       };
     } catch (err) {
       throw err;
@@ -131,15 +139,15 @@ class KakaopageAxios {
         .replace(/\[|\]|\"|\"/g, '')
         .replace(/author\/([^,]+),illustrator\/\1/g, 'Author/$1');
 
-      const keywords = data.data.contentHomeInfo.about.themeKeywordList.map(
-        (keyword) => keyword.title,
+      const keyword = data.data.contentHomeInfo.about.themeKeywordList.map(
+        (item) => item.title,
       );
 
-      const keyword = JSON.stringify(keywords)
-        .replace(/\[|\]|\"|\"/g, '')
-        .replace(/\,/g, ', ');
+      // const keyword = JSON.stringify(keywords)
+      //   .replace(/\[|\]|\"|\"/g, '')
+      //   .replace(/\,/g, ', ');
 
-      const recommends = data.data.contentHomeInfo.recommend.list.items; // 나중에 쓰일지도
+      // const recommends = data.data.contentHomeInfo.recommend.list.items; // 나중에 쓰일지도
       return { keyword, author };
     } catch (err) {
       throw err;
@@ -149,7 +157,7 @@ class KakaopageAxios {
   // 작품의 댓글 정보 요청(한 페이지당 25개씩)
   async requestWebContentReviews(
     id: number,
-    page: number = 1,
+    page: number,
     sortType: ReviewSortType = ReviewSortType.LIKE,
   ) {
     try {
@@ -171,7 +179,7 @@ class KakaopageAxios {
         writer: comment.userName,
         content: comment.comment,
         likeCount: comment.likeCount,
-        createDate: new Date(comment.createDt),
+        createDate: comment.createDt,
       }));
       return reviews;
     } catch (err) {

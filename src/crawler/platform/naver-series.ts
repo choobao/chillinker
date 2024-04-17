@@ -259,7 +259,7 @@ export class NaverSeriesPuppeteer {
       monitor: true,
       retryLimit: 5,
       puppeteerOptions: {
-        headless: false,
+        headless: true,
         userDataDir: './tmp',
       },
     });
@@ -280,7 +280,7 @@ export class NaverSeriesPuppeteer {
         }
       });
 
-      const webContentList: any[] = [];
+      const urlList: string[] = [];
       let crawledNum = 0; // 현재까지 크롤링한 웹툰의 개수를 추적
 
       while (crawledNum < n) {
@@ -295,7 +295,7 @@ export class NaverSeriesPuppeteer {
           const url =
             naver_series_url +
             (await webContent.$eval('a', (el) => el.getAttribute('href')));
-          webContentList.push({ url });
+          urlList.push(url);
           crawledNum += 1; // 크롤링한 웹툰 개수 증가
         }
 
@@ -304,7 +304,7 @@ export class NaverSeriesPuppeteer {
           break;
         }
       }
-      console.log('개수는? ', webContentList.length);
+      console.log('개수는? ', urlList.length);
 
       // 로그인
       await this.login(page);
@@ -313,165 +313,166 @@ export class NaverSeriesPuppeteer {
       const contentType = link.includes('novel')
         ? ContentType.WEBNOVEL
         : ContentType.WEBTOON;
-      for (const webContent of webContentList) {
-        if (webContent.url) {
-          await page.goto(webContent.url, { waitUntil: 'networkidle0' });
 
-          // const rate = await page.$eval(
-          //   series_rate,
-          //   (el) => el.textContent
-          // );
+      const webContentList: any[] = [];
+      for (const url of urlList) {
+        await page.goto(url, { waitUntil: 'networkidle0' });
 
-          const category = await page.$eval(
-            series_category,
-            (el) => el.textContent,
-          );
+        // const rate = await page.$eval(
+        //   series_rate,
+        //   (el) => el.textContent
+        // );
 
-          const image = await page.$eval(series_image, (el) =>
-            el.getAttribute('src'),
-          );
+        const category = await page.$eval(
+          series_category,
+          (el) => el.textContent,
+        );
 
-          let title = await page.$eval(
-            series_title,
-            (el) => el.textContent || 'NULL',
-          );
+        const image = await page.$eval(series_image, (el) =>
+          el.getAttribute('src'),
+        );
 
-          let isAdult = 0;
-          const is_adult_icon_exist = await page.$(series_adult_icon);
-          const is_hd_icon_exist = await page.$(series_hd_icon);
+        let title = await page.$eval(
+          series_title,
+          (el) => el.textContent || 'NULL',
+        );
 
-          if (is_adult_icon_exist !== null) {
-            const adultIconText =
-              (await page.$eval(series_adult_icon, (el) => el.textContent)) ||
-              'NULL';
-            if (adultIconText !== 'NULL') {
-              title = title.replace(adultIconText, '');
-              isAdult = 1;
-            }
+        let isAdult = 0;
+        const is_adult_icon_exist = await page.$(series_adult_icon);
+        const is_hd_icon_exist = await page.$(series_hd_icon);
+
+        if (is_adult_icon_exist !== null) {
+          const adultIconText =
+            (await page.$eval(series_adult_icon, (el) => el.textContent)) ||
+            'NULL';
+          if (adultIconText !== 'NULL') {
+            title = title.replace(adultIconText, '');
+            isAdult = 1;
           }
-
-          if (is_hd_icon_exist !== null) {
-            const hdIconText =
-              (await page.$eval(series_hd_icon, (el) => el.textContent)) ||
-              'NULL';
-            if (hdIconText !== 'NULL') {
-              title = title.replace(hdIconText, '');
-            }
-          }
-
-          await setTimeout(1000);
-          await page.click(series_epi_asc_btn);
-          await setTimeout(1000);
-
-          const pubDate = await page.$eval(
-            series_pubDate,
-            (el) => el.textContent,
-          );
-
-          const reviewCount = await page.$eval(
-            series_review_count,
-            (el) => el.textContent,
-          );
-
-          // 디테일 페이지로 이동
-          // 그 전에 디테일 페이지가 존재하는지 체크
-          const detail_page = await page.$(series_detail);
-
-          let desc = title;
-          const author_str =
-            detail_page === null
-              ? await page.$eval(series_not_detail_author, (el) =>
-                  el.innerText?.replace(/\s/g, ''),
-                )
-              : 'NULL';
-          let author = `author/${author_str}`;
-
-          if (detail_page !== null) {
-            const detail_page_url =
-              naver_series_url +
-              (await detail_page.$eval('dd > a', (el) =>
-                el.getAttribute('href'),
-              ));
-
-            await setTimeout(1000);
-            await page.goto(detail_page_url, { waitUntil: 'networkidle0' });
-
-            await page.waitForSelector(series_desc, { timeout: 1000 });
-            desc = await page.$eval(
-              series_desc,
-              (el) => el.textContent || title,
-            );
-
-            const authorList = (
-              await page.$eval(series_author, (el) => el.textContent)
-            ).split(', ');
-            if (
-              authorList.length === 1 &&
-              contentType === ContentType.WEBNOVEL
-            ) {
-              author = `author/${authorList[0]}`;
-            } else if (
-              authorList.length === 1 &&
-              contentType === ContentType.WEBTOON
-            ) {
-              author = `Author/${authorList[0]}`;
-            } else {
-              author = `author/${authorList[0]}, illustrator/${authorList[1]}`;
-            }
-
-            await page.goBack();
-          }
-
-          let pReviews: any[] = [];
-          // 리뷰가 존재하면,
-          if (reviewCount !== '0') {
-            await setTimeout(1000);
-            await page.click(series_review_btn); // 리뷰 버튼 클릭
-
-            // 무엇이 selected 된지 확인
-            await page.waitForSelector(series_best_review_btn);
-            const is_best_selected = await page.$eval(
-              series_best_review_btn,
-              (el) => el.getAttribute('aria-selected'),
-            );
-
-            if (is_best_selected === 'true') {
-              pReviews = await this.crawlReviews(page, 30);
-
-              if ((await page.$(series_all_review_btn)) !== null) {
-                await page.click(series_all_review_btn);
-
-                await setTimeout(1000);
-              }
-            }
-
-            const allPReviews = await this.crawlReviews(
-              page,
-              30 - pReviews.length,
-            );
-
-            pReviews = pReviews.concat(allPReviews);
-          }
-
-          const rank = link.includes('top100') ? { naver: i++ } : null;
-
-          // csv string에 추가할 데이터
-          const data = {
-            title,
-            author,
-            image,
-            category,
-            desc,
-            pReviews,
-            pubDate,
-            isAdult,
-            rank,
-            contentType,
-            platform: { naver: webContent.url },
-            keyword: category,
-          };
-          Object.assign(webContent, data);
         }
+
+        if (is_hd_icon_exist !== null) {
+          const hdIconText =
+            (await page.$eval(series_hd_icon, (el) => el.textContent)) ||
+            'NULL';
+          if (hdIconText !== 'NULL') {
+            title = title.replace(hdIconText, '');
+          }
+        }
+
+        await setTimeout(1000);
+        await page.click(series_epi_asc_btn);
+        await setTimeout(1000);
+
+        const pubDate = await page.$eval(
+          series_pubDate,
+          (el) => el.textContent,
+        );
+
+        const reviewCount = await page.$eval(
+          series_review_count,
+          (el) => el.textContent,
+        );
+
+        // 디테일 페이지로 이동
+        // 그 전에 디테일 페이지가 존재하는지 체크
+        const detail_page = await page.$(series_detail);
+
+        let desc = title;
+        const author_str =
+          detail_page === null
+            ? await page.$eval(series_not_detail_author, (el) =>
+                el.innerText?.replace(/\s/g, ''),
+              )
+            : 'NULL';
+        let author = `author/${author_str}`;
+
+        if (detail_page !== null) {
+          const detail_page_url =
+            naver_series_url +
+            (await detail_page.$eval('dd > a', (el) =>
+              el.getAttribute('href'),
+            ));
+
+          await setTimeout(1000);
+          await page.goto(detail_page_url, { waitUntil: 'networkidle0' });
+
+          await page.waitForSelector(series_desc, { timeout: 1000 });
+          desc = await page.$eval(series_desc, (el) => el.textContent || title);
+
+          const authorList = (
+            await page.$eval(series_author, (el) => el.textContent)
+          ).split(', ');
+          if (authorList.length === 1 && contentType === ContentType.WEBNOVEL) {
+            author = `author/${authorList[0]}`;
+          } else if (
+            authorList.length === 1 &&
+            contentType === ContentType.WEBTOON
+          ) {
+            author = `Author/${authorList[0]}`;
+          } else {
+            author = `author/${authorList[0]}, illustrator/${authorList[1]}`;
+          }
+
+          await page.goBack();
+        }
+
+        let pReviews: PReviews[] = [];
+        // 리뷰가 존재하면,
+        if (reviewCount !== '0') {
+          await setTimeout(1000);
+          await page.click(series_review_btn); // 리뷰 버튼 클릭
+
+          // 무엇이 selected 된지 확인
+          await page.waitForSelector(series_best_review_btn);
+          const is_best_selected = await page.$eval(
+            series_best_review_btn,
+            (el) => el.getAttribute('aria-selected'),
+          );
+
+          if (is_best_selected === 'true') {
+            pReviews = await this.crawlReviews(page, 30);
+
+            if ((await page.$(series_all_review_btn)) !== null) {
+              await page.click(series_all_review_btn);
+
+              await setTimeout(1000);
+            }
+          }
+
+          const allPReviews = await this.crawlReviews(
+            page,
+            30 - pReviews.length,
+          );
+
+          pReviews = pReviews.concat(allPReviews);
+        }
+
+        const rank = link.includes('top100') ? { naver: i++ } : null;
+
+        // csv string에 추가할 데이터
+        const webContent = {
+          title,
+          author,
+          image,
+          category,
+          desc,
+          pReviews,
+          pubDate,
+          isAdult,
+          rank,
+          contentType,
+          platform: { naver: url },
+          keyword: [category],
+        };
+
+        console.log(
+          webContent.title,
+          webContent.rank,
+          webContent.pReviews.length,
+        );
+
+        webContentList.push(webContent);
       }
 
       result = result.concat(webContentList);
