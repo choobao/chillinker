@@ -167,9 +167,7 @@ export class CrawlerService {
   }
 
   ////////////////////////////////////////////////////////
-
   mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
-
   async saveReviews(title: string, author: string, reviews: any[]) {
     if (reviews.length >= 1) {
       const contents = await this.contentRepository.findOneBy({
@@ -360,11 +358,25 @@ export class CrawlerService {
   }
 
   async createMrblue() {
-    const crawlWebnovelAll = await this.mrbluePuppeteer.crawlWebnovels();
+    const mbWebnovelCurPage =
+      +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
+    const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
+    const crawlWebnovelAll = await this.mrbluePuppeteer.crawlWebnovels(
+      mbWebnovelCurPage,
+      mbWebnovelMaxPage,
+    );
     await this.saveWebContentsData(ContentType.WEBNOVEL, crawlWebnovelAll);
+    await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
 
-    const crawlWebtoonAll = await this.mrbluePuppeteer.crawlWebtoons();
+    const mbWebtoonCurPage =
+      +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
+    const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
+    const crawlWebtoonAll = await this.mrbluePuppeteer.crawlWebtoons(
+      mbWebtoonCurPage,
+      mbWebtoonMaxPage,
+    );
     await this.saveWebContentsData(ContentType.WEBTOON, crawlWebtoonAll);
+    await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
 
     const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
     await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);

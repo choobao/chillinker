@@ -362,8 +362,8 @@ footer p {
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  height: 350px;
-  padding: 40px;
+  height: 330px;
+  padding: 30px;
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;
@@ -530,7 +530,7 @@ textarea#intro {
 }
 
 .profile-update-img-label:hover {
-  filter: grayscale(50%);
+  filter: grayscale(90%);
 }
 
 .detail-page-container {

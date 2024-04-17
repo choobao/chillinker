@@ -11,21 +11,21 @@ import {
 } from '../utils/mrblue.constants';
 import { setTimeout } from 'timers/promises';
 import { ConfigService } from '@nestjs/config';
+import { RedisService } from 'src/redis/redis.service';
 
 export default class MrbluePuppeteer {
   constructor(private readonly configService: ConfigService) {}
 
   //웹소설 크롤링(페이지네이션있음)
-  async crawlWebnovels() {
+  async crawlWebnovels(mbWebnovelCurPage: number, mbWebnovelMaxPage: number) {
     try {
       const result = await this.startCrawling();
 
-      let currentPage = 1;
       let data: any[] = [];
-      while (currentPage < 2) {
-        const newdata = await this.getWebnovels(result.page, currentPage);
+      while (mbWebnovelCurPage < mbWebnovelMaxPage) {
+        const newdata = await this.getWebnovels(result.page, mbWebnovelCurPage);
         data = [...data, ...newdata];
-        currentPage += 1;
+        mbWebnovelCurPage += 1;
       }
       await result.browser.close();
       return data;
@@ -136,17 +136,14 @@ export default class MrbluePuppeteer {
   }
 
   //웹툰 크롤링(페이지네이션 있음)
-  async crawlWebtoons() {
+  async crawlWebtoons(mbWebtoonCurPage: number, mbWebtoonMaxPage: number) {
     try {
       const result = await this.startCrawling();
-
-      let currentPage = 1;
       let data: any[] = [];
-
-      while (currentPage < 2) {
-        const newdata = await this.getWebtoons(result.page, currentPage);
+      while (mbWebtoonCurPage < mbWebtoonMaxPage) {
+        const newdata = await this.getWebtoons(result.page, mbWebtoonCurPage);
         data = [...data, ...newdata];
-        currentPage++;
+        mbWebtoonCurPage++;
       }
       await result.browser.close();
       return data;
