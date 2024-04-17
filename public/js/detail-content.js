@@ -8,7 +8,6 @@ $(document).ready(function () {
       type: 'POST',
       data: $(this).serialize(),
       success: function (data) {
-        alert('내 보관함에 추가되었습니다.');
         location.reload(true);
       },
       error: function (response) {
