@@ -21,6 +21,25 @@ import { UserInfo } from '../utils/userinfo.decorator';
 export class FollowController {
   constructor(private followService: FollowService) {}
 
+  @ApiOperation({ summary: '내 팔로워 목록 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/user/follower')
+  @Render('follower')
+  async getMyFollower(@UserInfo() user: Users) {
+    const followerList = await this.followService.getFollowerList(user.id);
+
+    return { followerList };
+  }
+
+  @ApiOperation({ summary: '내 팔로잉 목록 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/user/following')
+  @Render('following')
+  async getMyFollowing(@UserInfo() user: Users) {
+    const followingList = await this.followService.getFollowingList(user.id);
+    return { followingList };
+  }
+
   @ApiOperation({ summary: '팔로우/언팔로우' })
   @HttpCode(201)
   @UseGuards(AuthGuard('jwt'))
@@ -51,16 +70,5 @@ export class FollowController {
     // return await this.followService.getFollowerList(followingId);
     const followerList = await this.followService.getFollowerList(followingId);
     return { followerList };
-  }
-
-  @ApiOperation({ summary: '내 팔로워, 팔로잉 목록 조회' })
-  @Get('/user/follow')
-  @Render('follower.ejs')
-  async getMyFollow(@UserInfo() user: Users) {
-    // 린님 기존 코드(json 데이터를 반환하고 있어서 렌더링에 사용될수 없다고 함)
-    // return await this.followService.getFollowerList(followingId);
-    const followerList = await this.followService.getFollowerList(user.id);
-    const followingList = await this.followService.getFollowingList(user.id);
-    return { followerList, followingList };
   }
 }
