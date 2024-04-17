@@ -27,7 +27,7 @@ export class Collections {
   @Column({ type: 'varchar', nullable: true })
   coverImage?: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int', default: 0 })
   bookmarkCount: number;
 
   @CreateDateColumn()
@@ -58,4 +58,3 @@ export class Collections {
   )
   contentCollections: ContentCollection[];
 }
-
