@@ -435,7 +435,7 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('26 11 * * *')
+  @Cron('05 17 * * *')
   async saveAllTogether() {
     const startTime = new Date().getTime();
 
@@ -483,13 +483,13 @@ export class CrawlerService {
     // await this.rankUpdet();
 
     // DB에 저장
-    //await this.contentRepository.save();
+    // await this.contentRepository.save();
 
     // redis 업데이트
-    await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 100);
-    await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 100);
-    await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
-    await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
+    // await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 100);
+    // await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 100);
+    // await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
+    // await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
 
     await this.redisService.save(`ridi_curr${TYPE.R}`, ridiCurrRnovels + 1);
     await this.redisService.save(`ridi_curr${TYPE.RF}`, ridiCurrRFnovels + 1);
