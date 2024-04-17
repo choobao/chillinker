@@ -44,8 +44,8 @@ export class FollowController {
   @HttpCode(201)
   @UseGuards(AuthGuard('jwt'))
   @Post('users/:id/follows/follow')
-  async follow(@Param('id') followingId: number, @Req() req) {
-    const followerId = req.user.id;
+  async follow(@Param('id') followingId: number, @UserInfo() user: Users) {
+    const followerId = user.id;
 
     if (followingId === followerId) {
       throw new BadRequestException('스스로를 팔로우 할 수는 없습니다');
