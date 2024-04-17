@@ -112,10 +112,14 @@ body {
   font-family: 'IBM Plex Sans KR', sans-serif;
   font-size: 16px;
   padding-top: 90px;
+  height: auto;
 }
 .wrap {
   width: 100%;
   overflow: hidden;
+  height: auto;
+  /* min-height: 100%; */
+  padding-bottom: 200px;
 }
 
 main .inner {
@@ -404,7 +408,7 @@ footer p {
 }
 
 body {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
   overflow: auto;
@@ -533,8 +537,9 @@ textarea#intro {
   display: flex;
   margin: 0 auto;
   width: 1200px;
-  height: 1600px;
+  /* height: 1600px; */
   flex-direction: column;
+  margin-bottom: 150px;
 }
 
 .review-info-sedtion {
@@ -552,7 +557,6 @@ textarea#intro {
 }
 
 .review-input-left {
-  background-color: red;
   display: table-cell;
   width: 120px;
   padding: 32px 0 20px 0;
@@ -561,7 +565,6 @@ textarea#intro {
 }
 
 .review-input-right {
-  background-color: black;
   display: table-cell;
   vertical-align: top;
 }
@@ -743,4 +746,162 @@ textarea#intro {
 .card-image {
   width: 200px;
   height: 200px;
+}
+
+.review-info-section {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.review-input-left {
+  display: table-cell;
+  width: 120px;
+  padding: 32px 0 20px 0;
+  text-align: center;
+  cursor: default;
+}
+
+.review-input-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.review_input_textarea {
+  border: 2px solid #d1d5d9;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 112px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.03em;
+  padding: 12px 15px;
+  line-height: 1.5em;
+  color: #a7b1bb;
+  resize: vertical;
+}
+
+.review-testarea-wrapper {
+  color: #666;
+  font-size: 12px;
+  line-height: 1em;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* .write_button_wrapper {
+  padding: 10px 0;
+  height: 30px;
+} */
+
+/* .spoiler_input_wrapper {
+  float: right;
+}
+
+.write_button_wrapper {
+  display: inline-block;
+} */
+
+.rui_button_blue_30 .js_review_write_btn .write_button .disabled {
+  background: #ccc;
+  border-color: #ccc;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.rui_checkbox_input .js_new_review_spoiler_checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #b9bcc2;
+  background-color: transparent;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 #e5e5e5;
+  border-radius: 4px;
+}
+
+.spolier_and_wirte_button_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 10px;
+}
+
+.pagination {
+  display: flex;
+}
+
+.paginnation-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+#myform fieldset {
+  display: inline-block;
+  direction: rtl;
+  border: 0;
+}
+#myform fieldset legend {
+  text-align: right;
+}
+#myform input[type='radio'] {
+  display: none;
+}
+#myform label {
+  font-size: 3em;
+  color: transparent;
+  text-shadow: 0 0 0 #f0f0f0;
+}
+#myform label:hover {
+  text-shadow: 0 0 0 #6a5acd;
+}
+#myform label:hover ~ label {
+  text-shadow: 0 0 0 #6a5acd;
+}
+#myform input[type='radio']:checked ~ label {
+  text-shadow: 0 0 0 #6a5acd;
+}
+
+.review_list_section {
+  margin-top: 25px;
+}
+
+.rui_tab_and_order {
+  position: relative;
+  cursor: default;
+}
+
+.rui_tab_2 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 2px solid #d1d5d9;
+  cursor: default;
+}
+
+.rui_tab_2 .tab_list a.active,
+.rui_tab_2 .tab_list button.active {
+  color: #40474d;
+}
+
+.rui_tab_2 .tab_list {
+  font-family:
+    ridi-roboto,
+    Helvetica Neue,
+    Apple SD Gothic Neo,
+    '나눔고딕',
+    Nanum Gothic,
+    '돋움',
+    arial,
+    Dotum,
+    Tahoma,
+    Geneva,
+    sans-serif;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  margin-right: 13px;
 }

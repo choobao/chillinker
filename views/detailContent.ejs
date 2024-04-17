@@ -29,23 +29,23 @@
           <article class="detail-header">
             <div class="header-thumbnail">
               <div class="header-thumnail-image">
-                <img class="thumbnail" src="<%= image %>" />
+                <img class="thumbnail" src="<%= content.image %>" />
               </div>
               <div class="header-preference">
                 <button type="button" class="preference-button" id="like-btn">
                   <span class="button-contents"> 
                     <span class="button-icon">💜</span>
-                    <span class="button-text"><%= likeCount %></span>
+                    <span class="button-text"><%= content.likeCount %></span>
                   </span>
                 </button>
               </div>
             </div>
             <div class="header-info-wrap">
               <p class="info-category-wrap">
-                <a><%= category %></a>
+                <a><%= content.category %></a>
               </p>
               <div class="info-title-wrap">
-                <h1 class="info-title"><%= title %></h1>
+                <h1 class="info-title"><%= content.title %></h1>
                 <div class="bonenjung-wrap">
                   <button type="button" class="bonenjung-button">
                     <span class="button-contents">
@@ -63,7 +63,7 @@
                   </span>
                 </p>
                 <p class="metadataa metadata-writer">
-                  <% author.split(',').forEach((item) => { %>
+                  <% content.author.split(',').forEach((item) => { %>
                     <% let role = item.split('/')[0] %>
                     <% const name = item.split('/')[1] %>
                     <% if(role == 'author' ){ %>
@@ -88,7 +88,7 @@
               </div>
               <p class="go-link-text">보러가기</p>
               <div class="info-go-link">
-                <% Object.entries(platform).forEach(([key, value]) => { %>
+                <% Object.entries(content.platform).forEach(([key, value]) => { %>
                   <a href="<%= value %>" target="_blank">
                     <img class="platform-image" src="/images/<%= key %>_icon.png" alt="<%= key %>">
                   </a>
@@ -102,8 +102,8 @@
               <h2 class="title-text">이 책의 키워드</h2>
             </div>
             <ul class="keyword-list">
-              <% if (keyword && keyword.length > 0) { %>
-                  <% keyword.split(',').forEach((item) => { %>
+              <% if (content.keyword && content.keyword.length > 0) { %>
+                  <% content.keyword.split(',').forEach((item) => { %>
                     <li class="keyword-item">
                       <span class="detail-keyword">
                         <span class="hash-icon">#</span>
@@ -117,18 +117,139 @@
           <article class="detail-introduce">
             <div class="dk-block-title">
               <h2 class="title-text">
-                <span class="book-title"><%= title %></span>
+                <span class="book-title"><%= content.title %></span>
                 <span class="title-text">작품 소개</span>
               </h2>
             </div>
             <div class="introduce-book">
-              <p class="introduce-paragraph"><%- desc %></p>
+              <p class="introduce-paragraph"><%- content.desc %></p>
             </div>
           </article>
         </div>
-        <div class="review-container"><%- include('detailReview.ejs') %></div>
-      </div>
+        <div class="review-container">
+          <article class="detail-introduce">
+            <div class="dk-block-title">
+              <h2 class="title-text">
+                <span class="title-text">리뷰</span>
+              </h2>
+            </div>
+          </article>
+          <div class="review-info-section">
+            <div class="review-input-left"></div>
+            <div class="review-input-right">
+              <form class="mb-3" name="myform" id="myform" method="post">
+                <fieldset>
+                  <input type="radio" name="reviewStar" value="5" id="rate1" /><label
+                    for="rate1"
+                    >★</label
+                  >
+                  <input type="radio" name="reviewStar" value="4" id="rate2" /><label
+                    for="rate2"
+                    >★</label
+                  >
+                  <input type="radio" name="reviewStar" value="3" id="rate3" /><label
+                    for="rate3"
+                    >★</label
+                  >
+                  <input type="radio" name="reviewStar" value="2" id="rate4" /><label
+                    for="rate4"
+                    >★</label
+                  >
+                  <input type="radio" name="reviewStar" value="1" id="rate5" /><label
+                    for="rate5"
+                    >★</label
+                  >
+                </fieldset>
+              </form>
+              <div class="review-testarea-wrapper">
+                <textarea
+                  class="review_input_textarea js_review_input_textarea"
+                  name="content"
+                  title="리뷰 입력"
+                  placeholder="리뷰 작성 시 광고 및 욕설, 비속어나 타인을 비방하는 문구를 사용하시면 비공개될 수 있습니다."
+                ></textarea>
+              </div>
+              <div class="buttons_wrapper">
+                <div class="spolier_and_wirte_button_wrapper">
+                  <div class="spoiler_input_wrapper">
+                    <input type="checkbox" value="1" />
+                    <label
+                      for="spoiler_radio_input_write"
+                      class="rui_checkbox_input spoiler_input_label"
+                      >스포일러가 있습니다.</label
+                    >
+                  </div>
       
+                  <div class="write_button_wrapper">
+                    <button type="button" class="preference-button">
+                      <span class="button-contents">
+                        <span class="review-submit-text"> 리뷰 남기기</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="review-list-section">
+            <div class="rui_tab_and_order">
+              <ul class="rui_tab_2 js_review_list_filter_wrapper">
+                <li class="tab_list">
+                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active" data-filter="buyer_only">
+                    Platform</a>
+                </li>
+                <li class="tab_list">
+                  <a href="/books/<%- content.id %>?option=c" class="js_select_tab_option" data-filter="all">
+                    Chillinker</a>
+                </li>
+              </ul>
+              <ul class="rui_order js_review_list_order_wrapper">
+                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">공감순</a></li></ul>
+            </div>
+            <div class="review-list-wrapper"></div>
+               <ul class="review-list">
+                <% if(reviewList.length !==0){ %>
+              <% reviewList.forEach((item) => { %>
+                <li class="show-review">
+                  <div class="review-list-left-info">
+                    <div class="left_contents">
+                      <p>
+                        <span class="star_rate">
+                          <span class="RSGBookMetadata_StarRate">
+                            <span class="StarRate_IconBox">
+                              <span class="StarRate_IconFill" style="width: 100%"></span>
+                            </span>
+                          </span>
+                        </span>
+                        <span class="reviewer_id"><%= item.writer %></span>
+                      </p>
+                      <div class="review_date_and_report_wrapper">
+                        <div class="review_date"><%= item.createDate %></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="review-list-right-info">
+                    <p class="review_content js_review_content"><%= item.content %></p>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>            
+          </div>
+            <nav aria-label="Page navigation example" class="paginnation-wrapper">
+              <ul class="pagination">
+                <% for(let i = 1; i <= totalPages; i++) { %>
+                  <li class="page-item"><a class="page-link" href="/books/<%- content.id %>?option=<%- option %>&page=<%= i %>"><%= i %></a></li>
+                <% } %>
+              </ul>
+            </nav>
+            
+          </div>
+          <% }else{ %>
+            <div class="review-is-null">
+              <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
+            </div>
+            <% } %>
+      </div>
     </main>
     <footer>
       <ul>
@@ -140,8 +261,6 @@
       </ul>
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
-
     <script src="/js/detail-content.js"></script>
-
   </body>
 </html>

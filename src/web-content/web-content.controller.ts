@@ -106,14 +106,14 @@ export class WebContentController {
     }
   }
 
-  @Get('books/:webContentId')
-  @Render('detailContent')
-  async getContent(
-    @Param('webContentId', ParseIntPipe) id: number,
-    @Query('type') type: ContentType,
-  ) {
-    const findContent = await this.webContentService.findContent(id, type);
-    console.log(findContent);
-    return findContent;
-  }
+  // @Get('books/:webContentId')
+  // @Render('detailContent')
+  // async getContent(
+  //   @Param('webContentId', ParseIntPipe) id: number,
+  //   @Query('type') type: ContentType,
+  // ) {
+  //   const findContent = await this.webContentService.findContent(id, type);
+  //   console.log(findContent);
+  //   return findContent;
+  // }
 }

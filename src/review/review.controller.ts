@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -22,25 +23,29 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 
 @ApiTags('REVIEW')
-@Controller('webContents/:webContentsId/reviews')
+@Controller('books/:webContentsId')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
-  // @Render('detailReview')
+  @Render('detailContent')
   @Get()
   async getCReivew(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
-    @Query('page', ParseIntPipe) page?: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
     @Query('option') option?: string,
   ) {
-    return await this.reviewService.getCReviews(
+    const result = await this.reviewService.getCReviews(
       webContentsId,
       page,
       order,
       option,
     );
+
+    const { content, reviewList, totalPages } = result;
+
+    return { content, reviewList, totalPages, page, order, option };
   }
 
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
