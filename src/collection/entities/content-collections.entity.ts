@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Collections } from './collections.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../../web-content/entities/webContents.entity';
 
 @Entity({ name: 'content_collections' })
 export class ContentCollection {

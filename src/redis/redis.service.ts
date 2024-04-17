@@ -21,7 +21,7 @@ export class RedisService {
     if (expiresInSec) {
       await this.client.setex(key, expiresInSec, value);
     } else {
-      await this.client.set(key, value);
+      await this.client.setex(key, value, 25 * 3600); // 25h expire
     }
   }
 

@@ -32,7 +32,7 @@ import KakaopageAxios from './platform/kakaopage';
 import { ConfigService } from '@nestjs/config';
 
 import MrbluePuppeteer from './platform/mr.blue';
-import { ContentType } from 'src/web-content/webContent.type';
+import { ContentType } from '../web-content/webContent.type';
 
 @Injectable()
 export class CrawlerService {
@@ -49,70 +49,20 @@ export class CrawlerService {
     this.configService,
   );
 
-  @Cron('14 13 * * *')
-  async createNaverSeries() {
-    const currNumWebnovel =
-      +(await this.redisService.getValue('naver_webnovel')) || 0;
-    const currNumWebtoon =
-      +(await this.redisService.getValue('naver_webtoon')) || 0;
-
+  async createNaverSeries(
+    currNumWebnovel: number,
+    currNumWebtoon: number,
+    n: number,
+  ) {
     const params: object[] = [
       { link: series_webtoon_top100_daily_url, currNum: 1, n: 20 },
       { link: series_webnovel_top100_daily_url, currNum: 1, n: 20 },
-      { link: series_webtoon_url, currNum: currNumWebtoon, n: 50 },
-      { link: series_webnovel_url, currNum: currNumWebnovel, n: 50 },
+      { link: series_webtoon_url, currNum: currNumWebtoon, n },
+      { link: series_webnovel_url, currNum: currNumWebnovel, n },
     ];
 
-    const startTime = new Date().getTime();
-
-    let webContentList;
     try {
-      webContentList =
-        await this.naverSeriesPuppeteer.crawlNaverSeriesParallel(params);
-
-      // 데이터 유효성 검사
-      for (const webContent of webContentList) {
-        if (
-          _.isNil(webContent.title) ||
-          _.isNil(webContent.url) ||
-          _.isNil(webContent.author) ||
-          _.isNil(webContent.image) ||
-          _.isNil(webContent.category) ||
-          _.isNil(webContent.desc) ||
-          _.isNil(webContent.reviewList) ||
-          _.isNil(webContent.pubDate) ||
-          _.isNil(webContent.isAdult) ||
-          _.isNil(webContent.contentType)
-        ) {
-          throw new Error(`필수 컬럼 누락`);
-        }
-      }
-
-      // DTOs 생성
-      const createContentDtos = webContentList.map((content) => {
-        return {
-          title: content.title,
-          desc: content.desc,
-          image: content.image,
-          author: content.author,
-          category: content.category,
-          isAdult: content.isAdult,
-          platform: { naver: content.url },
-          pubDate: content.pubDate,
-          rank: content.rank,
-          contentType: content.contentType,
-          pReviews: content.reviewList,
-        };
-      });
-
-      // DB에 저장
-      await this.contentRepository.save(createContentDtos);
-
-      // redis 업데이트
-      await this.redisService.save('naver_webnovel', currNumWebnovel + 30);
-      await this.redisService.save('naver_webtoon', currNumWebtoon + 30);
-
-      console.log('시간 : ', new Date().getTime() - startTime, 'ms');
+      return await this.naverSeriesPuppeteer.crawlNaverSeriesParallel(params);
     } catch (err) {
       throw new Error(`크롤링 실패: ${err.message}`);
     }
@@ -122,77 +72,30 @@ export class CrawlerService {
 
   kakaopageAxios: KakaopageAxios = new KakaopageAxios();
 
-  async createDtosAndSave(data: WebContents[]) {
+  async createKakaopages(currPageWebnovel: number, currPageWebtoon: number) {
     try {
-      const createContentDtos = data.map((content) => {
-        const webContent = new WebContents();
-
-        webContent.title = content.title;
-        webContent.desc = content.desc;
-        webContent.image = content.image;
-        webContent.author = content.author;
-        webContent.category = content.category;
-        webContent.isAdult = content.isAdult;
-        webContent.platform = content.platform;
-        webContent.pubDate = content.pubDate;
-        webContent.keyword = content.keyword;
-        webContent.rank = content.rank;
-        webContent.contentType = content.contentType;
-        webContent.pReviews = content.pReviews;
-        return webContent;
-      });
-
-      // DB에 저장
-      await this.contentRepository.save(createContentDtos);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Cron('8 0 * * *')
-  async createKakaopages() {
-    const startTime = new Date().getTime();
-
-    const currPageWebnovel =
-      +(await this.redisService.getValue('kakao_webnovel')) || 0;
-    const currPageWebtoon =
-      +(await this.redisService.getValue('kakao_webtoon')) || 0;
-
-    try {
-      console.log('start!');
       const rankingWebnovels =
         await this.kakaopageAxios.getDailyRank_20_WebContents(Type.WEBNOVEL);
-      await this.createDtosAndSave(rankingWebnovels);
-      console.log('done!');
 
-      console.log('start!');
       const rankingWebtoons =
         await this.kakaopageAxios.getDailyRank_20_WebContents(Type.WEBTOON);
-      await this.createDtosAndSave(rankingWebtoons);
-      console.log('done!');
 
-      console.log('start!');
       const allWebnovels = await this.kakaopageAxios.getAll_96_WebContents(
         Type.WEBNOVEL,
         currPageWebnovel,
       );
-      await this.createDtosAndSave(allWebnovels);
-      console.log('done!');
 
-      await this.redisService.save('kakao_webnovel', currPageWebnovel + 4);
-
-      console.log('start!');
       const allWebtoons = await this.kakaopageAxios.getAll_96_WebContents(
         Type.WEBTOON,
         currPageWebtoon,
       );
-      await this.createDtosAndSave(allWebtoons);
-      console.log('done!');
 
-      await this.redisService.save('kakao_webtoon', currPageWebtoon + 4);
-
-      const endTime = new Date().getTime();
-      console.log(`총 시간 : ${endTime - startTime}ms`);
+      return [].concat(
+        rankingWebnovels,
+        rankingWebtoons,
+        allWebnovels,
+        allWebtoons,
+      );
     } catch (err) {
       throw err;
     }
@@ -200,135 +103,59 @@ export class CrawlerService {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  @Cron('26 11 * * *') //오후 다섯시 예약
-  async createRidibooks() {
-    const startTime = new Date().getTime();
-
+  async createRidibooks(
+    currRnovels: number,
+    currRFnovels: number,
+    currFnovels: number,
+    currBnovels: number,
+    currWebtoons: number,
+  ) {
     try {
-      // 일간랭킹;
-      // await this.rankUpdet();
-
-      console.log('start!');
       const rankingRnovels = await get20BestRanking(GENRE.R);
-      await this.save20Db(rankingRnovels);
-      console.log('done!');
 
-      console.log('start!');
       const rankingRFnovels = await get20BestRanking(GENRE.RF);
-      await this.save20Db(rankingRFnovels);
-      console.log('done!');
 
       // console.log('start!');
       // const rankingFnovels = await get20BestRanking(GENRE.F);
       // await this.save20Db(rankingFnovels);
       // console.log('done!');
 
-      console.log('start!');
       const rankingBnovels = await get20BestRanking(GENRE.B);
-      await this.save20Db(rankingBnovels);
-      console.log('done!');
 
-      console.log('start!');
       const rankingWebtoons = await get20BestRanking(GENRE.WB);
-      await this.save20Db(rankingWebtoons);
-      console.log('done!');
 
       //전체랭킹
-      const change = await this.redisService.save(`ridi_curr1650`, 2);
+      // const change = await this.redisService.save(`ridi_curr1650`, 2);
 
-      const currRnovels =
-        +(await this.redisService.getValue('ridi_curr1650')) || 1;
-      const currRFnovels =
-        +(await this.redisService.getValue('ridi_curr6050')) || 1;
-      const currFnovels =
-        +(await this.redisService.getValue('ridi_curr1750')) || 1;
-      const currBnovels =
-        +(await this.redisService.getValue('ridi_curr4150')) || 1;
-      const currWebtoons =
-        +(await this.redisService.getValue('ridi_curr1600')) || 1;
+      // const test = await this.redisService.getValue('ridi_curr1650');
 
-      const test = await this.redisService.getValue('ridi_curr1650');
-
-      console.log(test);
-      console.log(
-        '가져온정보',
-        currRnovels,
-        currRFnovels,
-        currFnovels,
-        currBnovels,
-        currWebtoons,
-      );
-
-      console.log('start!');
       const Rnovels = await get60WebtoonRanking(TYPE.R, currRnovels);
-      await this.save60Db(Rnovels, TYPE.R, currRnovels);
-      console.log('done!');
 
-      console.log('start!');
       const RFnovels = await get60WebtoonRanking(TYPE.RF, currRFnovels);
-      await this.save60Db(RFnovels, TYPE.RF, currRFnovels);
-      console.log('done!');
 
-      console.log('start!');
       const Fnovels = await get60WebtoonRanking(TYPE.F, currFnovels);
-      await this.save60Db(Fnovels, TYPE.F, currFnovels);
-      console.log('done!');
 
-      console.log('start!');
       const Bnovels = await get60WebtoonRanking(TYPE.B, currBnovels);
-      await this.save60Db(Bnovels, TYPE.B, currBnovels);
-      console.log('done!');
 
-      console.log('start!');
       const Webtoons = await get60WebtoonRanking(TYPE.WB, currWebtoons);
-      await this.save60Db(Webtoons, TYPE.WB, currWebtoons);
-      console.log('done!');
 
-      const endTime = new Date().getTime();
-      console.log(`총 시간 : ${endTime - startTime}ms`);
+      return [].concat(
+        rankingRnovels,
+        rankingRFnovels,
+        rankingBnovels,
+        rankingWebtoons,
+        Rnovels,
+        RFnovels,
+        Fnovels,
+        Bnovels,
+        Webtoons,
+      );
     } catch (err) {
       throw err;
     }
   }
 
-  async save60Db(data: WebContents[], type: TYPE, page: any) {
-    try {
-      console.log(page);
-      const createContentDtos = data.map((content) => {
-        const webContent = new WebContents();
-
-        console.log(content);
-
-        webContent.title = content.title;
-        webContent.desc = content.desc;
-        webContent.image = content.image;
-        webContent.author = content.author;
-        webContent.category = content.category;
-        webContent.isAdult = content.isAdult;
-        webContent.platform = content.platform;
-        webContent.pubDate = content.pubDate;
-        webContent.keyword = content.keyword;
-        webContent.contentType = content.contentType;
-
-        if (content.pReviews.length !== 0) {
-          webContent.pReviews = content.pReviews;
-        }
-
-        return webContent;
-      });
-
-      // DB에 저장
-      await this.contentRepository.save(createContentDtos);
-
-      const change = await this.redisService.save(`ridi_curr${type}`, page + 1);
-      const currRnovels = await this.redisService.getValue('ridi_curr1650');
-      console.log('들어온정보', type, page, currRnovels);
-      console.log('저장할거', change);
-    } catch (err) {
-      throw err;
-    }
-  }
-
+  // 랭킹 달려있는 것들 싹 다 제거
   async rankUpdet() {
     const resetRank = await this.contentRepository
       .createQueryBuilder()
@@ -339,40 +166,10 @@ export class CrawlerService {
     console.log('Rank 업데이트 완료');
   }
 
-  async save20Db(data) {
-    try {
-      const createContentDtos = data.map((content) => {
-        const webContent = new WebContents();
-
-        console.log(content);
-        webContent.title = content.title;
-        webContent.desc = content.desc;
-        webContent.image = content.image;
-        webContent.author = content.author;
-        webContent.category = content.category;
-        webContent.isAdult = content.isAdult;
-        webContent.platform = content.platform;
-        webContent.pubDate = content.pubDate;
-        webContent.keyword = content.keyword;
-        webContent.rank = content.rank;
-        webContent.contentType = content.contentType;
-
-        if (content.pReviews.length !== 0) {
-          webContent.pReviews = content.pReviews;
-        }
-
-        return webContent;
-      });
-
-      // DB에 저장
-      await this.contentRepository.save(createContentDtos);
-    } catch (err) {
-      throw err;
-    }
-  }
-
   ////////////////////////////////////////////////////////
+
   mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
+
   async saveReviews(title: string, author: string, reviews: any[]) {
     if (reviews.length >= 1) {
       const contents = await this.contentRepository.findOneBy({
@@ -574,5 +371,120 @@ export class CrawlerService {
 
     const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
     await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
+  }
+
+  ////
+
+  async createContentDtos(data: any[]) {
+    try {
+      // 데이터 유효성 검사
+      for (const webContent of data) {
+        if (
+          _.isNil(webContent.title) ||
+          _.isNil(webContent.desc) ||
+          _.isNil(webContent.image) ||
+          _.isNil(webContent.author) ||
+          _.isNil(webContent.category) ||
+          _.isNil(webContent.isAdult) ||
+          _.isNil(webContent.platform) ||
+          _.isNil(webContent.pubDate) ||
+          _.isNil(webContent.keyword) ||
+          _.isNil(webContent.contentType) ||
+          _.isNil(webContent.pReviews)
+        ) {
+          throw new Error(`필수 컬럼 누락`);
+        }
+      }
+
+      return data.map((content) => {
+        const webContent = new WebContents();
+
+        webContent.title = content.title;
+        webContent.desc = content.desc;
+        webContent.image = content.image;
+        webContent.author = content.author;
+        webContent.category = content.category;
+        webContent.isAdult = content.isAdult;
+        webContent.platform = content.platform;
+        webContent.pubDate = content.pubDate;
+        webContent.keyword = content.keyword;
+        webContent.rank = content.rank;
+        webContent.contentType = content.contentType;
+
+        if (content.pReviews.length !== 0) {
+          webContent.pReviews = content.pReviews;
+        }
+
+        return webContent;
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
+  @Cron('26 11 * * *')
+  async saveAllTogether() {
+    const startTime = new Date().getTime();
+
+    const naverCurrNumWebnovel =
+      +(await this.redisService.getValue('naver_webnovel')) || 0;
+    const naverCurrNumWebtoon =
+      +(await this.redisService.getValue('naver_webtoon')) || 0;
+
+    const kakaoCurrPageWebnovel =
+      +(await this.redisService.getValue('kakao_webnovel')) || 0;
+    const kakaoCurrPageWebtoon =
+      +(await this.redisService.getValue('kakao_webtoon')) || 0;
+
+    const ridiCurrRnovels =
+      +(await this.redisService.getValue('ridi_curr1650')) || 1;
+    const ridiCurrRFnovels =
+      +(await this.redisService.getValue('ridi_curr6050')) || 1;
+    const ridiCurrFnovels =
+      +(await this.redisService.getValue('ridi_curr1750')) || 1;
+    const ridiCurrBnovels =
+      +(await this.redisService.getValue('ridi_curr4150')) || 1;
+    const ridiCurrWebtoons =
+      +(await this.redisService.getValue('ridi_curr1600')) || 1;
+
+    const naverData = await this.createNaverSeries(
+      naverCurrNumWebnovel,
+      naverCurrNumWebtoon,
+      100,
+    );
+
+    const kakaoData = await this.createKakaopages(
+      kakaoCurrPageWebnovel,
+      kakaoCurrPageWebtoon,
+    );
+
+    const ridiData = await this.createRidibooks(
+      ridiCurrRnovels,
+      ridiCurrRFnovels,
+      ridiCurrFnovels,
+      ridiCurrBnovels,
+      ridiCurrWebtoons,
+    );
+
+    // 랭킹 제거
+    // await this.rankUpdet();
+
+    // DB에 저장
+    //await this.contentRepository.save();
+
+    // redis 업데이트
+    await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 100);
+    await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 100);
+    await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
+    await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
+
+    await this.redisService.save(`ridi_curr${TYPE.R}`, ridiCurrRnovels + 1);
+    await this.redisService.save(`ridi_curr${TYPE.RF}`, ridiCurrRFnovels + 1);
+    await this.redisService.save(`ridi_curr${TYPE.F}`, ridiCurrFnovels + 1);
+    await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
+    await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
+
+    console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
   }
 }

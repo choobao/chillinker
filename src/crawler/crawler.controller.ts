@@ -5,18 +5,18 @@ import { CrawlerService } from './crawler.service';
 export class CrawlerController {
   constructor(private readonly crawlService: CrawlerService) {}
 
-  @Get('kakao')
-  async getKakao() {
-    return await this.crawlService.createKakaopages();
-  }
+  // @Get('kakao')
+  // async getKakao() {
+  //   return await this.crawlService.createKakaopages();
+  // }
 
-  @Get('ridibooks')
-  async getRidi() {
-    return await this.crawlService.createRidibooks();
-  }
+  // @Get('ridibooks')
+  // async getRidi() {
+  //   return await this.crawlService.createRidibooks();
+  // }
 
-  @Get('mrblue')
-  async getMrblue() {
-    return await this.crawlService.createMrblue();
-  }
+  // @Get('mrblue')
+  // async getMrblue() {
+  //   return await this.crawlService.createMrblue();
+  // }
 }

@@ -39,6 +39,7 @@ import {
   series_title,
 } from '../utils/naver-series.constants';
 import { ConfigService } from '@nestjs/config';
+import { platform } from 'os';
 
 export class NaverSeriesAxios {
   host: string = 'https://series.naver.com';
@@ -421,7 +422,7 @@ export class NaverSeriesPuppeteer {
             await page.goBack();
           }
 
-          let reviewList: any[] = [];
+          let pReviews: any[] = [];
           // 리뷰가 존재하면,
           if (reviewCount !== '0') {
             await setTimeout(1000);
@@ -435,7 +436,7 @@ export class NaverSeriesPuppeteer {
             );
 
             if (is_best_selected === 'true') {
-              reviewList = await this.crawlReviews(page, 30);
+              pReviews = await this.crawlReviews(page, 30);
 
               if ((await page.$(series_all_review_btn)) !== null) {
                 await page.click(series_all_review_btn);
@@ -444,16 +445,15 @@ export class NaverSeriesPuppeteer {
               }
             }
 
-            const allReviewList = await this.crawlReviews(
+            const allPReviews = await this.crawlReviews(
               page,
-              30 - reviewList.length,
+              30 - pReviews.length,
             );
 
-            reviewList = reviewList.concat(allReviewList);
+            pReviews = pReviews.concat(allPReviews);
           }
 
           const rank = link.includes('top100') ? { naver: i++ } : null;
-          console.log(title, reviewList.length, rank, contentType);
 
           // csv string에 추가할 데이터
           const data = {
@@ -462,11 +462,13 @@ export class NaverSeriesPuppeteer {
             image,
             category,
             desc,
-            reviewList,
+            pReviews,
             pubDate,
             isAdult,
             rank,
             contentType,
+            platform: { naver: webContent.url },
+            keyword: category,
           };
           Object.assign(webContent, data);
         }
