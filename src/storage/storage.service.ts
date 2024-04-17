@@ -17,7 +17,10 @@ export class StorageService {
       projectId: this.configService.get<string>('PROJECT_ID'),
       credentials: {
         client_email: this.configService.get<string>('CLIENT_EMAIL'),
-        private_key: this.configService.get<string>('PRIVATE_KEY'),
+        private_key: this.configService
+          .get<string>('PRIVATE_KEY')
+          .split(String.raw`\n`)
+          .join('\n'),
       },
     });
 
@@ -44,7 +47,7 @@ export class StorageService {
 
   async delete(uploadedFileUrl: string) {
     try {
-      const filename = uploadedFileUrl.split('/')[4];
+      const filename = uploadedFileUrl.split('chillinker/')[1];
       await this.bucket.file(filename).delete();
     } catch (err) {
       throw new BadRequestException(err.message);

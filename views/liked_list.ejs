@@ -20,11 +20,12 @@
         <main>
           <div class="inner">
             <div class="category">
-              <ul>
-                <li><a href="/user/bogosips/wishes">보고싶어요</a></li>
-                <li><a href="/user/bogosips/watchings">보는중</a></li>
-              </ul>
-            <select name="sort" onchange="updateOrderType(this)">
+              <!-- <ul> -->
+                <!-- <li><a href="/user/bogosips/wishes">보고싶어요</a></li> -->
+                <!-- <li><a href="/user/bogosips/watchings">보는중</a></li> -->
+              <!-- </ul> -->
+              <br />
+            <select id="sort-option" name="sort" onchange="updateOrderType(this)">
                 <option value="ADD_DT">추가 오름차순</option>
                 <option value="ADD_DT_DESC">추가 내림차순</option>
                 <option value="NEW">발매 오름차순</option>
@@ -72,7 +73,7 @@
             <div class="contents_container">
               <% content.forEach(function(content) { %>
               <div class="content">
-                <a href="#">
+                <a href="/books/<%= content.webContent.id %>">
                   <img src="<%= content.webContent.image %>" alt="썸네일">
                 </a>
                 <a href="#">
@@ -85,6 +86,7 @@
             </div>
           </div>
         </main>
+        <script src="/js/liked_list.js"></script>
         <%- include('footer.ejs') %>
       </div>
     </body>

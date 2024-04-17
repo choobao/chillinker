@@ -89,7 +89,6 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '로그아웃' })
-  @UseGuards(AuthGuard('jwt'))
   @Get('logout')
   async logout(@Res() res) {
     res.clearCookie('accessToken').clearCookie('refreshToken');

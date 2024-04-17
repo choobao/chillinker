@@ -13,16 +13,37 @@ import {
 import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Users } from '../user/entities/user.entity';
+import { UserInfo } from '../utils/userinfo.decorator';
 
 @ApiTags('FOLLOWS')
-@Controller('users/:id/follows')
+@Controller()
 export class FollowController {
   constructor(private followService: FollowService) {}
+
+  @ApiOperation({ summary: '내 팔로워 목록 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/user/follower')
+  @Render('follower')
+  async getMyFollower(@UserInfo() user: Users) {
+    const followerList = await this.followService.getFollowerList(user.id);
+
+    return { followerList };
+  }
+
+  @ApiOperation({ summary: '내 팔로잉 목록 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/user/following')
+  @Render('following')
+  async getMyFollowing(@UserInfo() user: Users) {
+    const followingList = await this.followService.getFollowingList(user.id);
+    return { followingList };
+  }
 
   @ApiOperation({ summary: '팔로우/언팔로우' })
   @HttpCode(201)
   @UseGuards(AuthGuard('jwt'))
-  @Post('follow')
+  @Post('users/:id/follows/follow')
   async follow(@Param('id') followingId: number, @Req() req) {
     const followerId = req.user.id;
 
@@ -33,7 +54,7 @@ export class FollowController {
   }
 
   @ApiOperation({ summary: '팔로잉 목록 조회' })
-  @Get('followingList')
+  @Get('users/:id/follows/followingList')
   @Render('following.ejs')
   async getFollowingList(@Param('id') followerId: number) {
     // return await this.followService.getFollowingList(followerId);
@@ -42,7 +63,7 @@ export class FollowController {
   }
 
   @ApiOperation({ summary: '팔로워 목록 조회' })
-  @Get('followerList')
+  @Get('users/:id/follows/followerList')
   @Render('follower.ejs')
   async getFollowerList(@Param('id') followingId: number) {
     // 린님 기존 코드(json 데이터를 반환하고 있어서 렌더링에 사용될수 없다고 함)

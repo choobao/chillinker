@@ -18,6 +18,35 @@ window.onclick = function (event) {
   }
 };
 
+// 버튼 클릭 이벤트
+// 팔로잉/팔로워
+$('#profile-follower').click(function () {
+  window.location.href = '/user/follower';
+});
+$('#profile-following').click(function () {
+  window.location.href = '/user/following';
+});
+
+// 내 리뷰
+$('#profile-review').click(function () {
+  window.location.href = '/main'; // 임시로 메인으로 이동함. 추후 수정 요망.
+});
+
+// 보고싶어요
+$('#profile-like').click(function () {
+  window.location.href = '/user/likes';
+});
+
+// 내 컬렉션
+$('#profile-col').click(function () {
+  window.location.href = '/collections';
+});
+
+// 내가 북마크한 컬렉션
+$('#profile-bookmark-col').click(function () {
+  window.location.href = '/bookmark';
+});
+
 $(document).ready(function () {
   // 모달 창 닫기 버튼 이벤트
   $('.close').click(function () {
@@ -37,11 +66,10 @@ $(document).ready(function () {
       processData: false, // processData와 contentType을 false로 설정하여,
       contentType: false, // FormData 객체를 제대로 전송할 수 있게 함
       success: function (data) {
-        alert('프로필이 성공적으로 업데이트되었습니다.'); // 성공 메시지
+        alert('프로필이 성공적으로 업데이트되었습니다.');
         window.location.href = '/users/mypage'; // 이전 페이지(마이페이지)로 리다이렉트
       },
       error: function (response) {
-        //alert('프로필 업데이트에 실패했습니다.'); // 실패 메시지
         alert(response.responseJSON.message);
       },
     });

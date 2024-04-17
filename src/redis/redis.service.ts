@@ -29,4 +29,12 @@ export class RedisService {
     const value = await this.client.get(key);
     return value;
   }
+
+  async delete(key: string) {
+    try {
+      await this.client.del(key);
+    } catch (err) {
+      throw err;
+    }
+  }
 }

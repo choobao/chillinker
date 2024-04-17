@@ -13,7 +13,7 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.174-366d22f/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
+      url: `https://ridibooks.com/_next/data/3.8.175-e7958b7/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
     });
     const books = data.pageProps.dehydratedState.queries[2].state.data;
 
@@ -88,8 +88,8 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
           desc,
           image,
           isAdult,
-          author: authors.join(', '),
-          category: category.join(', '),
+          author: authors.join(','),
+          category: category.join(','),
           url,
           pubDate,
           keyword: keywords,
@@ -109,7 +109,7 @@ export async function get20BestRanking(gerne: GENRE) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.174-366d22f/bestsellers/${gerne}.json?genre=${gerne}`,
+      url: `https://ridibooks.com/_next/data/3.8.175-e7958b7/bestsellers/${gerne}.json?genre=${gerne}`,
     });
 
     const items =
@@ -121,7 +121,7 @@ export async function get20BestRanking(gerne: GENRE) {
         const book = bookData.book;
         let title = book.series.title;
         if (!title) {
-          title = book.title.main;
+          title = book.title;
         }
         console.log(title);
         const desc = book.introduction.description;
@@ -196,8 +196,8 @@ export async function get20BestRanking(gerne: GENRE) {
           desc,
           image,
           isAdult,
-          author: authors.join(', '),
-          category: category.join(', '),
+          author: authors.join(','),
+          category: category.join(','),
           url,
           pubDate,
           pReviews: reviewList,
@@ -205,90 +205,91 @@ export async function get20BestRanking(gerne: GENRE) {
         };
       }),
     );
+    console.log(data20ranking[15].title);
 
-    if (data20ranking == undefined) {
-      data20ranking = await Promise.all(
-        items.slice(0, 20).map(async (bookData, index) => {
-          const book = bookData.book;
-          let title = book.series.title;
-          const desc = book.introduction.description;
-          const image = book.series.thumbnail.xxlarge;
-          // const image = imageSmall.replace(/\/small#1$/, '');
-          const bookId = book.id;
-          const isAdult = book.isAdultOnly;
-          const authorArr = book.authors;
-          let authors = [];
-          for (let i = 0; i < authorArr.length; i++) {
-            let name = authorArr[i].name;
-            let role = authorArr[i].role;
+    // if (data20ranking == undefined) {
+    //   data20ranking = await Promise.all(
+    //     items.slice(0, 20).map(async (bookData, index) => {
+    //       const book = bookData.book;
+    //       let title = book.series.title;
+    //       const desc = book.introduction.description;
+    //       const image = book.series.thumbnail.xxlarge;
+    //       // const image = imageSmall.replace(/\/small#1$/, '');
+    //       const bookId = book.id;
+    //       const isAdult = book.isAdultOnly;
+    //       const authorArr = book.authors;
+    //       let authors = [];
+    //       for (let i = 0; i < authorArr.length; i++) {
+    //         let name = authorArr[i].name;
+    //         let role = authorArr[i].role;
 
-            if (
-              role == 'planner' ||
-              role == 'EDITOR' ||
-              role == 'PLANNER' ||
-              role == 'editor'
-            ) {
-              return;
-            }
+    //         if (
+    //           role == 'planner' ||
+    //           role == 'EDITOR' ||
+    //           role == 'PLANNER' ||
+    //           role == 'editor'
+    //         ) {
+    //           return;
+    //         }
 
-            if (gerne !== GENRE.WB && role == 'Author') {
-              role = 'author';
-            }
+    //         if (gerne !== GENRE.WB && role == 'Author') {
+    //           role = 'author';
+    //         }
 
-            if (role !== 'Author') {
-              role = role.toLowerCase();
-            }
+    //         if (role !== 'Author') {
+    //           role = role.toLowerCase();
+    //         }
 
-            const author = `${role}/${name}`;
-            authors.push(author);
-          }
-          const categoryArr = book.categories;
-          const category = [];
-          for (let i = 0; i < categoryArr.length; i++) {
-            category.push(categoryArr[i].name);
-          }
-          const url = `https://ridibooks.com/books/${bookId}`;
+    //         const author = `${role}/${name}`;
+    //         authors.push(author);
+    //       }
+    //       const categoryArr = book.categories;
+    //       const category = [];
+    //       for (let i = 0; i < categoryArr.length; i++) {
+    //         category.push(categoryArr[i].name);
+    //       }
+    //       const url = `https://ridibooks.com/books/${bookId}`;
 
-          let contentType;
+    //       let contentType;
 
-          if (gerne == 'webtoon') {
-            contentType = ContentType.WEBTOON;
-          } else {
-            contentType = ContentType.WEBNOVEL;
-          }
+    //       if (gerne == 'webtoon') {
+    //         contentType = ContentType.WEBTOON;
+    //       } else {
+    //         contentType = ContentType.WEBNOVEL;
+    //       }
 
-          let reviewList = [];
+    //       let reviewList = [];
 
-          const rank = { ridibooks: index + 1, gerne };
+    //       const rank = { ridibooks: index + 1, gerne };
 
-          const platform = { ridibooks: url };
+    //       const platform = { ridibooks: url };
 
-          const { keywords, pubDate } = await getKeywordPubDate(bookId);
+    //       const { keywords, pubDate } = await getKeywordPubDate(bookId);
 
-          const reviews10 = await getReviews10(bookId);
-          const reviews20 = await getReviews20(bookId);
-          // console.log('리뷰10', reviews10);
-          reviewList = reviewList.concat(reviews10, reviews20);
+    //       const reviews10 = await getReviews10(bookId);
+    //       const reviews20 = await getReviews20(bookId);
+    //       // console.log('리뷰10', reviews10);
+    //       reviewList = reviewList.concat(reviews10, reviews20);
 
-          return {
-            rank,
-            contentType,
-            bookId,
-            platform,
-            title,
-            desc,
-            image,
-            isAdult,
-            author: authors.join(', '),
-            category: category.join(', '),
-            url,
-            pubDate,
-            pReviews: reviewList,
-            keyword: keywords,
-          };
-        }),
-      );
-    }
+    //       return {
+    //         rank,
+    //         contentType,
+    //         bookId,
+    //         platform,
+    //         title,
+    //         desc,
+    //         image,
+    //         isAdult,
+    //         author: authors.join(','),
+    //         category: category.join(','),
+    //         url,
+    //         pubDate,
+    //         pReviews: reviewList,
+    //         keyword: keywords,
+    //       };
+    //     }),
+    //   );
+    // }
 
     return data20ranking;
   } catch (error) {
@@ -317,7 +318,7 @@ export async function getKeywordPubDate(bookId: number) {
   });
 
   // const keywordsq = keywordArr.join(', ');
-  const keywords = keywordArr.join(', ');
+  const keywords = keywordArr.join(',');
   // keywordsq.replace(/'/g, '');
 
   const dateStringWithSuffix = $(

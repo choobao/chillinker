@@ -63,21 +63,40 @@
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
-                          <% if (item.title.length > 9) { %>
-                            <%= item.title.slice(0, 9) + '...' %>
+                          <% if (item.title.length > 14) { %>
+                            <%= item.title.slice(0, 14) + '...' %>
                           <% } else { %>
                             <%= item.title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-card_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <%= %>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
                   </li>
                 <% }); %>
-            </div>
+              </div>
             <% } else if (type == 'authors') { %>
-              <div class="result_list" >
+              <div class="result_list">
                 <% authors.forEach((item) => { %>
                   <li class="searched-card">
                     <a title = <%= item.title %> href="/books/<%= item.webContents_id %>">
@@ -86,35 +105,54 @@
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
-                          <% if (item.webContents_title.length > 9) { %>
-                            <%= item.webContents_title.slice(0, 9) + '...' %>
+                          <% if (item.webContents_title.length > 14) { %>
+                            <%= item.webContents_title.slice(0, 14) + '...' %>
                           <% } else { %>
                             <%= item.webContents_title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.webContents_author %></div>
+                        <div class="card-info-card_author">
+                            <% const arr = item.webContents_author.split(',') %>
+                            <% let role = arr[0].split('/')[0] %>
+                            <% const name = arr[0].split('/')[1] %>
+                            <% if(role == 'author' ){ %>
+                              <% role = '글' %>
+                              <% }else if(role =='illustrator'){ %>
+                                <% role = '그림' %>
+                                <% }else if(role =='original_author'){ %>
+                                  <% role = '원작' %>
+                                  <% }else if(role =='Author'){ %>
+                                    <% role = '글/그림' %>
+                                    <% }else{ %>
+                                      <% role = '작가' %>
+                                      <% }%>
+                            <%= %>
+                            <span class="metadata-item- author-item-wrapper">
+                              <span class="author-detail"><%= name %></span> <%= role %>
+                             </span>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
                   </li>
-                <% }); %>
-              </div>
-            <% } else if (type == 'users') { %> 
-              <div class="result_list" >
-                <% users.forEach((item) => { %>
-                  <div class="search-card">
-                    <a href="#" class="card">
+                  <% }); %>
+                </div>
+              <% } else if (type == 'users') { %> 
+                <ul class="result_list" >
+                  <% users.forEach((item) => { %>
+                  <li class="search-card">
                     <% if (item.users_profile_image) { %>
+                      <a href="#" class="card">
                       <img src="<%= item.users_profile_image %>" alt="<%= item.title %>" class="card-image" name="profile-image">
                     <% } else { %>
                       <img src="https://picpac.kr/common/img/default_profile.png" alt="기본이미지" class="card-image" name="profile-image">
                     <% } %>
                     <div class="card-info">
-                      <h3 class="card-title" style="font-weight: 600;"><%= item.users_nickname %></h3>
-                      <h4 class="card-title" style="font-weight: 600;">리뷰 수: <%= item.title %></h4>
+                      <div class="card-info-title" style="font-weight: 600;"><%= item.users_nickname %></div>
                       <h4 class="card_author">
-                        <%= item.users_intro %>
-                        <% if (item.users_intro) { %>
+                        <% if (item.users_intro.length > 14) { %>
+                          <%= item.users_intro.slice(0, 14) + '...' %>
+                        <% } else if (item.users_intro) { %>
                           <%= item.users_intro %>
                         <% } else { %>
                         소개가 없습니다.
@@ -122,28 +160,32 @@
                       </h4>
                     </div>
                     </a>
-                  </div>
-                <% }); %>
-                </div>
+                  </li>
+                  <% }); %>
+                </ul>
               <% } else if (type == 'collections') { %>
-              <div class="result_list" >
-                <% collections.forEach((item) => { %>
+                <div class="result_list" >
+                  <% collections.forEach((item) => { %>
                   <div class="search-card">
                     <a href="#" class="card">
                     <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-thumbnail-image" >
                     <div class="card-info">
-                      <h3 class="card-title" style="font-weight: 600;"><%= item.collections_title %></h3>
+                      <h3 class="card-info-title" style="font-weight: 600;"><%= item.collections_title %></h3>
                       <h4 class="card_author">
-                        <%= item.collections_desc %>
+                         <% if (item.collections_desc.length > 10) { %>
+                          <%= item.collections_desc.slice(0, 10) + '...' %>
+                          <% } else { %>
+                            <%= item.collections_desc %>
+                          <% } %>
                       </h4>
                     </div>
                     </a>
                   </div>
-                <% }); %>
-              </div>
+                  <% }); %>
+                </div>
               <% } else { %>
-              <div class="result_list" >
-                <% webnovels.forEach((item) => { %>
+                <div class="result_list" >
+                  <% webnovels.forEach((item) => { %>
                   <li class="searched-card">
                     <a title = <%= item.title %> href="/books/<%= item.id %>">
                       <div class="searched-card-image">
@@ -151,32 +193,50 @@
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
-                          <% if (item.title.length > 9) { %>
-                            <%= item.title.slice(0, 9) + '...' %>
+                          <% if (item.title.length > 14) { %>
+                            <%= item.title.slice(0, 14) + '...' %>
                           <% } else { %>
                             <%= item.title %>
                           <% } %>
                         </div>
-                        <div class="card-info-card_author"> <%= item.author %></div>
+                        <div class="card-info-card_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </div>
                         <div class="card-info-star">별점</div>
                       </div>
                     </a>
                   </li>
-                <% }); %>
-              </div>
-            <% } %>
+                  <% }); %>
+                </div>
+              <% } %>
           </ul>
         </div>
     </main>
     <footer>
-        <ul>
-          <li>
-            <a href="https://github.com/choobao/chillinker">
-              <i class="fa fa-github" aria-hidden="true"></i>
-            </a>
-          </li>
-        </ul>
-        <p>Copyright © 2024 회빙환. All rights reserved.</p>
+      <ul>
+        <li>
+          <a href="https://github.com/choobao/chillinker">
+            <i class="fa fa-github" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+      <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     </div>
   </body>

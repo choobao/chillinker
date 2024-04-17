@@ -40,7 +40,15 @@
               </p>
               <div class="info-title-wrap">
                 <h1 class="info-title"><%= title %></h1>
+                <div class="bonenjung-wrap">
+                  <button type="button" class="bonenjung-button">
+                    <span class="button-contents">
+                      <span class="button-icon">📚</span>
+                    </span>
+                  </button>
+                </div>
               </div>
+             
               <div class="info-metadata-wrap">
                 <p class="metadata-rate">
                   <span class="bookMeta-starRate">
@@ -48,13 +56,31 @@
                     <span class="starRate-score">rate 만들거임 별점표시</span>
                   </span>
                 </p>
-                <p class="metadataa metadata-writer"><%= author %></p>
+                <p class="metadataa metadata-writer">
+                  <% author.split(',').forEach((item) => { %>
+                    <% let role = item.split('/')[0] %>
+                    <% const name = item.split('/')[1] %>
+                    <% if(role == 'author' ){ %>
+                      <% role = '글' %>
+                      <% }else if(role =='illustrator'){ %>
+                        <% role = '그림' %>
+                        <% }else if(role =='original_author'){ %>
+                          <% role = '원작' %>
+                          <% }else if(role =='Author'){ %>
+                            <% role = '글/그림' %>
+                            <% }else{ %>
+                              <% role = '작가' %>
+                              <% }%>
+                 <span class="metadata-item- author-item-wrapper">
+                  <span class="author-detail"><%= name %></span> <%= role %>
+                 </span>
+                  <% }); %>
+                </p>
                 <p class="metadataa publisher-info"></p>
               </div>
               <div class="dk-block-title">
               </div>
               <p class="go-link-text">보러가기</p>
-              <!-- <h2 class="title-text">보러가기</h2> -->
               <div class="info-go-link">
                 <% Object.entries(platform).forEach(([key, value]) => { %>
                   <a href="<%= value %>" target="_blank">
@@ -71,11 +97,14 @@
             </div>
             <ul class="keyword-list">
               <% if (keyword && keyword.length > 0) { %>
-                <ul class="keyword-list">
-                  <% keyword.split(', ').forEach((item) => { %>
-                    <li class="keyword-item"><%= item %></li>
+                  <% keyword.split(',').forEach((item) => { %>
+                    <li class="keyword-item">
+                      <span class="detail-keyword">
+                        <span class="hash-icon">#</span>
+                        <%= item %>
+                      </span>
+                    </li>
                   <% }); %>
-                </ul>
               <% } %>
             </ul>
           </article>
