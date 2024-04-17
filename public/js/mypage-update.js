@@ -20,8 +20,11 @@ window.onclick = function (event) {
 
 // 버튼 클릭 이벤트
 // 팔로잉/팔로워
-$('#profile-follow').click(function () {
-  window.location.href = '/main'; // 임시로 메인으로 이동함. 추후 수정 요망.
+$('#profile-follower').click(function () {
+  window.location.href = '/user/follower';
+});
+$('#profile-following').click(function () {
+  window.location.href = '/user/following';
 });
 
 // 내 리뷰

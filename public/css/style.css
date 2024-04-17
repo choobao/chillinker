@@ -426,8 +426,20 @@ footer {
   color: #fff;
   font-size: 14px;
 }
+.profile-btn-small {
+  width: 97px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
 
-.profile-btn:hover {
+.profile-btn:hover,
+.profile-btn-small:hover {
   background-color: #e6e6fa;
 }
 
