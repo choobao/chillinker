@@ -226,18 +226,18 @@
                                 </span>
                               </span>
                             </span>
-                            <span class="reviewer_id"><%= item.writer %></span>
-                            <span class="reviewer_id"><%= item.likeCount %></span>
-                            <span class="reviewer_id"><%= item.rate %></span>
                             <span class="reviewer_id"><%= item.users.nickname %></span>
+                            <div class="review_date"><%= item.createDate %></div>
+                            <span class="reviewer_rate"><%= item.rate %></span>
                           </p>
                           <div class="review_date_and_report_wrapper">
-                            <div class="review_date"><%= item.createDate %></div>
+              
                           </div>
                         </div>
                       </div>
                       <div class="review-list-right-info">
                         <p class="review_content js_review_content"><%= item.content %></p>
+                        <span class="reviewer_likeCount"><%= item.likeCount %></span>
                       </div>
                     </li>
                   <% }) %>
@@ -255,7 +255,7 @@
                           </span>
                         </span>
                         <span class="reviewer_id"><%= item.writer %></span>
-                        <span class="reviewer_id"><%= item.likeCount %></span>
+                   
                       </p>
                       <div class="review_date_and_report_wrapper">
                         <div class="review_date"><%= item.createDate %></div>
@@ -264,6 +264,7 @@
                   </div>
                   <div class="review-list-right-info">
                     <p class="review_content js_review_content"><%= item.content %></p>
+                    <span class="reviewer_likeCount"><%= item.likeCount %></span>
                   </div>
                 </li>
               <% }) %>

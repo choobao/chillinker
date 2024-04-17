@@ -909,3 +909,20 @@ textarea#intro {
   display: inline-block;
   margin-right: 13px;
 }
+
+.show-review {
+  display: flex;
+  padding: 10px;
+}
+
+.reviewer_id {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.review_date {
+  color: #808991;
+  font-size: 12px;
+  line-height: 16px;
+}
