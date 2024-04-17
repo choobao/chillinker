@@ -13,6 +13,7 @@ import { CollectionBookmarkController } from './collection-bookmark.controller';
 
 import { WebContents } from 'src/web-content/entities/webContents.entity';
 import { ContentCollection } from './entities/content-collections.entity';
+import { StorageService } from 'src/storage/storage.service';
 
 @Module({
   imports: [
@@ -22,10 +23,11 @@ import { ContentCollection } from './entities/content-collections.entity';
       // CollectionBookmarkUser,
       ContentCollection,
       WebContents,
+      StorageService,
     ]),
   ],
   exports: [CollectionService, CollectionBookmarkService],
-  providers: [CollectionService, CollectionBookmarkService],
+  providers: [CollectionService, CollectionBookmarkService, StorageService],
   controllers: [CollectionController, CollectionBookmarkController],
 })
 export class CollectionModule {}

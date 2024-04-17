@@ -8,7 +8,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CollectionService } from './collection.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,6 +19,7 @@ import { UpdateColDto } from './dto/updateCol.dto';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 // import { Collections } from './entities/collections.entity';
 
@@ -49,13 +52,21 @@ export class CollectionController {
   }
 
   @ApiOperation({ summary: '컬렉션 생성' })
+  @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
   async addCollection(
+    @UploadedFile() file: Express.Multer.File,
     @Body() createColDto: CreateColDto,
     @UserInfo() user: Users,
   ) {
-    return await this.collectionService.createCol(createColDto, user.id);
+    // return await this.collectionService.createCol(file, createColDto, user.id);
+    const createdCollection = await this.collectionService.createCol(
+      file,
+      createColDto,
+      user.id,
+    );
+    return createdCollection;
   }
 
   @ApiOperation({ summary: '컬렉션 수정' })

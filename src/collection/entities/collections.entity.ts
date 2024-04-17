@@ -24,6 +24,9 @@ export class Collections {
   @Column({ type: 'varchar', nullable: false })
   desc: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  coverImage?: string;
+
   @Column({ type: 'int', nullable: true })
   bookmarkCount: number;
 
