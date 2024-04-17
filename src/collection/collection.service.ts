@@ -12,6 +12,8 @@ import { ContentCollection } from './entities/content-collections.entity';
 import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
 
+import { StorageService } from '../storage/storage.service';
+
 @Injectable()
 export class CollectionService {
   constructor(
@@ -21,6 +23,8 @@ export class CollectionService {
     private webContentRepository: Repository<WebContents>,
     @InjectRepository(ContentCollection)
     private contentCollectionRepository: Repository<ContentCollection>,
+
+    private readonly storageService: StorageService,
   ) {}
 
   // 내 컬렉션 목록 조회
@@ -56,10 +60,34 @@ export class CollectionService {
 
   // 컬렉션 생성
   async createCol(
+    file: Express.Multer.File,
     createColDto: CreateColDto,
     userId: number,
   ): Promise<Collections> {
-    const collection = this.colRepository.create({ ...createColDto, userId });
+    // let coverImage = createColDto.coverImage;
+    // if (file) {
+    //   //이미지 업로드
+    //   coverImage = await this.storageService.upload(file);
+    //   if (createColDto.coverImage) {
+    //     await this.storageService.delete(createColDto.coverImage);
+    //   }
+    // }
+    // const collection = this.colRepository.create({ ...createColDto, userId });
+    // return await this.colRepository.save(collection);
+    let coverImage: string;
+    if (file) {
+      // 이미지 업로드
+      coverImage = await this.storageService.upload(file);
+    }
+
+    // 컬렉션 생성
+    const collection = this.colRepository.create({
+      ...createColDto,
+      userId,
+      coverImage, // 커버 이미지 추가
+    });
+
+    // 컬렉션 저장
     return await this.colRepository.save(collection);
   }
 
