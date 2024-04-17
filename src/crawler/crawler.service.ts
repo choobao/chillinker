@@ -212,16 +212,9 @@ export class CrawlerService {
         reviews,
       } = data[i];
 
-      if (contentType === '웹툰') {
-        if (category.includes('에로')) continue;
-      }
-      if (contentType === '웹소설') {
-        if (category === '일반') continue;
-      }
-
       const existedContents = await this.contentRepository.findOneBy({
         title,
-        author,
+        contentType,
       });
 
       if (existedContents) {
@@ -252,7 +245,7 @@ export class CrawlerService {
         }
       } else {
         await this.contentRepository.save({
-          contentType: ContentType.WEBNOVEL,
+          contentType,
           title,
           desc,
           image,
@@ -287,16 +280,9 @@ export class CrawlerService {
         reviews,
       } = data[i];
 
-      if (contentType === '웹툰') {
-        if (category.includes('에로')) continue;
-      }
-      if (contentType === '웹소설') {
-        if (category === '일반') continue;
-      }
-
       const existedContents = await this.contentRepository.findOneBy({
         title,
-        author,
+        contentType,
       });
 
       if (existedContents) {
@@ -358,6 +344,12 @@ export class CrawlerService {
   }
 
   async createMrblue() {
+    const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
+    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
+
+    const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
+    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
+
     const mbWebnovelCurPage =
       +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
     const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
@@ -377,12 +369,6 @@ export class CrawlerService {
     );
     await this.saveWebContentsData(ContentType.WEBTOON, crawlWebtoonAll);
     await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
-
-    const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
-    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
-
-    const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
-    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
   }
 
   ////
