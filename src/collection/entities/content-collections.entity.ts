@@ -13,7 +13,9 @@ export class ContentCollection {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Collections, (collection) => collection.contentCollections)
+  @ManyToOne(() => Collections, (collection) => collection.contentCollections, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'collection_id' })
   collection: Collections;
 
