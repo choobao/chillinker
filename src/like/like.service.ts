@@ -7,12 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Likes } from './entities/likes.entity';
 import { Repository } from 'typeorm';
 import _ from 'lodash';
+import { WebContents } from '../web-content/entities/webContents.entity';
 
 @Injectable()
 export class LikeService {
   constructor(
     @InjectRepository(Likes)
     private readonly likesRepository: Repository<Likes>,
+    @InjectRepository(WebContents)
+    private readonly webContentRepository: Repository<WebContents>,
   ) {}
 
   orderType: object = {
@@ -32,36 +35,38 @@ export class LikeService {
     return like;
   }
 
-  async addContent(userId: number, contentId: number) {
+  async changeContent(userId: number, contentId: number) {
     try {
       const existingContent = await this.findContent(userId, contentId);
-
-      if (!_.isNil(existingContent)) {
-        throw new ConflictException('이미 추가된 작품입니다.');
-      }
-
-      await this.likesRepository.save({
-        userId,
-        webContentId: contentId,
-      });
-
-      return { message: '성공적으로 추가되었습니다.' };
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async deleteContent(userId: number, contentId: number) {
-    try {
-      const existingContent = await this.findContent(userId, contentId);
-
+      console.log('존재하니?', existingContent);
       if (_.isNil(existingContent)) {
-        throw new ConflictException('이미 없는 작품입니다.');
+        // 추가
+        await this.likesRepository.save({
+          userId,
+          webContentId: contentId,
+        });
+
+        // 카운트 증가
+        await this.webContentRepository.increment(
+          { id: contentId },
+          'likeCount',
+          1,
+        );
+
+        return { message: '성공적으로 추가되었습니다.' };
+      } else {
+        // 삭제
+        await this.likesRepository.delete(existingContent.id);
+
+        // 카운트 감소
+        await this.webContentRepository.decrement(
+          { id: contentId },
+          'likeCount',
+          1,
+        );
+
+        return { message: '성공적으로 삭제되었습니다.' };
       }
-
-      await this.likesRepository.delete(existingContent.id);
-
-      return { message: '성공적으로 삭제되었습니다.' };
     } catch (err) {
       throw err;
     }

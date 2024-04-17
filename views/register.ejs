@@ -10,13 +10,19 @@
     src="https://kit.fontawesome.com/0b832ce4c1.js"
     crossorigin="anonymous"
   ></script>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
 </head>
 
 <body>
   <%- include('header.ejs') %>
 
   <div class="register-wrapper">
-    <h2>회원가입</h2>
+    <h2>Sign Up</h2>
     <form method="post" action="/users/register" id="register-form">
       <input type="text" name="nickname" placeholder="닉네임" required />
       <input type="text" name="intro" placeholder="소개글" required />

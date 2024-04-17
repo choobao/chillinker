@@ -1,9 +1,7 @@
 import {
   Controller,
-  Delete,
   Get,
   HttpCode,
-  Param,
   Post,
   Query,
   Render,
@@ -22,30 +20,20 @@ import { LikeService } from './like.service';
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
-  @ApiOperation({ summary: '보고싶어요 에 작품 추가' })
-  @Post('likes/add')
+  @ApiOperation({ summary: '보고싶어요 에 작품 추가/삭제' })
+  @Post('likes/change')
   @HttpCode(201)
-  async addContent(
+  async changeContent(
     @UserInfo() user: Users,
     @Query('contentId') contentId: number,
   ) {
-    return await this.likeService.addContent(user.id, contentId);
-  }
-
-  @ApiOperation({ summary: '보고싶어요 에서 작품 삭제' })
-  @Delete('likes/delete')
-  @HttpCode(200)
-  async deleteContent(
-    @UserInfo() user: Users,
-    @Query('contentId') contentId: number,
-  ) {
-    return await this.likeService.deleteContent(user.id, contentId);
+    return await this.likeService.changeContent(user.id, contentId);
   }
 
   @ApiOperation({ summary: '보고싶어요 조회(타인)' })
   @Get('likes')
   @HttpCode(200)
-  @Render('liked_list.ejs')
+  @Render('liked_list')
   async getLikes(
     @Query('userId') userId: number,
     @Query('sortType') sortType: string,
@@ -57,7 +45,7 @@ export class LikeController {
   @ApiOperation({ summary: '보고싶어요 조회(본인)' })
   @Get('user/likes')
   @HttpCode(200)
-  @Render('liked_list.ejs')
+  @Render('liked_list')
   async getMyLikes(
     @UserInfo() user: Users,
     @Query('sortType') sortType: string = 'ADD_DT',

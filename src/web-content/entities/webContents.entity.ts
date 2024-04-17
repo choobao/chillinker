@@ -55,11 +55,11 @@ export class WebContents {
   image: string;
 
   /**
-   * bogosipCount
+   * likeCount
    * @example 0
    */
   @Column({ type: 'int', default: 0 })
-  bogosipCount: number;
+  likeCount: number;
 
   /**
    * isAdult

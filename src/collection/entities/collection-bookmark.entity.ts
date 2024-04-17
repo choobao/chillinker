@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Collections } from './collections.entity';
 import { Users } from '../../user/entities/user.entity';
+
 @Entity({
   name: 'collection_bookmark',
 })
