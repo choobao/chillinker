@@ -27,7 +27,7 @@
         <div class="collection" href="#컬렉션상세페이지">
           <div class="collection_upper">
             <img class="collection_img"
-              src="#제일처음담은작품의 썸네일(이 collectionId의 contents-collection.id가 가장 작은 숫자인 contents의 썸네일)"
+              src="#"
               alt="/logo_image/chillinker_logo(2).png"
             />
             <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
@@ -37,13 +37,27 @@
               <li class="collection_title"><%= ${collections_title} /%></li>
               <li class="collection_desc"><%= ${collections_desc} /%></li>
               <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
+              <li class="collection_btn_group">
+                <a class="collection_update_btn">수정</a>
+                <a class="collection_delete_btn">삭제</a>
+              </li>
             </ul>
+            <div class="add_collection_modal">
+              <h2>컬렉션 수정</h2>
+              <form>
+                <!-- 파일첨부하는 부분 -->
+                <input title/>
+                <input desc/>
+              </form>
+              <button class="add_col_cancle_btn">취소</button>
+              <button class="add_col_execute_btn" href="#?맞나?">확인</button>
+            </div>
           </div>
         </div>
         <div class="collection" href="#컬렉션상세페이지">
           <div class="collection_upper">
             <img class="collection_img"
-              src="#제일처음담은작품의 썸네일(이 collectionId의 contents-collection.id가 가장 작은 숫자인 contents의 썸네일)"
+              src="#"
               alt="/logo_image/chillinker_logo(2).png"
             />
             <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
@@ -53,20 +67,35 @@
               <li class="collection_title"><%= ${collections_title} /%></li>
               <li class="collection_desc"><%= ${collections_desc} /%></li>
               <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
+              <li class="collection_btn_group">
+                <a class="collection_update_btn">수정</a>
+                <a class="collection_delete_btn">삭제</a>
+              </li>
             </ul>
+            <div class="add_collection_modal">
+              <h2>컬렉션 수정</h2>
+              <form>
+                <!-- 파일첨부하는 부분 -->
+                <input title/>
+                <input desc/>
+              </form>
+              <button class="add_col_cancle_btn">취소</button>
+              <button class="add_col_execute_btn" href="#?맞나?">확인</button>
+            </div>
           </div>
         </div>
       </div>
       <div class="add_collection_modal">
         <h2>새 컬렉션 만들기</h2>
         <form>
+          <!-- 파일첨부하는 부분 -->
           <input title/>
           <input desc/>
         </form>
         <button class="add_col_cancle_btn">취소</button>
         <button class="add_col_execute_btn" href="#?맞나?">확인</button>
       </div>
-      <button class="add_collection_btn" >+</button>
+      <button class="add_collection_btn">+새 컬렉션</button>
     </main>
     <%- include('footer.ejs') %>
   </body>
