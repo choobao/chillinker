@@ -34,7 +34,8 @@
     > -->
     <img
       src="<%= user.profileImage %>"
-      alt="/logo_image/chillinker_logo(2).png"
+      alt="프로필사진"
+      onerror="this.src='/logo_image/chillinker_logo(2).png'"
       class="profile-img"
     />
     <h2><%= user.nickname %></h2>
@@ -58,7 +59,8 @@
         <label class="profile-update-img-label">
           <img
             src="<%= user.profileImage %>"
-            alt="/logo_image/chillinker_logo(2).png"
+            alt="프로필사진"
+            onerror="this.src='/logo_image/chillinker_logo(1).png'"
             class="profile-update-img" />
           <input
             type="file"
