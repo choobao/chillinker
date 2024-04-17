@@ -137,30 +137,30 @@
           <div class="review-info-section">
             <div class="review-input-left"></div>
             <div class="review-input-right">
-              <form class="mb-3" name="myform" id="myform" method="post">
+              <form class="mb-3" name="myform" id="myform" method="post" action="/books/<%- content.id %>">
                 <fieldset>
-                  <input type="radio" name="reviewStar" value="5" id="rate1" /><label
+                  <input type="radio" name="rate" value="5" id="rate1" /><label
                     for="rate1"
                     >★</label
                   >
-                  <input type="radio" name="reviewStar" value="4" id="rate2" /><label
+                  <input type="radio" name="rate" value="4" id="rate2" /><label
                     for="rate2"
                     >★</label
                   >
-                  <input type="radio" name="reviewStar" value="3" id="rate3" /><label
+                  <input type="radio" name="rate" value="3" id="rate3" /><label
                     for="rate3"
                     >★</label
                   >
-                  <input type="radio" name="reviewStar" value="2" id="rate4" /><label
+                  <input type="radio" name="rate" value="2" id="rate4" /><label
                     for="rate4"
                     >★</label
                   >
-                  <input type="radio" name="reviewStar" value="1" id="rate5" /><label
+                  <input type="radio" name="rate" value="1" id="rate5" /><label
                     for="rate5"
                     >★</label
                   >
                 </fieldset>
-              </form>
+             
               <div class="review-testarea-wrapper">
                 <textarea
                   class="review_input_textarea js_review_input_textarea"
@@ -172,21 +172,21 @@
               <div class="buttons_wrapper">
                 <div class="spolier_and_wirte_button_wrapper">
                   <div class="spoiler_input_wrapper">
-                    <input type="checkbox" value="1" />
+                    <input type="checkbox" name="isSpoiler" />
                     <label
                       for="spoiler_radio_input_write"
                       class="rui_checkbox_input spoiler_input_label"
                       >스포일러가 있습니다.</label
                     >
                   </div>
-      
                   <div class="write_button_wrapper">
-                    <button type="button" class="preference-button">
+                    <button type="submit" class="preference-button">
                       <span class="button-contents">
                         <span class="review-submit-text"> 리뷰 남기기</span>
                       </span>
                     </button>
                   </div>
+                </form>
                 </div>
               </div>
             </div>
@@ -222,6 +222,7 @@
                           </span>
                         </span>
                         <span class="reviewer_id"><%= item.writer %></span>
+                        <span class="reviewer_id"><%= item.likeCount %></span>
                       </p>
                       <div class="review_date_and_report_wrapper">
                         <div class="review_date"><%= item.createDate %></div>
@@ -261,6 +262,6 @@
       </ul>
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
-    <script src="/js/detail-content.js"></script>
+    <script src="/js/detail.js"></script>
   </body>
 </html>

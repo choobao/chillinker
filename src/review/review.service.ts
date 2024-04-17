@@ -176,7 +176,6 @@ export class ReviewService {
   ) {
     const userId = user.id;
     const { content, rate, isSpoiler } = createReviewDto;
-
     const findUserReiew = await this.chillinkerReviewsRepository.findOne({
       where: { userId, webContentId },
     });

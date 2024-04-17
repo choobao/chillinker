@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -76,7 +77,6 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
-  // @Render('detailReview')
   @Post()
   async createReview(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,

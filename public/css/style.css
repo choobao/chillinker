@@ -379,6 +379,10 @@ footer p {
   text-align: center;
 }
 
+input[type='checkbox'] {
+  all: revert;
+}
+
 #login-form > input,
 #register-form > input,
 #profile-form > input {
