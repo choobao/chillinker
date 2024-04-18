@@ -619,6 +619,13 @@ export class CrawlerService {
 
       // DB에 저장
       await this.contentRepository.save(result);
+      // await this.contentRepository
+      //   .createQueryBuilder()
+      //   .insert()
+      //   .into(WebContents)
+      //   .values(result)
+      //   .orIgnore()
+      //   .execute();
 
       // redis 업데이트
       await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
@@ -636,15 +643,15 @@ export class CrawlerService {
         '디비 작업 끝. 총 걸린 시간은 ',
         new Date().getTime() - begin_time,
       );
-      console.log('미스터 블루 작업 시작.');
-      begin_time = new Date().getTime();
+      // console.log('미스터 블루 작업 시작.');
+      // begin_time = new Date().getTime();
 
-      await this.createMrblue();
+      // await this.createMrblue();
 
-      console.log(
-        '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
-        new Date().getTime() - begin_time,
-      );
+      // console.log(
+      //   '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
+      //   new Date().getTime() - begin_time,
+      // );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
     } catch (err) {

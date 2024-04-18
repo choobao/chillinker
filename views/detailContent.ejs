@@ -34,6 +34,7 @@
               </div>
               <div class="header-preference">
                 <button type="button" class="preference-button" id="like-btn">
+                  <input type="hidden" value="<%= content.id %>" id="content-id"/>
                   <span class="button-contents"> 
                     <span class="button-icon">💜</span>
                     <span class="button-text"><%= content.likeCount %></span>
