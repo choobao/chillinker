@@ -27,7 +27,7 @@ export enum Writer_Type {
 
 // 베스트 20 리디 웹툰 & 웹소설
 export const ridi_best20_rank_webToon =
-  'https://ridibooks.com/_next/data/3.8.172-ecfb8c7/bestsellers/webtoon.json?page=1&genre=webtoon';
+  'https://ridibooks.com/_next/data/3.8.176-8c469fa/bestsellers/webtoon.json?page=1&genre=webtoon';
 //   https://ridibooks.com/_next/data/3.8.172-ecfb8c7/bestsellers/${gerne}.json?page=1&genre=${gerne}
 
 // https://ridibooks.com/_next/data/3.8.174-366d22f/bestsellers/webtoon.json?genre=webtoon

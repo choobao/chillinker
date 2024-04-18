@@ -756,6 +756,7 @@ textarea#intro {
   display: table;
   table-layout: fixed;
   width: 100%;
+  margin-bottom: 30px;
 }
 
 .review-input-left {
@@ -814,7 +815,7 @@ textarea#intro {
   opacity: 1;
 }
 
-.rui_checkbox_input .js_new_review_spoiler_checkbox {
+/* .rui_checkbox_input {
   width: 18px;
   height: 18px;
   border: 1px solid #b9bcc2;
@@ -822,7 +823,7 @@ textarea#intro {
   cursor: pointer;
   box-shadow: inset 0 1px 0 #e5e5e5;
   border-radius: 4px;
-}
+} */
 
 .spolier_and_wirte_button_wrapper {
   display: flex;
@@ -908,4 +909,22 @@ textarea#intro {
   padding: 0;
   display: inline-block;
   margin-right: 13px;
+}
+
+.show-review {
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+}
+
+.reviewer_id {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.review_date {
+  color: #808991;
+  font-size: 12px;
+  line-height: 16px;
 }

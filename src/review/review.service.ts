@@ -22,6 +22,8 @@ export class ReviewService {
   constructor(
     @InjectRepository(CReviews)
     private readonly chillinkerReviewsRepository: Repository<CReviews>,
+    @InjectRepository(Users)
+    private readonly userRepository: Repository<Users>,
     @InjectRepository(PReviews)
     private readonly platformReviewsRepository: Repository<PReviews>,
     @InjectRepository(ReviewLikes)
@@ -41,7 +43,6 @@ export class ReviewService {
 
     const content = await this.webContentRepository.findOne({
       where: { id: webContentId },
-      //보고 기준 더 추가?
     });
 
     if (!content) {
@@ -59,12 +60,15 @@ export class ReviewService {
         });
         const totalPages = Math.ceil(totalCount / take);
 
-        const reviewList = await this.chillinkerReviewsRepository.find({
-          where: { webContentId },
-          order: { createdAt: 'desc' },
-          take,
-          skip: (page - 1) * 10,
-        });
+        const reviewList = await this.chillinkerReviewsRepository
+          .createQueryBuilder('review')
+          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
+          .select(['review', 'user.nickname', 'user.profileImage']) // "review"와 "user.nickname" 선택
+          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
+          .orderBy('review.createdAt', 'DESC') // 정렬 조건
+          .take(take)
+          .skip((page - 1) * take)
+          .getMany();
 
         return { content, reviewList, totalPages };
       } else {
@@ -77,12 +81,16 @@ export class ReviewService {
         });
         const totalPages = Math.ceil(totalCount / take);
 
-        const reviewList = await this.chillinkerReviewsRepository.find({
-          where: { webContentId },
-          order: { likeCount: 'desc' },
-          take: 10,
-          skip: (page - 1) * 10,
-        });
+        const reviewList = await this.chillinkerReviewsRepository
+          .createQueryBuilder('review')
+          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
+          .select(['review', 'user.nickname', 'user.profileImage'])
+          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
+          .orderBy('review.rate', 'DESC') // 정렬 조건
+          .take(take)
+          .skip((page - 1) * take)
+          .getMany();
+
         return { content, reviewList, totalPages };
       }
     } else {

@@ -2,7 +2,7 @@ import { Follows } from './entities/follow.entity';
 import { FollowService } from './follow.service';
 import { FollowController } from './follow.controller';
 import { Module } from '@nestjs/common';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

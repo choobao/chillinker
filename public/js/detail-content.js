@@ -73,7 +73,7 @@ $(document).ready(function () {
   });
 
   $('#like-btn').click(function () {
-    var url = window.location.href.split('/');
+    var url = window.location.href.split('/')[2];
     var contentId = url[url.length - 1];
 
     $.ajax({
@@ -81,7 +81,6 @@ $(document).ready(function () {
       type: 'POST',
       data: $(this).serialize(),
       success: function (data) {
-        alert('내 보관함에 추가되었습니다.');
         location.reload(true);
       },
       error: function (response) {

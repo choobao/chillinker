@@ -11,7 +11,6 @@ import {
 } from '../utils/mrblue.constants';
 import { setTimeout } from 'timers/promises';
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from 'src/redis/redis.service';
 
 export default class MrbluePuppeteer {
   constructor(private readonly configService: ConfigService) {}
@@ -50,15 +49,24 @@ export default class MrbluePuppeteer {
           document.querySelectorAll('#listBox > div > div > ul> li'),
         );
         return items.map((item) => {
+          const title = item.querySelector(
+            'div.txt-box > span.tit > a',
+          )?.textContent;
+          const genre = item.querySelector(
+            'div.txt-box > span.name > span > a',
+          ).textContent;
           const link = item.querySelector('div.img > a')?.getAttribute('href');
-          return link;
+          return { title, genre, link };
         });
       });
 
       let data: any[] = [];
 
-      for (let link of linkList) {
-        const realUrl = mrblue_main_url + link;
+      for (let work of linkList) {
+        if (work.genre.includes('성인소설' || '라이트노벨')) continue;
+        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+
+        const realUrl = mrblue_main_url + work.link;
         const rank = null;
         await this.crawlWebnovelData(page, realUrl, rank, data);
       }
@@ -97,6 +105,10 @@ export default class MrbluePuppeteer {
           return {
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a')?.getAttribute('href'),
+            title: item.querySelector('div.txt-box > span.tit > a')
+              ?.textContent,
+            genre: item.querySelector('div.txt-box > span.name > span > a')
+              ?.textContent,
           };
         });
       });
@@ -116,6 +128,10 @@ export default class MrbluePuppeteer {
           return {
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a')?.getAttribute('href'),
+            title: item.querySelector('div.txt-box > span.tit > a')
+              ?.textContent,
+            genre: item.querySelector('div.txt-box > span.name > span > a')
+              ?.textContent,
           };
         });
       });
@@ -124,6 +140,9 @@ export default class MrbluePuppeteer {
       let data: any[] = [];
 
       for (let work of linkList) {
+        if (work.genre.includes('성인소설' || '라이트노벨')) continue;
+        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+
         const realUrl = mrblue_main_url + work.link;
         const rank = { mrblue: +work.rank };
         await this.crawlWebnovelData(page, realUrl, rank, data);
@@ -168,15 +187,24 @@ export default class MrbluePuppeteer {
           document.querySelectorAll('#listBox > div > div > ul > li'),
         );
         return items.map((item) => {
+          const title = item.querySelector(
+            'div.txt-box > span.tit > a',
+          )?.textContent;
+          const genre = item.querySelector(
+            'div.txt-box > span.name > span > a',
+          )?.textContent;
           const link = item.querySelector('div.img > a')?.getAttribute('href');
-          return link;
+          return { title, genre, link };
         });
       });
 
       let data: any[] = [];
 
-      for (let link of linkList) {
-        const realUrl = mrblue_main_url + link;
+      for (let work of linkList) {
+        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+        if (work.genre.includes('에로')) continue;
+
+        const realUrl = mrblue_main_url + work.link;
         const rank = null;
 
         await this.crawlWebtoonData(page, realUrl, rank, data);
@@ -215,6 +243,8 @@ export default class MrbluePuppeteer {
         );
         return items.map((item) => {
           return {
+            title: item.querySelector('div.txt-box > span.tit > a')
+              ?.textContent,
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a')?.getAttribute('href'),
           };
@@ -233,6 +263,8 @@ export default class MrbluePuppeteer {
         });
         return items.map((item) => {
           return {
+            title: item.querySelector('div.txt-box > span.tit > a')
+              ?.textContent,
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a').getAttribute('href'),
           };
@@ -242,6 +274,8 @@ export default class MrbluePuppeteer {
       let data: any[] = [];
 
       for (let work of linkList) {
+        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+
         const realUrl = mrblue_main_url + work.link;
         const rank = { mrblue: +work.rank };
 
@@ -277,7 +311,7 @@ export default class MrbluePuppeteer {
   //퍼페티어로 크롤링 시작
   async startCrawling() {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--window-size=1280,960'],
     }); // 브라우저 띄움
 

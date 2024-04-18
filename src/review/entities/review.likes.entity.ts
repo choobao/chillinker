@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../../user/entities/user.entity';
 import { CReviews } from './chillinker.reviews.entity';
 
 @Entity({
