@@ -33,6 +33,7 @@ import { ConfigService } from '@nestjs/config';
 
 import MrbluePuppeteer from './platform/mr.blue';
 import { ContentType } from '../web-content/webContent.type';
+import { platform } from 'os';
 
 @Injectable()
 export class CrawlerService {
@@ -366,61 +367,6 @@ export class CrawlerService {
 
   ////////////////////////////////////////////////////////////////////////
 
-  async createContentDtos(data: any[]) {
-    try {
-      // 데이터 유효성 검사
-      for (const webContent of data) {
-        if (
-          _.isNil(webContent.title) ||
-          _.isNil(webContent.desc) ||
-          _.isNil(webContent.image) ||
-          _.isNil(webContent.author) ||
-          _.isNil(webContent.category) ||
-          _.isNil(webContent.isAdult) ||
-          _.isNil(webContent.platform) ||
-          _.isNil(webContent.pubDate) ||
-          _.isNil(webContent.keyword) ||
-          _.isNil(webContent.contentType) ||
-          _.isNil(webContent.pReviews)
-        ) {
-          throw new Error(`필수 컬럼 누락`);
-        }
-      }
-
-      return data.map((content) => {
-        const webContent = new WebContents();
-
-        webContent.title = content.title;
-        webContent.desc = content.desc;
-        webContent.image = content.image;
-        webContent.author = content.author;
-        webContent.category = content.category;
-        webContent.isAdult = content.isAdult;
-        webContent.platform = content.platform;
-        webContent.pubDate = content.pubDate;
-        webContent.keyword = content.keyword;
-        webContent.rank = content.rank;
-        webContent.contentType = content.contentType;
-
-        if (content.pReviews.length !== 0) {
-          const pReviews = content.pReviews.map((review) => {
-            const pReview = new PReviews();
-            pReview.content = review.content;
-            pReview.createDate = new Date(review.createDate);
-            pReview.likeCount = review.likeCount;
-            pReview.writer = review.writer;
-            return pReview;
-          });
-          webContent.pReviews = pReviews;
-        }
-
-        return webContent;
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
   async removeDuplicate(data: WebContents[]) {
     const uniqueMap = new Map();
 
@@ -503,92 +449,13 @@ export class CrawlerService {
         new Date().getTime() - begin_time,
       );
 
-      console.log('데이터 합치기 & 가공 시작~~~');
-      begin_time = new Date().getTime();
-
       // title, contentType이 중복되는 요소 제거
-
       const data = [].concat(
         await this.removeDuplicate(ridiData),
         await this.removeDuplicate(kakaoData),
         await this.removeDuplicate(naverData),
       );
 
-      let grouped = new Map();
-      let result = [];
-
-      data.forEach((webContent) => {
-        const key = `${webContent.title.replace(/\s/g, '')}_${webContent.contentType}`;
-
-        if (!grouped.has(key)) {
-          console.log('존재하지 않아 키 생성: ', key);
-          grouped.set(key, {
-            ...webContent,
-            keyword: webContent.keyword ? [...new Set(webContent.keyword)] : [],
-            platform: webContent.platform ? { ...webContent.platform } : {},
-            pReviews: webContent.pReviews ? [...webContent.pReviews] : [],
-            rank: webContent.rank ? { ...webContent.rank } : null,
-          });
-
-          // Map에 추가된 새 요소를 result에 추가
-          result.push(grouped.get(key));
-        } else {
-          // 기존 키에 대한 값 업데이트
-          let existingContent = grouped.get(key);
-          console.log('기존 키는 ', key, existingContent);
-
-          if (webContent.keyword) {
-            existingContent.keyword = [
-              ...new Set([...existingContent.keyword, ...webContent.keyword]),
-            ];
-          }
-
-          existingContent.platform = {
-            ...existingContent.platform,
-            ...webContent.platform,
-          };
-
-          if (webContent.rank) {
-            existingContent.rank = {
-              ...existingContent.rank,
-              ...webContent.rank,
-            };
-          }
-
-          if (webContent.pReviews) {
-            existingContent.pReviews = [
-              ...existingContent.pReviews,
-              ...webContent.pReviews,
-            ];
-          }
-
-          console.log(
-            '존재해서 업데이트~~~~~~: ',
-            existingContent.platform,
-            existingContent.rank,
-          );
-
-          // 업데이트된 값을 다시 Map에 저장
-          grouped.set(key, existingContent);
-        }
-      });
-
-      // keyword 배열을 문자열로 변환하고 포맷팅
-      result.forEach((webContent) => {
-        if (webContent.keyword.length > 0) {
-          webContent.keyword = JSON.stringify(webContent.keyword)
-            .replace(/\[|\]|\"|\"/g, '')
-            .replace(/\,/g, ', ');
-        } else {
-          webContent.keyword = null;
-        }
-      });
-
-      console.log(
-        result.length,
-        '개 데이터 합치기 끝. 총 걸린 시간은 ',
-        new Date().getTime() - begin_time,
-      );
       console.log('디비 작업 시작.');
       begin_time = new Date().getTime();
 
@@ -607,14 +474,92 @@ export class CrawlerService {
         console.log('Rank 업데이트 완료');
 
         // DB에 저장
-        for (const webContent of result) {
-          const insertResult = await queryRunner.manager
-            .createQueryBuilder()
-            .insert()
-            .into(WebContents)
-            .values(webContent)
-            .orUpdate(['title', 'content_type'], ['rank', 'image'])
-            .execute();
+        for (const webContent of data) {
+          const existingContent = await this.contentRepository.findOne({
+            where: {
+              title: webContent.title,
+              contentType: webContent.contentType,
+            },
+          });
+
+          let contentId: number;
+          if (!_.isNil(existingContent)) {
+            contentId = existingContent.id;
+       
+
+            let updateRank = {
+              ...existingContent.rank,
+              ...webContent.rank,
+            };
+
+            updateRank =
+              Object.keys(updateRank).length === 0 ? null : updateRank;
+
+            if (
+              Object.keys(webContent.platform)[0] in existingContent.platform
+            ) {
+             
+              if (webContent.rank !== null) {
+               
+                await queryRunner.manager
+                  .createQueryBuilder()
+                  .update(WebContents)
+                  .set({
+                    rank: updateRank,
+                  })
+                  .where('id = :id', { id: contentId })
+                  .execute();
+              }
+
+              continue;
+            }
+
+            
+
+            const updateKeyword =
+              webContent.keyword.length === 0
+                ? existingContent.keyword
+                : [
+                    ...new Set([
+                      ...existingContent.keyword.split(', '),
+                      ...webContent.keyword,
+                    ]),
+                  ].join(', ');
+
+            const updatePlatform = {
+              ...existingContent.platform,
+              ...webContent.platform,
+            };
+
+           
+
+            await queryRunner.manager
+              .createQueryBuilder()
+              .update(WebContents)
+              .set({
+                keyword: updateKeyword,
+                rank: updateRank,
+                platform: updatePlatform,
+              })
+              .where('id = :id', { id: contentId })
+              .execute();
+
+           
+            );
+          } else {
+            
+            const insertResult = await queryRunner.manager
+              .createQueryBuilder()
+              .insert()
+              .into(WebContents)
+              .values({
+                ...webContent,
+                keyword: webContent.keyword.join(', '),
+              })
+              .execute();
+
+            contentId = insertResult.identifiers[0].id;
+          }
 
           await queryRunner.manager
             .createQueryBuilder()
@@ -627,7 +572,7 @@ export class CrawlerService {
                 pReview.content = review.content;
                 pReview.createDate = review.createDate;
                 pReview.likeCount = review.likeCount;
-                pReview.webContentId = insertResult.identifiers[0].id;
+                pReview.webContentId = contentId;
                 return pReview;
               }),
             )
@@ -638,13 +583,14 @@ export class CrawlerService {
         await queryRunner.commitTransaction();
       } catch (err) {
         await queryRunner.rollbackTransaction();
+        throw err;
       } finally {
         await queryRunner.release();
       }
 
       // redis 업데이트
-      await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
-      await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
+       await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
+       await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
       await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
       await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
 
@@ -658,15 +604,15 @@ export class CrawlerService {
         '디비 작업 끝. 총 걸린 시간은 ',
         new Date().getTime() - begin_time,
       );
-      // console.log('미스터 블루 작업 시작.');
-      // begin_time = new Date().getTime();
+      console.log('미스터 블루 작업 시작.');
+      begin_time = new Date().getTime();
 
-      // await this.createMrblue();
+      await this.createMrblue();
 
-      // console.log(
-      //   '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
-      //   new Date().getTime() - begin_time,
-      // );
+      console.log(
+        '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
     } catch (err) {
