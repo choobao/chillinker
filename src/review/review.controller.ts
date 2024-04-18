@@ -50,6 +50,17 @@ export class ReviewController {
     return { content, reviewList, totalPages, page, order, option };
   }
 
+  @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/:reviewId/likes')
+  async likeReview(
+    @UserInfo() user: Users,
+    @Param('reviewId', ParseIntPipe) reviewId: number,
+  ) {
+    console.log('df');
+    return await this.reviewService.likeReivew(user, reviewId);
+  }
+
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
   // @Render('reviewed_list.ejs')
   // @Get('reviewedTitles/:userId')
@@ -64,7 +75,6 @@ export class ReviewController {
   // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  @Render('reviewed_list.ejs')
   @Get('reviewedTitles/:userId')
   async getTitlesWithReviews(@Param('userId') userId: number) {
     const reviews = await this.reviewService.getTitlesWithReviews(userId);
@@ -119,16 +129,5 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     await this.reviewService.deleteReivew(user, webContentsId, reviewId);
-  }
-
-  @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
-  @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
-  @Post('/:reviewId/likes')
-  async likeReview(
-    @UserInfo() user: Users,
-    @Param('reviewId', ParseIntPipe) reviewId: number,
-  ) {
-    return await this.reviewService.likeReivew(user, reviewId);
   }
 }

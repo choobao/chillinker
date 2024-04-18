@@ -208,12 +208,11 @@ export class ReviewService {
 
     const score = (rate + getRate.starRate * +totalUser) / (+totalUser + 1);
 
-    //수정이라면 총유저를 곱한 점수에 기존 점수를 빼고, 수정한 점수를 더해서 계산한다
-    //삭제라면 총유저를 곱한 점수에 기존점수를 빼고, 총유저를 한명 빼서 계산한다
+    const formattedScore = parseFloat(score.toFixed(1));
 
     await this.webContentRepository.update(
       { id: webContentId },
-      { starRate: score },
+      { starRate: formattedScore },
     );
 
     const createReview = await this.chillinkerReviewsRepository.save({
@@ -255,9 +254,11 @@ export class ReviewService {
     const score =
       (getRate.starRate * +totalUser - findReivew.rate + rate) / totalUser;
 
+    const formattedScore = parseFloat(score.toFixed(1));
+
     await this.webContentRepository.update(
       { id: webContentId },
-      { starRate: score },
+      { starRate: formattedScore },
     );
 
     //수정정보 업데이트
@@ -286,11 +287,12 @@ export class ReviewService {
     const score =
       (getRate.starRate * +totalUser - findReivew.rate) / (totalUser - 1);
 
+    const formattedScore = parseFloat(score.toFixed(1));
+
     await this.webContentRepository.update(
       { id: webContentId },
-      { starRate: score },
+      { starRate: formattedScore },
     );
-
     const deleteReivew = await this.chillinkerReviewsRepository.delete({
       id: reviewId,
     });

@@ -234,7 +234,7 @@
                               onerror="this.src='/logo_image/chillinker_logo(1).png'"
                               class="profile-img" />
                             </div>
-                            <span class="review_id" style="display:none;"><%= item.id %></span>
+                            <span class="review_id" id="reviewId-<%= index %>" style="display:none;"><%= item.id %></span>
                             <span class="review_id" style="display:none;"><%= item.isSpoiler %></span>
                             <span class="reviewer_id"><%= item.users.nickname %></span>
                             <div class="review_date"><%= item.createdAt %></div>
@@ -250,7 +250,7 @@
                         <p class="review_content js_review_content" id="item-content-<%= index %>"><%= item.content %></p>
                       </div>
                         <div class="editWrapper-<%= index %>" id="editWrapper-<%= index %>" style="display:none">
-                          <span class="reviewer_rate" id="editRateInput-<%= index %>" >평점:
+                          <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
                             <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
                           <input type="text" name="editContent" class="edit-review_content js_review_content" id="editInput-<%= index %>"></input>
                           <div class="spoiler_input_wrapper" >
@@ -269,7 +269,7 @@
                           <button class="deleteButton" id="deleteButton-<%= index %>">삭제</button>
                         </div>
                         <div class="review-like-btn-wrapper">
-                        <button type="button" class="rui_button_white_25 like_button js_like_button">
+                        <button type="button"  id="likeBtn-<%= index %>" class="rui_button_white_25 like_button js_like_button">
                           <span class="rui_button_contents">
                             <span class="rui_button_icon"></span>
                             <span class="rui_button_text">
