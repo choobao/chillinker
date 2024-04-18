@@ -423,7 +423,15 @@ export class CrawlerService {
         webContent.contentType = content.contentType;
 
         if (content.pReviews.length !== 0) {
-          webContent.pReviews = content.pReviews;
+          const pReviews = content.pReviews.map((review) => {
+            const pReview = new PReviews();
+            pReview.content = review.content;
+            pReview.createDate = new Date(review.createDate);
+            pReview.likeCount = review.likeCount;
+            pReview.writer = review.writer;
+            return pReview;
+          });
+          webContent.pReviews = pReviews;
         }
 
         return webContent;
@@ -507,14 +515,16 @@ export class CrawlerService {
 
       const data = [].concat(ridiData, kakaoData, naverData);
 
-      const grouped = {};
-      const result = [];
+      let grouped = {};
+      let result = [];
 
+      let duplicate = {};
       data.forEach((webContent) => {
-        const key = `${webContent.title}_${webContent.contentType}`;
+        const key = `${webContent.title.replace(/\s/g, '')}_${webContent.contentType}`;
 
         // grouped[key]가 존재하지 않으면 새로 생성
         if (!grouped[key]) {
+          console.log('존재하지 않아 키 생성: ', key);
           grouped[key] = {
             ...webContent,
             keyword: webContent.keyword ? [...new Set(webContent.keyword)] : [],
@@ -526,6 +536,7 @@ export class CrawlerService {
           // 새로운 요소를 result에 추가
           result.push(grouped[key]);
         } else {
+          console.log('기존 키는 ', key, grouped[key]);
           // keyword 업데이트
           if (webContent.keyword) {
             grouped[key].keyword = [
@@ -534,13 +545,21 @@ export class CrawlerService {
           }
 
           // platform 업데이트
+          console.log(
+            '플랫폼',
+            webContent.platform,
+            '추가 인 ',
+            grouped[key].platform,
+          );
           grouped[key].platform = {
             ...grouped[key].platform,
             ...webContent.platform,
           };
+          console.log('결과는 ', grouped[key].platform);
 
           // rank 업데이트
           if (webContent.rank) {
+            console.log('랭크', webContent.rank, grouped[key].rank);
             grouped[key].rank = {
               ...grouped[key].rank,
               ...webContent.rank,
@@ -554,6 +573,14 @@ export class CrawlerService {
               ...webContent.pReviews,
             ];
           }
+
+          console.log(
+            '존재해서 업데이트~~~~~~: ',
+            grouped[key].platform,
+            grouped[key].rank,
+          );
+
+          duplicate[key] = grouped[key];
         }
       });
 
@@ -585,11 +612,8 @@ export class CrawlerService {
       await this.contentRepository.save(result);
 
       // redis 업데이트
-      await this.redisService.save(
-        'naver_webnovel',
-        naverCurrNumWebnovel + 100,
-      );
-      await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 100);
+      await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
+      await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
       await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
       await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
 
@@ -614,6 +638,7 @@ export class CrawlerService {
       // );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
+      return { duplicate, duplicateCount: Object.keys(duplicate).length };
     } catch (err) {
       throw err;
     }
