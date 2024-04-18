@@ -32,6 +32,7 @@ export class ReviewController {
   @Render('detailContent')
   @Get()
   async getCReivew(
+    @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -45,8 +46,19 @@ export class ReviewController {
     );
 
     const { content, reviewList, totalPages } = result;
-
+    console.log(user);
     return { content, reviewList, totalPages, page, order, option };
+  }
+
+  @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/:reviewId/likes')
+  async likeReview(
+    @UserInfo() user: Users,
+    @Param('reviewId', ParseIntPipe) reviewId: number,
+  ) {
+    console.log('df');
+    return await this.reviewService.likeReivew(user, reviewId);
   }
 
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
@@ -63,7 +75,6 @@ export class ReviewController {
   // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  @Render('reviewed_list.ejs')
   @Get('reviewedTitles/:userId')
   async getTitlesWithReviews(@Param('userId') userId: number) {
     const reviews = await this.reviewService.getTitlesWithReviews(userId);
@@ -93,15 +104,16 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 수정' })
   @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
   @Patch('/:reviewId')
   async modifyReview(
     @UserInfo() user: Users,
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
     @Body() modifyCReviewsDto: ModifyCReviewsDto,
   ) {
     return await this.reviewService.modifyReivew(
       user,
+      webContentsId,
       reviewId,
       modifyCReviewsDto,
     );
@@ -109,24 +121,13 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 삭제' })
   @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
   @Delete('/:reviewId')
   @HttpCode(204)
   async deleteReivew(
     @UserInfo() user: Users,
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    await this.reviewService.deleteReivew(user, reviewId);
-  }
-
-  @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
-  @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
-  @Post('/:reviewId/likes')
-  async likeReview(
-    @UserInfo() user: Users,
-    @Param('reviewId', ParseIntPipe) reviewId: number,
-  ) {
-    return await this.reviewService.likeReivew(user, reviewId);
+    await this.reviewService.deleteReivew(user, webContentsId, reviewId);
   }
 }
