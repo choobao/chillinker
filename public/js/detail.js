@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const editButtons = document.querySelectorAll('.editButton');
   const deleteButtons = document.querySelectorAll('.deleteButton');
   const saveButtons = document.querySelectorAll('.saveButton');
+  const likeButtons = document.querySelectorAll('.rui_button_white_25');
+  console.log(likeButtons);
 
   editButtons.forEach(function (editButton) {
     editButton.addEventListener('click', function () {
@@ -89,6 +91,25 @@ document.addEventListener('DOMContentLoaded', function () {
       $.ajax({
         type: 'Delete',
         url: `${idUrl}/${reviewId}`,
+        contentType: 'application/json',
+        success: function (data) {
+          location.reload(true); // 성공 시 페이지 새로고침
+        },
+        error: function (response) {
+          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+        },
+      });
+    });
+  });
+
+  likeButtons.forEach(function (likeButton) {
+    likeButton.addEventListener('click', function () {
+      const index = this.id.split('-')[1];
+      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
+
+      $.ajax({
+        type: 'Post',
+        url: `${idUrl}/${reviewId}/likes`,
         contentType: 'application/json',
         success: function (data) {
           location.reload(true); // 성공 시 페이지 새로고침
