@@ -32,6 +32,7 @@ export class ReviewController {
   @Render('detailContent')
   @Get()
   async getCReivew(
+    @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -45,7 +46,7 @@ export class ReviewController {
     );
 
     const { content, reviewList, totalPages } = result;
-
+    console.log(user);
     return { content, reviewList, totalPages, page, order, option };
   }
 
@@ -93,15 +94,16 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 수정' })
   @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
   @Patch('/:reviewId')
   async modifyReview(
     @UserInfo() user: Users,
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
     @Body() modifyCReviewsDto: ModifyCReviewsDto,
   ) {
     return await this.reviewService.modifyReivew(
       user,
+      webContentsId,
       reviewId,
       modifyCReviewsDto,
     );
@@ -109,14 +111,14 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 삭제' })
   @UseGuards(AuthGuard('jwt'))
-  @Render('detailReview')
   @Delete('/:reviewId')
   @HttpCode(204)
   async deleteReivew(
     @UserInfo() user: Users,
+    @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    await this.reviewService.deleteReivew(user, reviewId);
+    await this.reviewService.deleteReivew(user, webContentsId, reviewId);
   }
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })

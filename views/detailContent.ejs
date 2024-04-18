@@ -61,7 +61,7 @@
                 <p class="metadata-rate">
                   <span class="bookMeta-starRate">
                     <span class="star"></span>
-                    <span class="starRate-score">rate 만들거임 별점표시</span>
+                    <span class="starRate-score">평점: <%= content.starRate %></span>
                   </span>
                 </p>
                 <p class="metadataa metadata-writer">
@@ -196,7 +196,7 @@
             <div class="rui_tab_and_order">
               <ul class="rui_tab_2 js_review_list_filter_wrapper">
                 <li class="tab_list">
-                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active" data-filter="buyer_only">
+                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active">
                     Platform</a>
                 </li>
                 <li class="tab_list">
@@ -205,7 +205,7 @@
                 </li>
               </ul>
               <ul class="rui_order js_review_list_order_wrapper">
-                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">공감순</a></li></ul>
+                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">추천순</a></li></ul>
             </div>
             <div class="review-list-wrapper"></div>
                <ul class="review-list">
@@ -215,7 +215,7 @@
                       <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
                     </div>
                     <% } %>
-                  <% reviewList.forEach((item) => { %>
+                  <% reviewList.forEach((item,index) => { %>
                     <li class="show-review">
                       <div class="review-list-left-info">
                         <div class="left_contents">
@@ -234,18 +234,52 @@
                               onerror="this.src='/logo_image/chillinker_logo(1).png'"
                               class="profile-img" />
                             </div>
+                            <span class="review_id" style="display:none;"><%= item.id %></span>
+                            <span class="review_id" style="display:none;"><%= item.isSpoiler %></span>
                             <span class="reviewer_id"><%= item.users.nickname %></span>
                             <div class="review_date"><%= item.createdAt %></div>
-                            <span class="reviewer_rate"><%= item.rate %></span>
+                            <input type="number" class="reviewer_rate" id="editRateInput-<%= item.id %>" style="display:none;" value="<%= item.rate %>">
                           </p>
                           <div class="review_date_and_report_wrapper">
-              
                           </div>
                         </div>
                       </div>
                       <div class="review-list-right-info">
-                        <p class="review_content js_review_content"><%= item.content %></p>
-                        <span class="reviewer_likeCount"><%= item.likeCount %></span>
+                        <div class="reviewWrapper-<%= index %>" id="reviewWrapper-<%= index %>">
+                        <span class="reviewer_rate" id="reviewer_rate-<%= index %>">평점: <%= item.rate %></span>
+                        <p class="review_content js_review_content" id="item-content-<%= index %>"><%= item.content %></p>
+                      </div>
+                        <div class="editWrapper-<%= index %>" id="editWrapper-<%= index %>" style="display:none">
+                          <span class="reviewer_rate" id="editRateInput-<%= index %>" >평점:
+                            <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
+                          <input type="text" name="editContent" class="edit-review_content js_review_content" id="editInput-<%= index %>"></input>
+                          <div class="spoiler_input_wrapper" >
+                            <input type="checkbox" name="editIsSpoiler"/>
+                            <span
+                              for="spoiler_radio_input_write"
+                              class="rui_checkbox_text"
+                              >스포일러가 있습니다.</span>
+                          </div>
+                        </div>
+
+                        <div class="review-Btn">
+                        <div class="edit-delete-btn-wrapper">
+                          <button class="editButton" id="editButton-<%= index %>">수정</button>
+                          <button id="saveButton-<%= index %>" class="saveButton" style="display:none;">저장</button>
+                          <button class="deleteButton" id="deleteButton-<%= index %>">삭제</button>
+                        </div>
+                        <div class="review-like-btn-wrapper">
+                        <button type="button" class="rui_button_white_25 like_button js_like_button">
+                          <span class="rui_button_contents">
+                            <span class="rui_button_icon"></span>
+                            <span class="rui_button_text">
+                              <span class="indent_hidden">👍</span>
+                              <span class="like_count js_like_count"><%= item.likeCount %></span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                       </div>
                     </li>
                   <% }) %>
@@ -272,7 +306,15 @@
                   </div>
                   <div class="review-list-right-info">
                     <p class="review_content js_review_content"><%= item.content %></p>
-                    <span class="reviewer_likeCount"><%= item.likeCount %></span>
+                    <div class="review-like-btn-wrapper">
+                        <span class="rui_button_contents">
+                          <span class="rui_button_icon"></span>
+                          <span class="rui_button_text">
+                            <span class="indent_hidden">👍</span>
+                            <span class="like_count js_like_count"><%= item.likeCount %></span>
+                          </span>
+                        </span>
+                    </div>
                   </div>
                 </li>
               <% }) %>
