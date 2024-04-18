@@ -177,6 +177,23 @@ export class ReviewService {
     return await this.chillinkerReviewsRepository.find({ where: { userId } });
   }
 
+  async calculateScore(webContentId: number, rate: number) {
+    const getRate = await this.webContentRepository.findOne({
+      where: { id: webContentId },
+    });
+
+    const totalUser = await this.chillinkerReviewsRepository.findAndCount({
+      where: { webContentId },
+    });
+
+    const score = (rate + getRate.starRate * +totalUser) / (+totalUser + 1);
+
+    await this.webContentRepository.update(
+      { id: webContentId },
+      { starRate: score },
+    );
+  }
+
   async createReivew(
     user: Users,
     webContentId: number,
@@ -192,6 +209,8 @@ export class ReviewService {
       throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.');
     }
 
+    await this.calculateScore(webContentId, rate);
+
     const createReview = await this.chillinkerReviewsRepository.save({
       userId: userId,
       webContentId,
@@ -199,6 +218,8 @@ export class ReviewService {
       rate: rate,
       isSpoiler,
     });
+
+    //가져온 평점
 
     return createReview;
   }
