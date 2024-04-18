@@ -180,11 +180,11 @@ export class CrawlerService {
 
   mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
 
-  async saveReviews(title: string, author: string, reviews: any[]) {
+  async saveReviews(title: string, contentType: ContentType, reviews: any[]) {
     if (reviews.length >= 1) {
       const contents = await this.contentRepository.findOneBy({
         title,
-        author,
+        contentType,
       });
       for (let j = 0; j < reviews.length; j++) {
         const { content, writerId, createDate, likeCount } = reviews[j];
@@ -270,7 +270,7 @@ export class CrawlerService {
         });
       }
 
-      await this.saveReviews(title, author, reviews);
+      await this.saveReviews(title, contentType, reviews);
     }
     console.log('저장완료');
   }
@@ -350,7 +350,7 @@ export class CrawlerService {
           pubDate,
         });
       }
-      await this.saveReviews(title, author, reviews);
+      await this.saveReviews(title, contentType, reviews);
     }
     console.log('저장완료');
   }
@@ -627,15 +627,15 @@ export class CrawlerService {
         '디비 작업 끝. 총 걸린 시간은 ',
         new Date().getTime() - begin_time,
       );
-      // console.log('미스터 블루 작업 시작.');
-      // begin_time = new Date().getTime();
+      console.log('미스터 블루 작업 시작.');
+      begin_time = new Date().getTime();
 
-      // await this.createMrblue();
+      await this.createMrblue();
 
-      // console.log(
-      //   '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
-      //   new Date().getTime() - begin_time,
-      // );
+      console.log(
+        '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
       return { duplicate, duplicateCount: Object.keys(duplicate).length };

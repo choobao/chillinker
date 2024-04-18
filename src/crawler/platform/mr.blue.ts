@@ -311,7 +311,7 @@ export default class MrbluePuppeteer {
   //퍼페티어로 크롤링 시작
   async startCrawling() {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--window-size=1280,960'],
     }); // 브라우저 띄움
 
