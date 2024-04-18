@@ -441,8 +441,21 @@ export class CrawlerService {
     }
   }
 
+  async removeDuplicate(data: WebContents[]) {
+    const uniqueMap = new Map();
+
+    data.forEach((item) => {
+      const key = `${item.title.replace(/\s/g, '')}_${item.contentType}`;
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, item);
+      }
+    });
+
+    return Array.from(uniqueMap.values());
+  }
+
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('19 22 * * *')
+  @Cron('8 15 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
@@ -470,7 +483,7 @@ export class CrawlerService {
 
       let begin_time = new Date().getTime();
       console.log('네이버 크롤링 시작');
-      const naverData = await this.createNaverSeries(
+      let naverData = await this.createNaverSeries(
         naverCurrNumWebnovel,
         naverCurrNumWebtoon,
         50,
@@ -484,7 +497,7 @@ export class CrawlerService {
       begin_time = new Date().getTime();
       console.log('카카오 크롤링 시작');
 
-      const kakaoData = await this.createKakaopages(
+      let kakaoData = await this.createKakaopages(
         kakaoCurrPageWebnovel,
         kakaoCurrPageWebtoon,
       );
@@ -497,7 +510,7 @@ export class CrawlerService {
       begin_time = new Date().getTime();
       console.log('리디북스 크롤링 시작');
 
-      const ridiData = await this.createRidibooks(
+      let ridiData = await this.createRidibooks(
         ridiCurrRnovels,
         ridiCurrRFnovels,
         ridiCurrFnovels,
@@ -510,81 +523,77 @@ export class CrawlerService {
         new Date().getTime() - begin_time,
       );
 
-      console.log('데이터 합치기 시작.');
+      console.log('데이터 합치기 & 가공 시작~~~');
       begin_time = new Date().getTime();
 
-      const data = [].concat(ridiData, kakaoData, naverData);
+      // title, contentType이 중복되는 요소 제거
 
-      let grouped = {};
+      const data = [].concat(
+        await this.removeDuplicate(ridiData),
+        await this.removeDuplicate(kakaoData),
+        await this.removeDuplicate(naverData),
+      );
+
+      let grouped = new Map();
       let result = [];
 
-      let duplicate = {};
       data.forEach((webContent) => {
         const key = `${webContent.title.replace(/\s/g, '')}_${webContent.contentType}`;
 
-        // grouped[key]가 존재하지 않으면 새로 생성
-        if (!grouped[key]) {
+        if (!grouped.has(key)) {
           console.log('존재하지 않아 키 생성: ', key);
-          grouped[key] = {
+          grouped.set(key, {
             ...webContent,
             keyword: webContent.keyword ? [...new Set(webContent.keyword)] : [],
             platform: webContent.platform ? { ...webContent.platform } : {},
             pReviews: webContent.pReviews ? [...webContent.pReviews] : [],
             rank: webContent.rank ? { ...webContent.rank } : null,
-          };
+          });
 
-          // 새로운 요소를 result에 추가
-          result.push(grouped[key]);
+          // Map에 추가된 새 요소를 result에 추가
+          result.push(grouped.get(key));
         } else {
-          console.log('기존 키는 ', key, grouped[key]);
-          // keyword 업데이트
+          // 기존 키에 대한 값 업데이트
+          let existingContent = grouped.get(key);
+          console.log('기존 키는 ', key, existingContent);
+
           if (webContent.keyword) {
-            grouped[key].keyword = [
-              ...new Set([...grouped[key].keyword, ...webContent.keyword]),
+            existingContent.keyword = [
+              ...new Set([...existingContent.keyword, ...webContent.keyword]),
             ];
           }
 
-          // platform 업데이트
-          console.log(
-            '플랫폼',
-            webContent.platform,
-            '추가 인 ',
-            grouped[key].platform,
-          );
-          grouped[key].platform = {
-            ...grouped[key].platform,
+          existingContent.platform = {
+            ...existingContent.platform,
             ...webContent.platform,
           };
-          console.log('결과는 ', grouped[key].platform);
 
-          // rank 업데이트
           if (webContent.rank) {
-            console.log('랭크', webContent.rank, grouped[key].rank);
-            grouped[key].rank = {
-              ...grouped[key].rank,
+            existingContent.rank = {
+              ...existingContent.rank,
               ...webContent.rank,
             };
           }
 
-          // pReviews 업데이트
           if (webContent.pReviews) {
-            grouped[key].pReviews = [
-              ...grouped[key].pReviews,
+            existingContent.pReviews = [
+              ...existingContent.pReviews,
               ...webContent.pReviews,
             ];
           }
 
           console.log(
             '존재해서 업데이트~~~~~~: ',
-            grouped[key].platform,
-            grouped[key].rank,
+            existingContent.platform,
+            existingContent.rank,
           );
 
-          duplicate[key] = grouped[key];
+          // 업데이트된 값을 다시 Map에 저장
+          grouped.set(key, existingContent);
         }
       });
 
-      // keyword 배열을 문자열로 변환하고 포매팅
+      // keyword 배열을 문자열로 변환하고 포맷팅
       result.forEach((webContent) => {
         if (webContent.keyword.length > 0) {
           webContent.keyword = JSON.stringify(webContent.keyword)
@@ -638,7 +647,6 @@ export class CrawlerService {
       );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
-      return { duplicate, duplicateCount: Object.keys(duplicate).length };
     } catch (err) {
       throw err;
     }
