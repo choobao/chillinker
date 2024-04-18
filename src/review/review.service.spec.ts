@@ -52,16 +52,22 @@ describe('ReviewService', () => {
   });
 
   //리뷰 삭제 테스트 코드짜고싶다!!
+  describe('deleteReivew', () => {
+    //해당 리뷰가 있는지 확인하고
 
-  //해당 리뷰가 있는지 확인하고
+    //리뷰가 없으면 오류 띄우고
+    it('should throw error if reivew does not exist', async () => {
+      jest.spyOn(reviewRepository, 'findOne').mockResolvedValue(null);
 
-  //리뷰가 없으면 오류 띄우고
+      expect();
+    });
 
-  //요청 보낸사람이 리뷰 쓴사람이 맞는지 확인하고
+    //요청 보낸사람이 리뷰 쓴사람이 맞는지 확인하고
 
-  //아니면 권한없음 오류 띄우고
+    //아니면 권한없음 오류 띄우고
 
-  //삭제하고
+    //삭제하고
 
-  //디비에도 존재하지않음을 확인해야함
+    //디비에도 존재하지않음을 확인해야함
+  });
 });
