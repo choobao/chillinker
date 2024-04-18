@@ -62,6 +62,13 @@ export class WebContents {
   likeCount: number;
 
   /**
+   * rate
+   * @example 0
+   */
+  @Column({ type: 'float', default: 0 })
+  rate: number;
+
+  /**
    * isAdult
    * @example 0
    */
