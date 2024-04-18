@@ -66,7 +66,7 @@ export class WebContents {
    * @example 0
    */
   @Column({ type: 'float', default: 0 })
-  rate: number;
+  starRate: number;
 
   /**
    * isAdult

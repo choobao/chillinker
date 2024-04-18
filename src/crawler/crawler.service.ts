@@ -442,7 +442,7 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('19 22 * * *')
+  @Cron('8 15 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
