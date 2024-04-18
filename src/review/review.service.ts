@@ -209,7 +209,7 @@ export class ReviewService {
       throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.');
     }
 
-    await this.calculateScore(webContentId, rate);
+    // await this.calculateScore(webContentId, rate);
 
     const createReview = await this.chillinkerReviewsRepository.save({
       userId: userId,
