@@ -4,6 +4,7 @@
 /build
 /utils
 /tmp
+/log
 
 # Logs
 logs

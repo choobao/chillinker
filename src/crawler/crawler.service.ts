@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WebContents } from '../web-content/entities/webContents.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { RedisService } from '../redis/redis.service';
@@ -43,6 +43,7 @@ export class CrawlerService {
     private readonly reviewRepository: Repository<PReviews>,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
+    private readonly dataSource: DataSource,
   ) {}
 
   naverSeriesPuppeteer: NaverSeriesPuppeteer = new NaverSeriesPuppeteer(
@@ -153,27 +154,6 @@ export class CrawlerService {
     } catch (err) {
       throw err;
     }
-  }
-
-  async rankUpdet() {
-    await this.contentRepository
-      .createQueryBuilder()
-      .update(WebContents)
-      .set({ rank: null })
-      .execute();
-
-    console.log('Rank 업데이트 완료');
-  }
-
-  async rankDelete() {
-    await this.contentRepository
-      .createQueryBuilder()
-      .delete()
-      .from(WebContents)
-      .where('rank IS NOT NULL')
-      .execute();
-
-    console.log('Rank 삭제 완료');
   }
 
   ////////////////////////////////////////////////////////
@@ -612,20 +592,55 @@ export class CrawlerService {
       console.log('디비 작업 시작.');
       begin_time = new Date().getTime();
 
-      // 랭킹 제거
-      // await this.rankUpdet();
+      const queryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
-      await this.rankDelete();
+      try {
+        // 랭킹 제거
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update(WebContents)
+          .set({ rank: null })
+          .execute();
 
-      // DB에 저장
-      await this.contentRepository.save(result);
-      // await this.contentRepository
-      //   .createQueryBuilder()
-      //   .insert()
-      //   .into(WebContents)
-      //   .values(result)
-      //   .orIgnore()
-      //   .execute();
+        console.log('Rank 업데이트 완료');
+
+        // DB에 저장
+        for (const webContent of result) {
+          const insertResult = await queryRunner.manager
+            .createQueryBuilder()
+            .insert()
+            .into(WebContents)
+            .values(webContent)
+            .orUpdate(['title', 'content_type'], ['rank', 'image'])
+            .execute();
+
+          await queryRunner.manager
+            .createQueryBuilder()
+            .insert()
+            .into(PReviews)
+            .values(
+              webContent.pReviews.map((review) => {
+                const pReview = new PReviews();
+                pReview.writer = review.writer;
+                pReview.content = review.content;
+                pReview.createDate = review.createDate;
+                pReview.likeCount = review.likeCount;
+                pReview.webContentId = insertResult.identifiers[0].id;
+                return pReview;
+              }),
+            )
+            .orIgnore()
+            .execute();
+        }
+
+        await queryRunner.commitTransaction();
+      } catch (err) {
+        await queryRunner.rollbackTransaction();
+      } finally {
+        await queryRunner.release();
+      }
 
       // redis 업데이트
       await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
@@ -655,7 +670,7 @@ export class CrawlerService {
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
     } catch (err) {
-      throw err;
+      throw new InternalServerErrorException(err.message);
     }
   }
 }
