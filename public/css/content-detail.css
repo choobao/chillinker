@@ -1,0 +1,43 @@
+.review-list-left-info {
+  margin: 0 50px 0 0;
+  /* width: 100px; */
+}
+
+.rui_order {
+  display: flex;
+}
+
+.rui_tab_and_order {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rui_tab_and_order {
+  height: 40px;
+}
+
+.rui_order {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 2px solid #d1d5d9;
+  cursor: default;
+}
+
+.js_select_tab_option {
+  margin-left: 20px;
+}
+
+.profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.spoiler_input_wrapper {
+  padding: 0 30px;
+  margin: 8px 0;
+}

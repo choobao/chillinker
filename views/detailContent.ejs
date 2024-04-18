@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/content-detail.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -135,7 +136,6 @@
             </div>
           </article>
           <div class="review-info-section">
-            <div class="review-input-left"></div>
             <div class="review-input-right">
               <form class="mb-3" name="myform" id="myform" method="post" action="/books/<%- content.id %>">
                 <fieldset>
@@ -173,10 +173,10 @@
                 <div class="spolier_and_wirte_button_wrapper">
                   <div class="spoiler_input_wrapper">
                     <input type="checkbox" name="isSpoiler" />
-                    <label
+                    <span
                       for="spoiler_radio_input_write"
-                      class="rui_checkbox_input spoiler_input_label"
-                      >스포일러가 있습니다.</label
+                      class="rui_checkbox_text"
+                      >스포일러가 있습니다.</span
                     >
                   </div>
                   <div class="write_button_wrapper">
@@ -226,8 +226,15 @@
                                 </span>
                               </span>
                             </span>
+                            <div class="reviewer-image">
+                              <img
+                              src="<%= item.users.profileImage %>"
+                              alt="프로필사진"
+                              onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                              class="profile-img" />
+                            </div>
                             <span class="reviewer_id"><%= item.users.nickname %></span>
-                            <div class="review_date"><%= item.createDate %></div>
+                            <div class="review_date"><%= item.createdAt %></div>
                             <span class="reviewer_rate"><%= item.rate %></span>
                           </p>
                           <div class="review_date_and_report_wrapper">
