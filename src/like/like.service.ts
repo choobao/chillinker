@@ -38,7 +38,7 @@ export class LikeService {
   async changeContent(userId: number, contentId: number) {
     try {
       const existingContent = await this.findContent(userId, contentId);
-      console.log('존재하니?', existingContent);
+
       if (_.isNil(existingContent)) {
         // 추가
         await this.likesRepository.save({

@@ -5,6 +5,11 @@ import { CrawlerService } from './crawler.service';
 export class CrawlerController {
   constructor(private readonly crawlService: CrawlerService) {}
 
+  @Get('test')
+  async test() {
+    return await this.crawlService.saveAllTogether();
+  }
+
   // @Get('kakao')
   // async getKakao() {
   //   return await this.crawlService.createKakaopages();

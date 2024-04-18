@@ -155,9 +155,8 @@ export class CrawlerService {
     }
   }
 
-  // 랭킹 달려있는 것들 싹 다 제거
   async rankUpdet() {
-    const resetRank = await this.contentRepository
+    await this.contentRepository
       .createQueryBuilder()
       .update(WebContents)
       .set({ rank: null })
@@ -166,8 +165,21 @@ export class CrawlerService {
     console.log('Rank 업데이트 완료');
   }
 
+  async rankDelete() {
+    await this.contentRepository
+      .createQueryBuilder()
+      .delete()
+      .from(WebContents)
+      .where('rank IS NOT NULL')
+      .execute();
+
+    console.log('Rank 삭제 완료');
+  }
+
   ////////////////////////////////////////////////////////
+
   mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
+
   async saveReviews(title: string, author: string, reviews: any[]) {
     if (reviews.length >= 1) {
       const contents = await this.contentRepository.findOneBy({
@@ -212,16 +224,9 @@ export class CrawlerService {
         reviews,
       } = data[i];
 
-      if (contentType === '웹툰') {
-        if (category.includes('에로')) continue;
-      }
-      if (contentType === '웹소설') {
-        if (category === '일반') continue;
-      }
-
       const existedContents = await this.contentRepository.findOneBy({
         title,
-        author,
+        contentType,
       });
 
       if (existedContents) {
@@ -252,7 +257,7 @@ export class CrawlerService {
         }
       } else {
         await this.contentRepository.save({
-          contentType: ContentType.WEBNOVEL,
+          contentType,
           title,
           desc,
           image,
@@ -287,16 +292,9 @@ export class CrawlerService {
         reviews,
       } = data[i];
 
-      if (contentType === '웹툰') {
-        if (category.includes('에로')) continue;
-      }
-      if (contentType === '웹소설') {
-        if (category === '일반') continue;
-      }
-
       const existedContents = await this.contentRepository.findOneBy({
         title,
-        author,
+        contentType,
       });
 
       if (existedContents) {
@@ -358,9 +356,16 @@ export class CrawlerService {
   }
 
   async createMrblue() {
+    const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
+    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
+
+    const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
+    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
+
     const mbWebnovelCurPage =
       +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
     const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
+
     const crawlWebnovelAll = await this.mrbluePuppeteer.crawlWebnovels(
       mbWebnovelCurPage,
       mbWebnovelMaxPage,
@@ -377,15 +382,9 @@ export class CrawlerService {
     );
     await this.saveWebContentsData(ContentType.WEBTOON, crawlWebtoonAll);
     await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
-
-    const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
-    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
-
-    const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
-    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
   }
 
-  ////
+  ////////////////////////////////////////////////////////////////////////
 
   async createContentDtos(data: any[]) {
     try {
@@ -424,7 +423,15 @@ export class CrawlerService {
         webContent.contentType = content.contentType;
 
         if (content.pReviews.length !== 0) {
-          webContent.pReviews = content.pReviews;
+          const pReviews = content.pReviews.map((review) => {
+            const pReview = new PReviews();
+            pReview.content = review.content;
+            pReview.createDate = new Date(review.createDate);
+            pReview.likeCount = review.likeCount;
+            pReview.writer = review.writer;
+            return pReview;
+          });
+          webContent.pReviews = pReviews;
         }
 
         return webContent;
@@ -435,68 +442,205 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('05 17 * * *')
+  @Cron('19 22 * * *')
   async saveAllTogether() {
-    const startTime = new Date().getTime();
+    try {
+      const startTime = new Date().getTime();
 
-    const naverCurrNumWebnovel =
-      +(await this.redisService.getValue('naver_webnovel')) || 0;
-    const naverCurrNumWebtoon =
-      +(await this.redisService.getValue('naver_webtoon')) || 0;
+      const naverCurrNumWebnovel =
+        +(await this.redisService.getValue('naver_webnovel')) || 0;
+      const naverCurrNumWebtoon =
+        +(await this.redisService.getValue('naver_webtoon')) || 0;
 
-    const kakaoCurrPageWebnovel =
-      +(await this.redisService.getValue('kakao_webnovel')) || 0;
-    const kakaoCurrPageWebtoon =
-      +(await this.redisService.getValue('kakao_webtoon')) || 0;
+      const kakaoCurrPageWebnovel =
+        +(await this.redisService.getValue('kakao_webnovel')) || 0;
+      const kakaoCurrPageWebtoon =
+        +(await this.redisService.getValue('kakao_webtoon')) || 0;
 
-    const ridiCurrRnovels =
-      +(await this.redisService.getValue('ridi_curr1650')) || 1;
-    const ridiCurrRFnovels =
-      +(await this.redisService.getValue('ridi_curr6050')) || 1;
-    const ridiCurrFnovels =
-      +(await this.redisService.getValue('ridi_curr1750')) || 1;
-    const ridiCurrBnovels =
-      +(await this.redisService.getValue('ridi_curr4150')) || 1;
-    const ridiCurrWebtoons =
-      +(await this.redisService.getValue('ridi_curr1600')) || 1;
+      const ridiCurrRnovels =
+        +(await this.redisService.getValue('ridi_curr1650')) || 1;
+      const ridiCurrRFnovels =
+        +(await this.redisService.getValue('ridi_curr6050')) || 1;
+      const ridiCurrFnovels =
+        +(await this.redisService.getValue('ridi_curr1750')) || 1;
+      const ridiCurrBnovels =
+        +(await this.redisService.getValue('ridi_curr4150')) || 1;
+      const ridiCurrWebtoons =
+        +(await this.redisService.getValue('ridi_curr1600')) || 1;
 
-    const naverData = await this.createNaverSeries(
-      naverCurrNumWebnovel,
-      naverCurrNumWebtoon,
-      100,
-    );
+      let begin_time = new Date().getTime();
+      console.log('네이버 크롤링 시작');
+      const naverData = await this.createNaverSeries(
+        naverCurrNumWebnovel,
+        naverCurrNumWebtoon,
+        50,
+      );
 
-    const kakaoData = await this.createKakaopages(
-      kakaoCurrPageWebnovel,
-      kakaoCurrPageWebtoon,
-    );
+      console.log(
+        '네이버 크롤링 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
 
-    const ridiData = await this.createRidibooks(
-      ridiCurrRnovels,
-      ridiCurrRFnovels,
-      ridiCurrFnovels,
-      ridiCurrBnovels,
-      ridiCurrWebtoons,
-    );
+      begin_time = new Date().getTime();
+      console.log('카카오 크롤링 시작');
 
-    // 랭킹 제거
-    // await this.rankUpdet();
+      const kakaoData = await this.createKakaopages(
+        kakaoCurrPageWebnovel,
+        kakaoCurrPageWebtoon,
+      );
 
-    // DB에 저장
-    // await this.contentRepository.save();
+      console.log(
+        '카카오 크롤링 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
 
-    // redis 업데이트
-    // await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 100);
-    // await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 100);
-    // await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
-    // await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
+      begin_time = new Date().getTime();
+      console.log('리디북스 크롤링 시작');
 
-    await this.redisService.save(`ridi_curr${TYPE.R}`, ridiCurrRnovels + 1);
-    await this.redisService.save(`ridi_curr${TYPE.RF}`, ridiCurrRFnovels + 1);
-    await this.redisService.save(`ridi_curr${TYPE.F}`, ridiCurrFnovels + 1);
-    await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
-    await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
+      const ridiData = await this.createRidibooks(
+        ridiCurrRnovels,
+        ridiCurrRFnovels,
+        ridiCurrFnovels,
+        ridiCurrBnovels,
+        ridiCurrWebtoons,
+      );
 
-    console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
+      console.log(
+        '리디 크롤링 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
+
+      console.log('데이터 합치기 시작.');
+      begin_time = new Date().getTime();
+
+      const data = [].concat(ridiData, kakaoData, naverData);
+
+      let grouped = {};
+      let result = [];
+
+      let duplicate = {};
+      data.forEach((webContent) => {
+        const key = `${webContent.title.replace(/\s/g, '')}_${webContent.contentType}`;
+
+        // grouped[key]가 존재하지 않으면 새로 생성
+        if (!grouped[key]) {
+          console.log('존재하지 않아 키 생성: ', key);
+          grouped[key] = {
+            ...webContent,
+            keyword: webContent.keyword ? [...new Set(webContent.keyword)] : [],
+            platform: webContent.platform ? { ...webContent.platform } : {},
+            pReviews: webContent.pReviews ? [...webContent.pReviews] : [],
+            rank: webContent.rank ? { ...webContent.rank } : null,
+          };
+
+          // 새로운 요소를 result에 추가
+          result.push(grouped[key]);
+        } else {
+          console.log('기존 키는 ', key, grouped[key]);
+          // keyword 업데이트
+          if (webContent.keyword) {
+            grouped[key].keyword = [
+              ...new Set([...grouped[key].keyword, ...webContent.keyword]),
+            ];
+          }
+
+          // platform 업데이트
+          console.log(
+            '플랫폼',
+            webContent.platform,
+            '추가 인 ',
+            grouped[key].platform,
+          );
+          grouped[key].platform = {
+            ...grouped[key].platform,
+            ...webContent.platform,
+          };
+          console.log('결과는 ', grouped[key].platform);
+
+          // rank 업데이트
+          if (webContent.rank) {
+            console.log('랭크', webContent.rank, grouped[key].rank);
+            grouped[key].rank = {
+              ...grouped[key].rank,
+              ...webContent.rank,
+            };
+          }
+
+          // pReviews 업데이트
+          if (webContent.pReviews) {
+            grouped[key].pReviews = [
+              ...grouped[key].pReviews,
+              ...webContent.pReviews,
+            ];
+          }
+
+          console.log(
+            '존재해서 업데이트~~~~~~: ',
+            grouped[key].platform,
+            grouped[key].rank,
+          );
+
+          duplicate[key] = grouped[key];
+        }
+      });
+
+      // keyword 배열을 문자열로 변환하고 포매팅
+      result.forEach((webContent) => {
+        if (webContent.keyword.length > 0) {
+          webContent.keyword = JSON.stringify(webContent.keyword)
+            .replace(/\[|\]|\"|\"/g, '')
+            .replace(/\,/g, ', ');
+        } else {
+          webContent.keyword = null;
+        }
+      });
+
+      console.log(
+        result.length,
+        '개 데이터 합치기 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
+      console.log('디비 작업 시작.');
+      begin_time = new Date().getTime();
+
+      // 랭킹 제거
+      // await this.rankUpdet();
+
+      await this.rankDelete();
+
+      // DB에 저장
+      await this.contentRepository.save(result);
+
+      // redis 업데이트
+      await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
+      await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
+      await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
+      await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
+
+      await this.redisService.save(`ridi_curr${TYPE.R}`, ridiCurrRnovels + 1);
+      await this.redisService.save(`ridi_curr${TYPE.RF}`, ridiCurrRFnovels + 1);
+      await this.redisService.save(`ridi_curr${TYPE.F}`, ridiCurrFnovels + 1);
+      await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
+      await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
+
+      console.log(
+        '디비 작업 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
+      // console.log('미스터 블루 작업 시작.');
+      // begin_time = new Date().getTime();
+
+      // await this.createMrblue();
+
+      // console.log(
+      //   '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
+      //   new Date().getTime() - begin_time,
+      // );
+
+      console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
+      return { duplicate, duplicateCount: Object.keys(duplicate).length };
+    } catch (err) {
+      throw err;
+    }
   }
 }

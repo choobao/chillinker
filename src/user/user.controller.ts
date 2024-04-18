@@ -27,7 +27,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Users } from './entities/user.entity';
-import { UserInfo } from 'src/utils/userinfo.decorator';
+import { UserInfo } from '../utils/userinfo.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('USER')
