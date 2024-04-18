@@ -9,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ReviewLikes } from './review.likes.entity';
-import { Users } from 'src/user/entities/user.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { Users } from '../../user/entities/user.entity';
+import { WebContents } from '../../web-content/entities/webContents.entity';
 
 @Entity({
   name: 'c_reviews',
