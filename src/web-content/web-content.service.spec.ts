@@ -5,6 +5,7 @@ import { WebContents } from './entities/webContents.entity';
 import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ContentType } from './webContent.type';
 
 describe('WebContentService', () => {
   let service: WebContentService;
@@ -122,19 +123,31 @@ describe('WebContentService', () => {
   /////
 
   describe('findBestWebContents test', () => {
-    const bestWebContents = [{...firstWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1}, {...secondWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1}];
-    
+    const bestWebContents = [
+      { ...firstWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1 },
+      { ...secondWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1 },
+    ];
+
     it('should find best ranking webContents by given platform and contentType', async () => {
       const platform = 'naver';
-      const type = '웹소설';
+      const type = ContentType.WEBNOVEL;
 
-      webContentRepository.createQueryBuilder().getRawMany.mockResolvedValue(bestWebContents);
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue(bestWebContents);
 
       // act
       const result = await service.findBestWebContents(platform, type);
-      
+
       // assert
-      expect(webContentRepository.createQueryBuilder.)
+      expect(
+        webContentRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(bestWebContents);
     });
+
+    it('should throw InternalServierErrorException if query failed', async () => {
+      webContentRepository.createQueryBuilder().getRawMany.mock
+    })
   });
 });

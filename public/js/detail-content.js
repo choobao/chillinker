@@ -1,7 +1,6 @@
 $(document).ready(function () {
   $('#like-btn').click(function () {
-    var url = window.location.href.split('/')[2];
-    var contentId = url[url.length - 1];
+    var contentId = $('#content-id').val();
 
     $.ajax({
       url: `/likes/change?contentId=${contentId}`,
