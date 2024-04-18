@@ -78,23 +78,24 @@ document.addEventListener('DOMContentLoaded', function () {
         },
       });
     });
+  });
 
-    deleteButtons.forEach(function (deleteButton) {
-      deleteButton.addEventListener('click', function () {
-        const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
-        console.log(index);
-        // 삭제 요청 실행
-        $.ajax({
-          type: 'Delete',
-          url: `${idUrl}/${id}`,
-          contentType: 'application/json',
-          success: function (data) {
-            location.reload(true); // 성공 시 페이지 새로고침
-          },
-          error: function (response) {
-            alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-          },
-        });
+  deleteButtons.forEach(function (deleteButton) {
+    deleteButton.addEventListener('click', function () {
+      const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
+      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
+
+      // 삭제 요청 실행
+      $.ajax({
+        type: 'Delete',
+        url: `${idUrl}/${reviewId}`,
+        contentType: 'application/json',
+        success: function (data) {
+          location.reload(true); // 성공 시 페이지 새로고침
+        },
+        error: function (response) {
+          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+        },
       });
     });
   });
