@@ -30,7 +30,9 @@ export class ReviewLikes {
   userId: number;
 
   // **C_reviews와 Review_likes는 1:N
-  @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike)
+  @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'c_review_id' })
   cReviews: CReviews;
 

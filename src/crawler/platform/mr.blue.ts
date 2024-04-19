@@ -11,6 +11,7 @@ import {
 } from '../utils/mrblue.constants';
 import { setTimeout } from 'timers/promises';
 import { ConfigService } from '@nestjs/config';
+import { ContentType } from '../../web-content/webContent.type';
 
 export default class MrbluePuppeteer {
   constructor(private readonly configService: ConfigService) {}
@@ -90,11 +91,12 @@ export default class MrbluePuppeteer {
 
   async getWebnovelRank(page: Page) {
     try {
+      console.log('여기까진 됨: getWebnovelRank');
       let linkList: any[] = [];
       await page.goto(mrblue_webnovel_daily_toprank_120, {
         waitUntil: 'networkidle2',
       });
-
+      console.log('1');
       const firstTo5th = await page.evaluate(() => {
         const items = Array.from(
           document.querySelectorAll(
@@ -114,6 +116,7 @@ export default class MrbluePuppeteer {
       });
       linkList = [...linkList, ...firstTo5th];
 
+      console.log('2');
       const sixthTo20th = await page.evaluate(() => {
         let items = Array.from(
           document.querySelectorAll(
@@ -138,7 +141,7 @@ export default class MrbluePuppeteer {
       linkList = [...linkList, ...sixthTo20th];
 
       let data: any[] = [];
-
+      console.log('3');
       for (let work of linkList) {
         if (work.genre.includes('성인소설' || '라이트노벨')) continue;
         if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
@@ -406,15 +409,16 @@ export default class MrbluePuppeteer {
 
   //웹소설 데이터 가져오기
   async crawlWebnovelData(page: Page, realUrl: string, rank, data: any[]) {
+    console.log('4');
     await page.goto(realUrl, { waitUntil: 'networkidle2' });
     const reviews = await this.getReviews(page);
 
     await page.waitForSelector('#contents > div > div > div.detail-con', {
       visible: true,
     });
-
+    console.log('5');
     const newData = await page.evaluate(
-      async (realUrl, rank) => {
+      async (realUrl, rank, type) => {
         const item = document.querySelector(
           '#contents > div > div > div.detail-con',
         );
@@ -474,13 +478,16 @@ export default class MrbluePuppeteer {
           isAdult,
           pubDate,
           desc,
-          keywordList,
+          keyword: keywordList,
+          contentType: type,
         };
       },
       realUrl,
       rank,
+      ContentType.WEBNOVEL,
     );
-    data.push({ ...newData, reviews });
+    console.log('6', reviews.length);
+    data.push({ ...newData, pReviews: reviews });
   }
 
   //웹툰 데이터 가져오기
@@ -491,7 +498,7 @@ export default class MrbluePuppeteer {
     await page.waitForSelector('#contents', { visible: true });
 
     const newData = await page.evaluate(
-      async (realUrl, rank) => {
+      async (realUrl, rank, type) => {
         const item = document.querySelector('#contents');
         const platform = { mrblue: realUrl };
         const image = item
@@ -546,12 +553,14 @@ export default class MrbluePuppeteer {
           isAdult,
           pubDate,
           desc,
-          keywordList,
+          keyword: keywordList,
+          contentType: type,
         };
       },
       realUrl,
       rank,
+      ContentType.WEBTOON,
     );
-    data.push({ ...newData, reviews });
+    data.push({ ...newData, pReviews: reviews });
   }
 }

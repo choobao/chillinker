@@ -86,7 +86,7 @@ export class ReviewService {
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
           .select(['review', 'user.nickname', 'user.profileImage'])
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
-          .orderBy('review.rate', 'DESC') // 정렬 조건
+          .orderBy('review.likeCount', 'DESC') // 정렬 조건
           .take(take)
           .skip((page - 1) * take)
           .getMany();
@@ -177,21 +177,16 @@ export class ReviewService {
     return await this.chillinkerReviewsRepository.find({ where: { userId } });
   }
 
-  async calculateScore(webContentId: number, rate: number) {
-    const getRate = await this.webContentRepository.findOne({
+  async calculateScore(webContentId: number) {
+    let getRate = await this.webContentRepository.findOne({
       where: { id: webContentId },
     });
 
-    const totalUser = await this.chillinkerReviewsRepository.findAndCount({
+    let totalUser = await this.chillinkerReviewsRepository.count({
       where: { webContentId },
     });
 
-    const score = (rate + getRate.starRate * +totalUser) / (+totalUser + 1);
-
-    await this.webContentRepository.update(
-      { id: webContentId },
-      { starRate: score },
-    );
+    return { getRate, totalUser };
   }
 
   async createReivew(
@@ -209,7 +204,16 @@ export class ReviewService {
       throw new ConflictException('작품에 한개의 리뷰만 작성할 수 있습니다.');
     }
 
-    await this.calculateScore(webContentId, rate);
+    const { getRate, totalUser } = await this.calculateScore(webContentId);
+
+    const score = (rate + getRate.starRate * +totalUser) / (+totalUser + 1);
+
+    const formattedScore = parseFloat(score.toFixed(1));
+
+    await this.webContentRepository.update(
+      { id: webContentId },
+      { starRate: formattedScore },
+    );
 
     const createReview = await this.chillinkerReviewsRepository.save({
       userId: userId,
@@ -226,6 +230,7 @@ export class ReviewService {
 
   async modifyReivew(
     user: Users,
+    webContentId: number,
     reviewId: number,
     modifyCReivewDto: ModifyCReviewsDto,
   ) {
@@ -244,6 +249,18 @@ export class ReviewService {
       throw new ForbiddenException('작성자만 리뷰를 수정할 수 있습니다.');
     }
 
+    const { getRate, totalUser } = await this.calculateScore(webContentId);
+
+    const score =
+      (getRate.starRate * +totalUser - findReivew.rate + rate) / totalUser;
+
+    const formattedScore = parseFloat(score.toFixed(1));
+
+    await this.webContentRepository.update(
+      { id: webContentId },
+      { starRate: formattedScore },
+    );
+
     //수정정보 업데이트
     const modifyReivew = await this.chillinkerReviewsRepository.update(
       { id: reviewId },
@@ -251,7 +268,7 @@ export class ReviewService {
     );
   }
 
-  async deleteReivew(user: Users, reviewId: number) {
+  async deleteReivew(user: Users, webContentId: number, reviewId: number) {
     const userId = user.id;
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
@@ -263,6 +280,27 @@ export class ReviewService {
 
     if (findReivew.userId !== userId) {
       throw new ForbiddenException('작성자만 리뷰를 삭제할 수 있습니다.');
+    }
+
+    const { getRate, totalUser } = await this.calculateScore(webContentId);
+
+    if (totalUser === 1) {
+      await this.webContentRepository.update(
+        { id: webContentId },
+        { starRate: 0 },
+      );
+    } else {
+      const score =
+        (getRate.starRate * +totalUser - findReivew.rate) / (totalUser - 1);
+
+      const formattedScore = parseFloat(score.toFixed(1));
+
+      console.log(score, formattedScore);
+
+      await this.webContentRepository.update(
+        { id: webContentId },
+        { starRate: formattedScore },
+      );
     }
 
     const deleteReivew = await this.chillinkerReviewsRepository.delete({

@@ -41,3 +41,87 @@
   padding: 0 30px;
   margin: 8px 0;
 }
+
+.review-list-right-info {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  justify-content: space-between;
+}
+
+/* .{
+  display: flex;
+    flex-direction: column;
+} */
+
+/* .rui_button_white_25 {
+  float: right;
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 130px;
+  padding: 12px 0;
+  border: 2px solid #000;
+  border-radius: 7px;
+  background: #e6e6fa;
+} */
+
+.editButton {
+  width: 60px;
+  height: 30px;
+  background: #e6e6fa;
+  border-radius: 7px;
+  border: 2px solid #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.saveButton {
+  width: 60px;
+  height: 30px;
+  background: #e6e6fa;
+  border-radius: 7px;
+  border: 2px solid #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.deleteButton {
+  width: 60px;
+  height: 30px;
+  background: #e6e6fa;
+  border-radius: 7px;
+  border: 2px solid #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rui_button_white_25 {
+  width: 70px;
+  height: 30px;
+  background: #e6e6fa;
+  border-radius: 7px;
+  border: 2px solid #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rui_button_contents {
+  float: right;
+}
+
+.review_content {
+  margin-bottom: 20px;
+}
+
+.review-Btn {
+  display: flex;
+  padding: 10px 0;
+}
