@@ -7,8 +7,8 @@ import { Brackets, Repository } from 'typeorm';
 import { WebContents } from './entities/webContents.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
-import { Users } from 'src/user/entities/user.entity';
-import { Collections } from 'src/collection/entities/collections.entity';
+import { Users } from '../user/entities/user.entity';
+import { Collections } from '../collection/entities/collections.entity';
 
 @Injectable()
 export class WebContentService {
@@ -68,18 +68,8 @@ export class WebContentService {
       .orWhere('collections.desc LIKE :keyword', { keyword: `%${keyword}%` })
       .getRawMany();
 
-    // const user = await this.collectionUser(collections);
-
     return collections;
   }
-
-  // async collectionUser(collections: any) {
-  //   const user = await this.userRepository.findOne({
-  //     where: { id: collections.collections_user_id },
-  //   });
-
-  //   return user;
-  // }
 
   async searchFromAuthors(keyword: string) {
     const webContents = await this.webContentRepository
@@ -124,7 +114,6 @@ export class WebContentService {
 
     const content = await this.webContentRepository.findOne({
       where: { id, contentType: type },
-      //보고 기준 더 추가?
     });
 
     if (!content) {

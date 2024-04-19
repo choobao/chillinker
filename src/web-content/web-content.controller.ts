@@ -1,17 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Query,
-  Render,
-} from '@nestjs/common';
+import { Controller, Get, Query, Render } from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
-import { SearchDto } from './dto/search.dto';
-import { Response } from 'express';
 
 @Controller()
 export class WebContentController {
@@ -81,25 +71,28 @@ export class WebContentController {
   // }
 
   @Get('search')
-  @Render('search')
+  // @Render('search')
   async search(@Query('query') query: string, @Query('type') type: string) {
-    const keyword = query;
+    const regex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
+
+    const keyword = regex.test(query)
+      ? query
+      : query.replace(/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, '') || 'chillinker';
+
     const { webtoons, webnovels } =
-      await this.webContentService.searchFromWebContents(keyword);
-    const authors = await this.webContentService.searchFromAuthors(keyword);
-    const users = await this.webContentService.searchFromUsers(keyword);
-    const collections =
-      await this.webContentService.searchFromCollections(keyword);
-    // const collectionUser =
-    //   await this.webContentService.collectionUser(collections);
-    console.log(collections);
+      (await this.webContentService.searchFromWebContents(keyword)) ?? {};
+
     if (type == 'webtoons') {
       return { type, keyword, webtoons };
     } else if (type == 'authors') {
+      const authors = await this.webContentService.searchFromAuthors(keyword);
       return { type, keyword, authors };
     } else if (type == 'users') {
+      const users = await this.webContentService.searchFromUsers(keyword);
       return { type, keyword, users };
     } else if (type == 'collections') {
+      const collections =
+        await this.webContentService.searchFromCollections(keyword);
       return { type, keyword, collections };
     } else {
       return { type, keyword, webnovels };

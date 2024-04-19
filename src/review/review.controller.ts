@@ -18,8 +18,8 @@ import { ReviewService } from './review.service';
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UserInfo } from 'src/utils/userinfo.decorator';
-import { Users } from 'src/user/entities/user.entity';
+import { UserInfo } from '../utils/userinfo.decorator';
+import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 

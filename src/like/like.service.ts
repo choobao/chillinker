@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -68,7 +69,7 @@ export class LikeService {
         return { message: '성공적으로 삭제되었습니다.' };
       }
     } catch (err) {
-      throw err;
+      throw new ConflictException(err.message);
     }
   }
 
@@ -103,7 +104,7 @@ export class LikeService {
 
       return likes;
     } catch (err) {
-      throw err;
+      throw new BadRequestException(err.message);
     }
   }
 }
