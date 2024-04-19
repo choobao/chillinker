@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Render,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -31,14 +32,16 @@ export class CollectionController {
   @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
+  @Render('collection/my_collection_list')
   async myCollections(@UserInfo() user: Users) {
     const myColList = await this.collectionService.getMyColList(user.id);
-    return await myColList;
+    return { collection: myColList, users: user };
   }
 
-  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
+  @ApiOperation({ summary: '컬렉션 상세 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/info/:collectionId')
+  // @Render('/')
   async myCollection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
@@ -94,11 +97,11 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 추가' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:collectionId/content')
+  @Post('/:collectionId/content/:webContentId')
   async addContentToCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
+    @Param('webContentId') webContentId: number,
   ) {
     const userId = user.id;
 

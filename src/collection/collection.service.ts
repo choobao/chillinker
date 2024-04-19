@@ -29,9 +29,44 @@ export class CollectionService {
 
   // 내 컬렉션 목록 조회
   async getMyColList(userId: number) {
-    return await this.colRepository.find({
+    const collections = await this.colRepository.find({
       where: { userId },
-      select: ['id', 'title', 'desc'],
+      relations: [
+        'contentCollections',
+        'contentCollections.webContent',
+        'collectionBookmarks',
+      ],
+      select: [
+        'id',
+        'title',
+        'desc',
+        'coverImage',
+        'bookmarkCount',
+        'contentCollections',
+      ],
+    });
+    return collections.map((collection) => {
+      const id = collection.id;
+      const title = collection.title;
+      const desc = collection.desc;
+      const coverImage = collection.coverImage;
+      const bookmarkCount = collection.collectionBookmarks.length;
+      const webContents = collection.contentCollections.map(
+        (contentCollection) => {
+          const webContentId = contentCollection.webContentId;
+          const webContentTitle = contentCollection.webContent.title;
+          return { webContentId, webContentTitle };
+        },
+      );
+
+      return {
+        id,
+        title,
+        desc,
+        coverImage,
+        bookmarkCount,
+        webContents,
+      };
     });
   }
 
