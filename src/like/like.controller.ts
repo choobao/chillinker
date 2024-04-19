@@ -38,6 +38,14 @@ export class LikeController {
     @Query('userId') userId: number,
     @Query('sortType') sortType: string,
   ) {
+    if (
+      sortType !== 'ADD_DT' &&
+      sortType !== 'ADD_DT_DESC' &&
+      sortType !== 'OLD' &&
+      sortType !== 'NEW'
+    ) {
+      sortType = 'ADD_DT';
+    }
     const content = await this.likeService.findContents(userId, sortType);
     return { content };
   }
@@ -50,6 +58,14 @@ export class LikeController {
     @UserInfo() user: Users,
     @Query('sortType') sortType: string = 'ADD_DT',
   ) {
+    if (
+      sortType !== 'ADD_DT' &&
+      sortType !== 'ADD_DT_DESC' &&
+      sortType !== 'OLD' &&
+      sortType !== 'NEW'
+    ) {
+      sortType = 'ADD_DT';
+    }
     const content = await this.likeService.findContents(user.id, sortType);
     return { content };
   }

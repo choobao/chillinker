@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ContentType } from 'src/web-content/webContent.type';
+import { ContentType } from '../../web-content/webContent.type';
 import {
   ReviewSortType,
   Type,

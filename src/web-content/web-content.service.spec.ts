@@ -6,7 +6,10 @@ import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
-import { InternalServerErrorException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('WebContentService', () => {
   let service: WebContentService;
@@ -80,12 +83,12 @@ describe('WebContentService', () => {
     expect(service).toBeDefined();
   });
 
-  /////
+  //////////////// variables ////////////////////
 
   const firstWebContent = {
     id: 1,
     title: '화산귀환[독점]',
-    contentType: '웹소설',
+    contentType: ContentType.WEBNOVEL,
     isAdult: 0,
     author: 'author/비가',
     platform: { naver: 'url' },
@@ -98,7 +101,7 @@ describe('WebContentService', () => {
   const secondWebContent = {
     id: 1,
     title: '전지적 독자 시점',
-    contentType: '웹소설',
+    contentType: ContentType.WEBNOVEL,
     isAdult: 0,
     author: 'author/싱숑',
     platform: { naver: 'url' },
@@ -111,7 +114,7 @@ describe('WebContentService', () => {
   const thirdWebContent = {
     id: 3,
     title: '화산귀환',
-    contentType: '웹툰',
+    contentType: ContentType.WEBTOON,
     isAdult: 0,
     author: 'Author/LICO, original_author/비가',
     platform: { naver: 'url' },
@@ -121,12 +124,12 @@ describe('WebContentService', () => {
     cReviews: [],
   } as unknown as WebContents;
 
-  /////
+  //////////////////////////////////////////////////
 
   describe('findBestWebContents test', () => {
     const bestWebContents = [
-      { ...firstWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1 },
-      { ...secondWebContent, pReviewCount: 0, cReviewCount: 0, ranking: 1 },
+      { ...firstWebContent, pReviewCount: '0', cReviewCount: '0', ranking: 1 },
+      { ...secondWebContent, pReviewCount: '0', cReviewCount: '0', ranking: 1 },
     ];
 
     it('should find best ranking webContents by given platform and contentType', async () => {
@@ -181,67 +184,92 @@ describe('WebContentService', () => {
 
     it('should return users with given keyword where nickname or intro includes keyword', async () => {
       const keyword = 'test';
-      webContentRepository
-        .createQueryBuilder()
-        .getRawMany.mockResolvedValue(users);
+      userRepository.createQueryBuilder().getRawMany.mockResolvedValue(users);
 
       // act
       const result = await service.searchFromUsers(keyword);
 
       // assert
       expect(
-        webContentRepository.createQueryBuilder().getRawMany,
+        userRepository.createQueryBuilder().getRawMany,
       ).toHaveBeenCalledTimes(1);
       expect(result).toBe(users);
     });
 
     it('should return empty array if data matches keyword not exists', async () => {
       const keyword = 'fake-keyword';
-      webContentRepository
-        .createQueryBuilder()
-        .getRawMany.mockResolvedValue([]);
+      userRepository.createQueryBuilder().getRawMany.mockResolvedValue([]);
 
       // act
       const result = await service.searchFromUsers(keyword);
 
       // assert
       expect(
-        webContentRepository.createQueryBuilder().getRawMany,
+        userRepository.createQueryBuilder().getRawMany,
       ).toHaveBeenCalledTimes(1);
-      expect(result).toBe([]);
+      expect(result).toStrictEqual([]);
     });
   });
 
   describe('searchFromCollections test', () => {
-    const user1 = {
+    const collection1 = {
       id: 1,
-      nickname: 'test',
-      email: 'test@test.com',
-      intro: null,
-    } as Users;
-    const user2 = {
-      id: 2,
-      nickname: '테스트',
-      email: 'second@second.com',
-      intro: 'test',
-    } as Users;
+      title: 'test',
+      desc: 'test',
+    } as Collections;
 
-    const users: Users[] = [user1, user2];
+    const collections: Collections[] = [collection1];
 
-    it('should return users with given keyword where nickname or intro includes keyword', async () => {
+    it('should return collections with given keyword where title or desc includes keyword', async () => {
       const keyword = 'test';
-      webContentRepository
+      collectionRepository
         .createQueryBuilder()
-        .getRawMany.mockResolvedValue(users);
+        .getRawMany.mockResolvedValue(collections);
 
       // act
-      const result = await service.searchFromUsers(keyword);
+      const result = await service.searchFromCollections(keyword);
+
+      // assert
+      expect(
+        collectionRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toBe(collections);
+    });
+
+    it('should return empty array if data matches keyword not exists', async () => {
+      const keyword = 'fake-keyword';
+      collectionRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue([]);
+
+      // act
+      const result = await service.searchFromCollections(keyword);
+
+      // assert
+      expect(
+        collectionRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('searchFromAuthors test', () => {
+    const webContents: WebContents[] = [firstWebContent, thirdWebContent];
+
+    it('should return webContents with given keyword where author includes keyword', async () => {
+      const keyword = '비가';
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue(webContents);
+
+      // act
+      const result = await service.searchFromAuthors(keyword);
 
       // assert
       expect(
         webContentRepository.createQueryBuilder().getRawMany,
       ).toHaveBeenCalledTimes(1);
-      expect(result).toBe(users);
+      expect(result).toBe(webContents);
     });
 
     it('should return empty array if data matches keyword not exists', async () => {
@@ -251,13 +279,78 @@ describe('WebContentService', () => {
         .getRawMany.mockResolvedValue([]);
 
       // act
-      const result = await service.searchFromUsers(keyword);
+      const result = await service.searchFromAuthors(keyword);
 
       // assert
       expect(
         webContentRepository.createQueryBuilder().getRawMany,
       ).toHaveBeenCalledTimes(1);
-      expect(result).toBe([]);
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('searchFromWebContents test', () => {
+    const webContents: WebContents[] = [firstWebContent, thirdWebContent];
+    const webnovels: WebContents[] = [firstWebContent];
+    const webtoons: WebContents[] = [thirdWebContent];
+
+    it('should return webContents with given keyword where title, desc, category, keyword includes keyword', async () => {
+      const keyword = '화산';
+      webContentRepository
+        .createQueryBuilder()
+        .getMany.mockResolvedValue(webContents);
+
+      // act
+      const result = await service.searchFromWebContents(keyword);
+
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({ webnovels, webtoons });
+    });
+
+    it('should return empty array if data matches keyword not exists', async () => {
+      const keyword = 'fake-keyword';
+      webContentRepository.createQueryBuilder().getMany.mockResolvedValue([]);
+
+      // act
+      const result = await service.searchFromWebContents(keyword);
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({ webnovels: [], webtoons: [] });
+    });
+  });
+
+  describe('findContent test', () => {
+    it('should return a webContent with given id and type if exists', async () => {
+      const id = 1;
+      const type = ContentType.WEBNOVEL;
+
+      webContentRepository.findOne.mockResolvedValue(firstWebContent);
+
+      // act
+      const result = await service.findContent(id, type);
+
+      // assert
+      expect(webContentRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(webContentRepository.findOne).toHaveBeenCalledWith({
+        where: { id, contentType: type },
+      });
+      expect(result).toBe(firstWebContent);
+    });
+
+    it('should throw NotFoundException if webContent with given id and type not exists', async () => {
+      const id = 999;
+      const type = ContentType.WEBNOVEL;
+
+      webContentRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findContent(id, type)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

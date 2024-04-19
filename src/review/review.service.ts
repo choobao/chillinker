@@ -10,11 +10,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { DataSource, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../user/entities/user.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
 import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 
 @Injectable()
