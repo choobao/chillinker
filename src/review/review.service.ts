@@ -86,7 +86,7 @@ export class ReviewService {
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
           .select(['review', 'user.nickname', 'user.profileImage'])
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
-          .orderBy('review.rate', 'DESC') // 정렬 조건
+          .orderBy('review.likeCount', 'DESC') // 정렬 조건
           .take(take)
           .skip((page - 1) * take)
           .getMany();
@@ -284,15 +284,25 @@ export class ReviewService {
 
     const { getRate, totalUser } = await this.calculateScore(webContentId);
 
-    const score =
-      (getRate.starRate * +totalUser - findReivew.rate) / (totalUser - 1);
+    if (totalUser === 1) {
+      await this.webContentRepository.update(
+        { id: webContentId },
+        { starRate: 0 },
+      );
+    } else {
+      const score =
+        (getRate.starRate * +totalUser - findReivew.rate) / (totalUser - 1);
 
-    const formattedScore = parseFloat(score.toFixed(1));
+      const formattedScore = parseFloat(score.toFixed(1));
 
-    await this.webContentRepository.update(
-      { id: webContentId },
-      { starRate: formattedScore },
-    );
+      console.log(score, formattedScore);
+
+      await this.webContentRepository.update(
+        { id: webContentId },
+        { starRate: formattedScore },
+      );
+    }
+
     const deleteReivew = await this.chillinkerReviewsRepository.delete({
       id: reviewId,
     });
