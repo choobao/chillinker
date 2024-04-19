@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewService } from './review.service';
 import { Repository } from 'typeorm';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../web-content/entities/webContents.entity';
 import { PReviews } from './entities/platform.reviews.entity';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -59,7 +59,7 @@ describe('ReviewService', () => {
     it('should throw error if reivew does not exist', async () => {
       jest.spyOn(reviewRepository, 'findOne').mockResolvedValue(null);
 
-      expect();
+      //expect();
     });
 
     //요청 보낸사람이 리뷰 쓴사람이 맞는지 확인하고

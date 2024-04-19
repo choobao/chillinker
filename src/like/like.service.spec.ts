@@ -5,6 +5,7 @@ import { Likes } from './entities/likes.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { error } from 'console';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 
 describe('LikesService', () => {
   let service: LikeService;
@@ -162,6 +163,14 @@ describe('LikesService', () => {
       );
       expect(result).toEqual({ message: '성공적으로 삭제되었습니다.' });
     });
+
+    it('should throw ConflictException if err occur', async () => {
+      likeRepository.save.mockImplementation(() => {
+        throw new ConflictException();
+      });
+
+      await expect(service.changeContent).rejects.toThrow(ConflictException);
+    });
   });
 
   describe('findContents test', () => {
@@ -257,6 +266,14 @@ describe('LikesService', () => {
       expect(likeRepository.find).toHaveBeenCalledTimes(0);
 
       expect(result).toBe(undefined);
+    });
+
+    it('should throw BadRequestException if error occurs', async () => {
+      likeRepository.find.mockImplementation(() => {
+        throw new BadRequestException();
+      });
+
+      await expect(service.findContents).rejects.toThrow(BadRequestException);
     });
   });
 });

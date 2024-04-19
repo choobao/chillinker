@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Collections } from './entities/collections.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../web-content/entities/webContents.entity';
 import { ContentCollection } from './entities/content-collections.entity';
 import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';

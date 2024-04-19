@@ -5,8 +5,7 @@ import {
   ridi_best100_rank_webToon,
   ridi_url,
 } from '../utils/ridi.constants';
-import { ContentType } from 'src/web-content/webContent.type';
-import { HTMLToJSON } from 'html-to-json-parser';
+import { ContentType } from '../../web-content/webContent.type';
 import * as cheerio from 'cheerio';
 
 export async function get60WebtoonRanking(type: TYPE, page: number) {
