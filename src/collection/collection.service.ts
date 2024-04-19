@@ -27,6 +27,16 @@ export class CollectionService {
     private readonly storageService: StorageService,
   ) {}
 
+  async getTitles(collectionId: number) {
+    const data = await this.getMyCol(collectionId);
+    return data.contentCollections.map((contentCol) => {
+      return {
+        title: contentCol.webContent.title,
+        id: contentCol.webContent.id,
+      };
+    });
+  }
+
   // 내 컬렉션 목록 조회
   async getMyColList(userId: number) {
     const collections = await this.colRepository.find({

@@ -24,10 +24,12 @@
   <main>
     <div class="collection-list-upper">
       <h3><%= users.nickname %>님의 컬렉션</h3>
-      <button class="add_collection_btn" id="add_collection_btn-<%= index %>">+새 컬렉션</button>
+      <button class="add_collection_btn" id="add_collection_btn">+새 컬렉션</button>
     </div>
+    <input type="hidden" value="<%= collection %>" />
     <div class="collections_container">
       <% collection.forEach((item, index)=> { %>
+        <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
         <div class="collection" href="/info/<%= item.id %>">
           <div class="collection_upper">
             <img class="collection_img"
@@ -51,10 +53,10 @@
               </li>
             </ul>
             <!-- 컬렉션 내 컨텐츠 삭제 모달창 -->
-            <div class="modal">
+            <div class="remove-content-modal">
               <div class="collection_modal">
                 <span class="close">&times;</span>
-                <h3 class="modal_title">컬렉션 컨텐츠 삭제</h3>
+                <h3 id="remove-content-modal_title" class="remove-content-modal_title">컬렉션 컨텐츠 관리</h3>
                 <div class="modal_content">
                   <form
                     name="delete_content_form"
@@ -62,21 +64,14 @@
                     action="/collections/<%= item.id %>/content/<%= item.webContents.webContentId %>"
                     id="deleteContentForm"
                   >
-                    <ul class="delete_content_list">
-                      <li>
-                        <label for="title">컨텐츠 제목</label>
-                        <input type="submit" value="삭제" />
-                      </li>
+                    <ul class="delete_content_list">       
                     </ul>
-                    <div class="btn_area">
-                      <input type="submit" value="완료" />
-                    </div>
                   </form>
                 </div>
               </div>
             </div>
             <!-- 컬렉션 수정 모달창 -->
-            <div class="modal">
+            <div class="modify-colleciton-modal">
               <div class="collection_modal">
                 <span class="close">&times;</span>
                 <h3 class="modal_title">컬렉션 수정</h3>
@@ -110,7 +105,7 @@
       <% }); %>
     </div>
     <!-- 컬렉션 생성 모달창 -->
-    <div class="modal">
+    <div class="add-collection-modal">
       <div class="collection_modal" id="collectionModal">
         <span class="close">&times;</span>
         <h3 class="modal_title">새 컬렉션</h3>
@@ -141,5 +136,20 @@
   </main>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mycollection_list.js"></script>
+ <script>
+    function deleteContent (collectionId, webContentId) {
+    $.ajax({
+      url: `/collections/${collectionId}/content/${webContentId}`, // 데이터를 전송할 서버의 URL
+      type: 'DELETE',
+      success: function (data) {
+        alert('삭제되었습니다');
+        location.reload(true);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+      },
+    });
+  }
+  </script>
   <%- include('../footer.ejs') %>
 </body>

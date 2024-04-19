@@ -38,13 +38,36 @@ export class CollectionController {
     return { collection: myColList, users: user };
   }
 
+  // @UseGuards(AuthGuard('jwt'))
+  @Post('/info/:collectionId')
+  async getTitles(@Param('collectionId') collectionId: number) {
+    const myCol = await this.collectionService.getTitles(collectionId);
+    return myCol;
+  }
+
   @ApiOperation({ summary: '컬렉션 상세 조회' })
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Get('/info/:collectionId')
   // @Render('/')
   async myCollection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
+  }
+
+  @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:collectionId/content/:webContentId')
+  async removeContentFromCollection(
+    @UserInfo() user: Users,
+    @Param('collectionId') collectionId: number,
+    @Param('webContentId') webContentId: number,
+  ) {
+    const userId = user.id;
+    return await this.collectionService.removeContentFromCollection(
+      userId,
+      collectionId,
+      webContentId,
+    );
   }
 
   @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
@@ -122,19 +145,19 @@ export class CollectionController {
     );
   }
 
-  @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('/:collectionId/content')
-  async removeContentFromCollection(
-    @UserInfo() user: Users,
-    @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
-  ) {
-    const userId = user.id;
-    return await this.collectionService.removeContentFromCollection(
-      userId,
-      collectionId,
-      webContentId,
-    );
-  }
+  // @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
+  // @UseGuards(AuthGuard('jwt'))
+  // @Delete('/:collectionId/content')
+  // async removeContentFromCollection(
+  //   @UserInfo() user: Users,
+  //   @Param('collectionId') collectionId: number,
+  //   @Body('webContentId') webContentId: number,
+  // ) {
+  //   const userId = user.id;
+  //   return await this.collectionService.removeContentFromCollection(
+  //     userId,
+  //     collectionId,
+  //     webContentId,
+  //   );
+  // }
 }

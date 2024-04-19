@@ -1,5 +1,29 @@
 /* add collection modal  */
-.modal {
+.remove-content-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modify-colleciton-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.add-collection-modal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -12,9 +36,9 @@
 }
 
 .collection_modal {
-  display: none;
-  width: 600px;
-  height: 650px;
+  margin: 10% auto;
+  width: 40%;
+  height: min(480px);
   border-radius: 20px;
   padding: 50px;
   position: relative;
