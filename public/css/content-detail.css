@@ -49,6 +49,11 @@
   justify-content: space-between;
 }
 
+/* .{
+  display: flex;
+    flex-direction: column;
+} */
+
 /* .rui_button_white_25 {
   float: right;
   outline: 0;

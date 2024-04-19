@@ -30,10 +30,7 @@ import {
 } from './utils/naver-series.constants';
 import KakaopageAxios from './platform/kakaopage';
 import { ConfigService } from '@nestjs/config';
-
 import MrbluePuppeteer from './platform/mr.blue';
-import { ContentType } from '../web-content/webContent.type';
-import { platform } from 'os';
 
 @Injectable()
 export class CrawlerService {
@@ -161,208 +158,32 @@ export class CrawlerService {
 
   mrbluePuppeteer: MrbluePuppeteer = new MrbluePuppeteer(this.configService);
 
-  async saveReviews(title: string, contentType: ContentType, reviews: any[]) {
-    if (reviews.length >= 1) {
-      const contents = await this.contentRepository.findOneBy({
-        title,
-        contentType,
-      });
-      for (let j = 0; j < reviews.length; j++) {
-        const { content, writerId, createDate, likeCount } = reviews[j];
-
-        const review = await this.reviewRepository.findOneBy({
-          webContentId: contents.id,
-          writer: writerId,
-          content,
-        });
-
-        if (review) {
-          continue;
-        }
-        await this.reviewRepository.save({
-          webContentId: +contents.id,
-          content,
-          likeCount,
-          writer: writerId,
-          createDate,
-        });
-      }
-    }
-  }
-
-  async saveWebContentsData(contentType: ContentType, data: any[]) {
-    for (let i = 0; i < data.length; i++) {
-      const {
-        platform,
-        image,
-        category,
-        title,
-        author,
-        isAdult,
-        pubDate,
-        desc,
-        keywordList,
-        reviews,
-      } = data[i];
-
-      const existedContents = await this.contentRepository.findOneBy({
-        title,
-        contentType,
-      });
-
-      if (existedContents) {
-        const existPlatform = existedContents.platform;
-        if (!existPlatform['mrblue']) {
-          const newPlatform = { ...existPlatform, ...platform };
-          await this.contentRepository.update(existedContents.id, {
-            platform: newPlatform,
-          });
-        }
-
-        if (keywordList) {
-          let existKeyword = existedContents.keyword;
-          if (existKeyword) {
-            for (let keyword of keywordList) {
-              if (!existKeyword.includes(keyword)) {
-                existKeyword = existKeyword + keyword;
-              }
-            }
-            await this.contentRepository.update(existedContents.id, {
-              keyword: existKeyword,
-            });
-          } else if (!existKeyword) {
-            await this.contentRepository.update(existedContents.id, {
-              keyword: keywordList.join(', '),
-            });
-          }
-        }
-      } else {
-        await this.contentRepository.save({
-          contentType,
-          title,
-          desc,
-          image,
-          author,
-          isAdult,
-          keyword: keywordList.join(', '),
-          category,
-          platform,
-          pubDate,
-        });
-      }
-
-      await this.saveReviews(title, contentType, reviews);
-    }
-    console.log('저장완료');
-  }
-
-  //웹소설, 웹툰 랭킹 저장
-  async saveWebContentsRank(contentType: ContentType, data: any[]) {
-    for (let i = 0; i < data.length; i++) {
-      const {
-        rank,
-        platform,
-        image,
-        category,
-        title,
-        author,
-        isAdult,
-        pubDate,
-        desc,
-        keywordList,
-        reviews,
-      } = data[i];
-
-      const existedContents = await this.contentRepository.findOneBy({
-        title,
-        contentType,
-      });
-
-      if (existedContents) {
-        const existPlatform = existedContents.platform;
-        if (!existPlatform['mrblue']) {
-          const newPlatform = { ...existPlatform, ...platform };
-          await this.contentRepository.update(existedContents.id, {
-            platform: newPlatform,
-          });
-        }
-
-        if (keywordList) {
-          let existKeyword = existedContents.keyword;
-          if (existKeyword) {
-            for (let keyword of keywordList) {
-              if (!existKeyword.includes(keyword)) {
-                existKeyword = existKeyword + keyword;
-              }
-            }
-            await this.contentRepository.update(existedContents.id, {
-              keyword: existKeyword,
-            });
-          } else if (!existKeyword) {
-            await this.contentRepository.update(existedContents.id, {
-              keyword: keywordList.join(', '),
-            });
-          }
-        }
-
-        if (existedContents.rank) {
-          const existRank = existedContents.rank;
-          const newRank = { ...existRank, ...rank };
-          await this.contentRepository.update(existedContents.id, {
-            rank: newRank,
-          });
-        } else {
-          await this.contentRepository.update(existedContents.id, {
-            rank,
-          });
-        }
-      } else {
-        await this.contentRepository.save({
-          rank,
-          platform,
-          contentType,
-          title,
-          desc,
-          image,
-          author,
-          isAdult,
-          keyword: keywordList.join(', '),
-          category,
-          pubDate,
-        });
-      }
-      await this.saveReviews(title, contentType, reviews);
-    }
-    console.log('저장완료');
-  }
-
-  async createMrblue() {
+  async createMrblue(
+    mbWebnovelCurPage: number,
+    mbWebnovelMaxPage: number,
+    mbWebtoonCurPage: number,
+    mbWebtoonMaxPage: number,
+  ) {
     const crawlWebnovelRank = await this.mrbluePuppeteer.webnovelRank();
-    await this.saveWebContentsRank(ContentType.WEBNOVEL, crawlWebnovelRank);
 
     const crawlWebtoonRank = await this.mrbluePuppeteer.webtoonRank();
-    await this.saveWebContentsRank(ContentType.WEBTOON, crawlWebtoonRank);
-
-    const mbWebnovelCurPage =
-      +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
-    const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
 
     const crawlWebnovelAll = await this.mrbluePuppeteer.crawlWebnovels(
       mbWebnovelCurPage,
       mbWebnovelMaxPage,
     );
-    await this.saveWebContentsData(ContentType.WEBNOVEL, crawlWebnovelAll);
-    await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
 
-    const mbWebtoonCurPage =
-      +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
-    const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
     const crawlWebtoonAll = await this.mrbluePuppeteer.crawlWebtoons(
       mbWebtoonCurPage,
       mbWebtoonMaxPage,
     );
-    await this.saveWebContentsData(ContentType.WEBTOON, crawlWebtoonAll);
-    await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
+
+    return [].concat(
+      crawlWebnovelRank,
+      crawlWebtoonRank,
+      crawlWebnovelAll,
+      crawlWebtoonAll,
+    );
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -381,7 +202,7 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('46 16 * * *')
+  @Cron('0 5 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
@@ -406,6 +227,13 @@ export class CrawlerService {
         +(await this.redisService.getValue('ridi_curr4150')) || 1;
       const ridiCurrWebtoons =
         +(await this.redisService.getValue('ridi_curr1600')) || 1;
+
+      const mbWebnovelCurPage =
+        +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
+      const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
+      const mbWebtoonCurPage =
+        +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
+      const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
 
       let begin_time = new Date().getTime();
       console.log('네이버 크롤링 시작');
@@ -449,11 +277,27 @@ export class CrawlerService {
         new Date().getTime() - begin_time,
       );
 
+      console.log('미스터 블루 작업 시작.');
+      begin_time = new Date().getTime();
+
+      let mrblueData = await this.createMrblue(
+        mbWebnovelCurPage,
+        mbWebnovelMaxPage,
+        mbWebtoonCurPage,
+        mbWebtoonMaxPage,
+      );
+
+      console.log(
+        '미스터 블루 크롤링 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
+
       // title, contentType이 중복되는 요소 제거
       const data = [].concat(
         await this.removeDuplicate(ridiData),
         await this.removeDuplicate(kakaoData),
         await this.removeDuplicate(naverData),
+        await this.removeDuplicate(mrblueData),
       );
 
       console.log('디비 작업 시작.');
@@ -484,6 +328,13 @@ export class CrawlerService {
 
           let contentId: number;
           if (!_.isNil(existingContent)) {
+            console.log(
+              '이미 DB에 존재하는 데이터: ',
+              existingContent.title,
+              existingContent.rank,
+              existingContent.keyword,
+              existingContent.platform,
+            );
             contentId = existingContent.id;
 
             let updateRank = {
@@ -506,8 +357,15 @@ export class CrawlerService {
                   })
                   .where('id = :id', { id: contentId })
                   .execute();
+
+                console.log(
+                  '이미 플랫폼 정보가 DB에 존재해서 랭크만 업데이트시켜주면 되는 경우',
+                );
               }
 
+              console.log(
+                '이미 플랫폼 정보가 DB에 존재하고 랭크도 업데이트안해도 되는 경우',
+              );
               continue;
             }
 
@@ -536,7 +394,15 @@ export class CrawlerService {
               })
               .where('id = :id', { id: contentId })
               .execute();
+
+            console.log(
+              '이미 DB에 존재하는데 플랫폼이 달라서 키워드, 랭크, 플랫폼 업데이트',
+              updateKeyword,
+              updateRank,
+              updatePlatform,
+            );
           } else {
+            console.log('새로 생성');
             const insertResult = await queryRunner.manager
               .createQueryBuilder()
               .insert()
@@ -550,21 +416,26 @@ export class CrawlerService {
             contentId = insertResult.identifiers[0].id;
           }
 
+          console.log('리뷰 넣기');
+          const reviews = webContent.pReviews
+            .filter(
+              (review) => review.content.replace(/(이모티콘)/g, '') !== '',
+            )
+            .map((review) => {
+              const pReview = new PReviews();
+              pReview.content = review.content.replace(/(이모티콘)/g, '');
+              pReview.writer = review.writer;
+              pReview.createDate = review.createDate;
+              pReview.likeCount = review.likeCount;
+              pReview.webContentId = contentId;
+              return pReview;
+            });
+
           await queryRunner.manager
             .createQueryBuilder()
             .insert()
             .into(PReviews)
-            .values(
-              webContent.pReviews.map((review) => {
-                const pReview = new PReviews();
-                pReview.writer = review.writer;
-                pReview.content = review.content;
-                pReview.createDate = review.createDate;
-                pReview.likeCount = review.likeCount;
-                pReview.webContentId = contentId;
-                return pReview;
-              }),
-            )
+            .values(reviews)
             .orIgnore()
             .execute();
         }
@@ -589,22 +460,17 @@ export class CrawlerService {
       await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
       await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
 
+      await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
+      await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
+
       console.log(
         '디비 작업 끝. 총 걸린 시간은 ',
-        new Date().getTime() - begin_time,
-      );
-      console.log('미스터 블루 작업 시작.');
-      begin_time = new Date().getTime();
-
-      await this.createMrblue();
-
-      console.log(
-        '미스터 블루 크롤링+디비 작업 끝. 총 걸린 시간은 ',
         new Date().getTime() - begin_time,
       );
 
       console.log('총 걸린 시간 : ', new Date().getTime() - startTime, 'ms');
     } catch (err) {
+      //throw err;
       throw new InternalServerErrorException(err.message);
     }
   }
