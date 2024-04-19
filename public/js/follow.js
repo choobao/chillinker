@@ -1,14 +1,29 @@
 // 팔로우 버튼 클릭 이벤트
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('dd');
   const followBtns = document.querySelectorAll('.unfollowing_btn');
 
   followBtns.forEach(function (followBtn) {
     followBtn.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
+      const index = this.id.split('-')[1]; // 버튼 id에서 index 추출
       const followId = this.id.split('-')[0];
       console.log(index, followId);
+      const isFollowing = this.dataset.isFollowing === 'true';
+
+      $.ajax({
+        type: 'Post',
+        url: `/users/${followId}/follows/follow`,
+        contentType: 'application/json',
+        data: JSON.stringify({ isFollowing: !isFollowing }),
+        success: function (data) {
+          followBtn.textContent = isFollowing ? '팔로잉' : '언팔로우';
+          followBtn.dataset.isFollowing = !isFollowing;
+          //   location.reload(true); // 성공 시 페이지 새로고침
+        },
+        error: function (response) {
+          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+        },
+      });
     });
   });
 });
