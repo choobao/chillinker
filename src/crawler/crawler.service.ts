@@ -485,7 +485,6 @@ export class CrawlerService {
           let contentId: number;
           if (!_.isNil(existingContent)) {
             contentId = existingContent.id;
-       
 
             let updateRank = {
               ...existingContent.rank,
@@ -498,9 +497,7 @@ export class CrawlerService {
             if (
               Object.keys(webContent.platform)[0] in existingContent.platform
             ) {
-             
               if (webContent.rank !== null) {
-               
                 await queryRunner.manager
                   .createQueryBuilder()
                   .update(WebContents)
@@ -513,8 +510,6 @@ export class CrawlerService {
 
               continue;
             }
-
-            
 
             const updateKeyword =
               webContent.keyword.length === 0
@@ -531,8 +526,6 @@ export class CrawlerService {
               ...webContent.platform,
             };
 
-           
-
             await queryRunner.manager
               .createQueryBuilder()
               .update(WebContents)
@@ -543,11 +536,7 @@ export class CrawlerService {
               })
               .where('id = :id', { id: contentId })
               .execute();
-
-           
-            );
           } else {
-            
             const insertResult = await queryRunner.manager
               .createQueryBuilder()
               .insert()
@@ -589,8 +578,8 @@ export class CrawlerService {
       }
 
       // redis 업데이트
-       await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
-       await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
+      await this.redisService.save('naver_webnovel', naverCurrNumWebnovel + 50);
+      await this.redisService.save('naver_webtoon', naverCurrNumWebtoon + 50);
       await this.redisService.save('kakao_webnovel', kakaoCurrPageWebnovel + 4);
       await this.redisService.save('kakao_webtoon', kakaoCurrPageWebtoon + 4);
 
