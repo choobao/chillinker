@@ -306,21 +306,20 @@ export async function getKeywordPubDate(bookId: number) {
   const $ = cheerio.load(data);
 
   const keywordArr = [];
-  const excludedKeywords = ['기다리면무료', '리뷰', '별점', '평점'];
 
   $(
     '#page_detail > div.detail_wrap > div.detail_body_wrap > section > article.detail_box_module.detail_keyword.js_detail_keyword_module > ul > li > button',
   ).each((index, element) => {
     const keyword = $(element).attr('data-tag-name').trim();
     if (
-      // !excludedKeywords.includes(keyword) &&
       !keyword.includes('리뷰') &&
       !keyword.includes('별점') &&
       !keyword.includes('평점') &&
       !keyword.includes('기다리면무료') &&
       !keyword.includes('RIDI') &&
       !keyword.includes('리다무') &&
-      !keyword.includes('연재완결')
+      !keyword.includes('연재완결') &&
+      !keyword.includes('시오픈')
     ) {
       keywordArr.push(keyword);
     }

@@ -6,6 +6,7 @@ import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
+import { InternalServerErrorException } from '@nestjs/common';
 
 describe('WebContentService', () => {
   let service: WebContentService;
@@ -147,7 +148,116 @@ describe('WebContentService', () => {
     });
 
     it('should throw InternalServierErrorException if query failed', async () => {
-      webContentRepository.createQueryBuilder().getRawMany.mock
-    })
+      const platform = 'fake-platform';
+      const type = ContentType.WEBNOVEL;
+
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockImplementation(() => {
+          throw new Error('Query Failed');
+        });
+
+      await expect(service.findBestWebContents(platform, type)).rejects.toThrow(
+        InternalServerErrorException,
+      );
+    });
+  });
+
+  describe('searchFromUsers test', () => {
+    const user1 = {
+      id: 1,
+      nickname: 'test',
+      email: 'test@test.com',
+      intro: null,
+    } as Users;
+    const user2 = {
+      id: 2,
+      nickname: '테스트',
+      email: 'second@second.com',
+      intro: 'test',
+    } as Users;
+
+    const users: Users[] = [user1, user2];
+
+    it('should return users with given keyword where nickname or intro includes keyword', async () => {
+      const keyword = 'test';
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue(users);
+
+      // act
+      const result = await service.searchFromUsers(keyword);
+
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toBe(users);
+    });
+
+    it('should return empty array if data matches keyword not exists', async () => {
+      const keyword = 'fake-keyword';
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue([]);
+
+      // act
+      const result = await service.searchFromUsers(keyword);
+
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toBe([]);
+    });
+  });
+
+  describe('searchFromCollections test', () => {
+    const user1 = {
+      id: 1,
+      nickname: 'test',
+      email: 'test@test.com',
+      intro: null,
+    } as Users;
+    const user2 = {
+      id: 2,
+      nickname: '테스트',
+      email: 'second@second.com',
+      intro: 'test',
+    } as Users;
+
+    const users: Users[] = [user1, user2];
+
+    it('should return users with given keyword where nickname or intro includes keyword', async () => {
+      const keyword = 'test';
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue(users);
+
+      // act
+      const result = await service.searchFromUsers(keyword);
+
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toBe(users);
+    });
+
+    it('should return empty array if data matches keyword not exists', async () => {
+      const keyword = 'fake-keyword';
+      webContentRepository
+        .createQueryBuilder()
+        .getRawMany.mockResolvedValue([]);
+
+      // act
+      const result = await service.searchFromUsers(keyword);
+
+      // assert
+      expect(
+        webContentRepository.createQueryBuilder().getRawMany,
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toBe([]);
+    });
   });
 });
