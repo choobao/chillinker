@@ -126,7 +126,7 @@ export class CollectionController {
   async removeContentFromCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
+    @Param('webContentId') webContentId: number,
   ) {
     const userId = user.id;
     return await this.collectionService.removeContentFromCollection(
