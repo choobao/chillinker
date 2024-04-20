@@ -32,7 +32,6 @@ export class ReviewController {
   @Render('detailContent')
   @Get()
   async getCReivew(
-    @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -46,7 +45,7 @@ export class ReviewController {
     );
 
     const { content, reviewList, totalPages } = result;
-    console.log(user);
+
     return { content, reviewList, totalPages, page, order, option };
   }
 
@@ -123,7 +122,7 @@ export class ReviewController {
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:reviewId')
   @HttpCode(204)
-  async deleteReivew(
+  async deleteReview(
     @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
