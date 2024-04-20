@@ -45,7 +45,7 @@
             <ul>
               <li class="collection_title"><%= item.title %></li>
               <li class="collection_desc"><%= item.desc %></li>
-              <li class="collection_bookmarked_number"><%= item.bookmarkCount %></li>
+              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
                 <button class="collection_content_adjust_btn" id="collection_content_adjust_btn-<%= index %>">작품관리</button>
                 <button class="collection_edit_btn" id="collection_edit_btn-<%= index %>">수정</button>
@@ -82,20 +82,6 @@
                     enctype="multipart/form-data"
                     id="updateCollectionForm"
                   >
-                    <label for="cover">컬렉션 이미지 업로드</label>
-                    <br />
-                    <input type="file" name="cover" id="cover" accept="image/*" />
-                    <input type="submit" value="" />
-                    <br />
-                    <label for="title">컬렉션 제목</label>
-                    <input type="text" name="title" id="title" value="<%= item.title %>" />
-                    <br />
-                    <label for="desc">컬렉션 설명</label>
-                    <textarea name="desc" id="" cols="30" rows="10" ><%= item.desc %></textarea>
-                    <br />
-                    <div class="btn_area">
-                      <input type="submit" value="완료" />
-                    </div>
                   </form>
                 </div>
               </div>

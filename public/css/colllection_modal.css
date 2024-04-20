@@ -38,7 +38,7 @@
 .collection_modal {
   margin: 10% auto;
   width: 40%;
-  height: min(480px);
+  height: max-content;
   border-radius: 20px;
   padding: 50px;
   position: relative;
@@ -63,9 +63,10 @@
   cursor: pointer;
 }
 
-.collection_modal .modal_title {
+.collection_modal > h3 {
   font-size: 30px;
   margin-bottom: 20px;
+  color: #6a5acd;
 }
 
 .modal_content {
@@ -103,26 +104,28 @@
 }
 
 /* delete collection modal  */
-.delete_collection_list {
+.delete_content_list {
   margin: 20px 0 60px;
 }
-.delete_collection_list li {
+.delete_content_list > li {
   width: 100%;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  border: #e6e6fa solid;
+  border-radius: 5px;
 }
-.delete_collection_list li label {
-  background-color: #f2f2f2;
+.delete_content_list > li > label {
   width: 85%;
   padding-left: 15px;
   vertical-align: center;
 }
-.delete_collection_list li input {
+.delete_content_list > li > input {
+  background-color: #f2f2f2;
   width: 15%;
   text-align: center;
 }
-.delete_collection_list input[type='submit'] {
+.delete_content_list > input[type='submit'] {
   background-color: #6a5acd;
   color: #ffffff;
   padding: 10px;

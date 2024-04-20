@@ -38,17 +38,21 @@ export class CollectionController {
     return { collection: myColList, users: user };
   }
 
-  // @UseGuards(AuthGuard('jwt'))
   @Post('/info/:collectionId')
   async getTitles(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getTitles(collectionId);
     return myCol;
   }
 
+  @Get('/col-list/info/:collectionId')
+  async Collection(@Param('collectionId') collectionId: number) {
+    const myCol = await this.collectionService.getMyCol(collectionId);
+    return myCol;
+  }
+
   @ApiOperation({ summary: '컬렉션 상세 조회' })
-  // @UseGuards(AuthGuard('jwt'))
   @Get('/info/:collectionId')
-  // @Render('/')
+  @Render('/')
   async myCollection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
