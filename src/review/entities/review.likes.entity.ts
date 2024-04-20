@@ -18,9 +18,6 @@ export class ReviewLikes {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', nullable: false })
-  like: number;
-
   //**Users와 Review_likes는 1:N
   @ManyToOne(() => Users, (users) => users.reviewLikes)
   @JoinColumn({ name: 'user_id' })

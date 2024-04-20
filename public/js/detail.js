@@ -121,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
 $(document).ready(function () {
   $('#myform').submit(function (e) {
     e.preventDefault(); // 폼 기본 제출 막기
