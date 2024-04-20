@@ -30,12 +30,14 @@
     <div class="collections_container">
       <% collection.forEach((item, index)=> { %>
         <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
-        <div class="collection" href="/info/<%= item.id %>">
+        <div class="collection" >
           <div class="collection_upper">
             <img class="collection_img"
+              id="collectionBtn-<%= index %>"
               src="<%= item.coverImage%>"
               alt="커버이미지"
               onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              href="/collections/info/<%= item.id %>"
             />
             <div class="contents_number">
               작품수: <%= item.webContents.length || 0%>
@@ -43,7 +45,7 @@
           </div>
           <div class="collection_info">
             <ul>
-              <li class="collection_title"><%= item.title %></li>
+              <li class="collection_title" id="collectionBtn-<%= index %>" href="/collections/info/<%= item.id %>"><%= item.title %></li>
               <li class="collection_desc"><%= item.desc %></li>
               <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
@@ -135,7 +137,27 @@
         alert(response.responseJSON.message);
       },
     });
-  }
+    }
+    var collectionImgBtn = document.querySelectorAll('.collection_img')
+    var collectiontitleBtn= document.querySelectorAll('.collection_title')
+    collectionImgBtn.forEach(function(collectionImgBtn){
+      collectionImgBtn.addEventListener('click', function(){
+        const index =this.id.split('-')[1];
+        const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+        window.location.href = `/collections/info/${collectionId}`
+      })
+    })
+    collectiontitleBtn.forEach(function(collectiontitleBtn){
+      collectiontitleBtn.addEventListener('click', function(){
+        const index =this.id.split('-')[1];
+        const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+        window.location.href = `/collections/info/${collectionId}`
+      })
+    })
   </script>
   <%- include('../footer.ejs') %>
 </body>
