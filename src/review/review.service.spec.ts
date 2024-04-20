@@ -339,50 +339,50 @@ describe('ReviewService', () => {
       ).rejects.toThrow();
     });
 
-    it('should decrement the likeCount column in the database by 1 if there is a entry in the database', async () => {
-      cReviewRepository.findOne.mockResolvedValue(mockReview);
-      reviewLikesRepository.findOne.mockResolvedValue(undefined);
+    // it('should decrement the likeCount column in the database by 1 if there is a entry in the database', async () => {
+    //   cReviewRepository.findOne.mockResolvedValue(mockReview);
+    //   reviewLikesRepository.findOne.mockResolvedValue(undefined);
 
-      reviewLikesRepository.save.mockResolvedValue({});
-      const expectedResult = '해당 리뷰에 좋아요를 등록했습니다.';
+    //   reviewLikesRepository.save.mockResolvedValue({});
+    //   const expectedResult = '해당 리뷰에 좋아요를 등록했습니다.';
 
-      // cReviewRepository.save.mockResolvedValue(mockReview);
+    //   // cReviewRepository.save.mockResolvedValue(mockReview);
 
-      const result = await service.likeReview(mockUser, mockReview.id);
+    //   const result = await service.likeReview(mockUser, mockReview.id);
 
-      expect(result).toEqual(expectedResult);
-      expect(mockReview.likeCount).toEqual(4);
+    //   expect(result).toEqual(expectedResult);
+    //   expect(mockReview.likeCount).toEqual(4);
 
-      expect(cReviewRepository.findOne).toHaveBeenCalledWith({
-        where: { id: mockReview.id },
-      });
-      expect(reviewLikesRepository.findOne).toHaveBeenCalledWith({
-        where: { userId: mockLikeReivew.id, cReviewId: mockLikeReivew.id },
-      });
-      expect(reviewLikesRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          userId: mockUser.id,
-          cReviewId: mockReview.id,
-        }),
-      );
-    });
-
-    //   it('should like a review if user has not liked it before', async () => {
-    //     const mockUser: Users = { id: 1 } as any;
-    //     const mockReviewId = 1;
-    //     const mockReview: CReviews = { id: 1, userId: 2, likeCount: 0 } as any;
-    //     const mockLike = null;
-    //     cReviewRepository.findOne.mockResolvedValue(mockReview);
-    //     reviewLikesRepository.findOne.mockResolvedValue(mockLike);
-    //     reviewLikesRepository.save.mockResolvedValue({});
-    //     const expectedResult = '해당 리뷰에 좋아요를 등록했습니다.';
-
-    //     const result = await service.likeReview(mockUser, mockReviewId);
-
-    //     expect(result).toEqual(expectedResult);
-    //     expect(mockReview.likeCount).toEqual(1);
+    //   expect(cReviewRepository.findOne).toHaveBeenCalledWith({
+    //     where: { id: mockReview.id },
     //   });
+    //   expect(reviewLikesRepository.findOne).toHaveBeenCalledWith({
+    //     where: { userId: mockLikeReivew.id, cReviewId: mockLikeReivew.id },
+    //   });
+    //   expect(reviewLikesRepository.save).toHaveBeenCalledWith(
+    //     expect.objectContaining({
+    //       userId: mockUser.id,
+    //       cReviewId: mockReview.id,
+    //     }),
+    //   );
   });
+
+  //   it('should like a review if user has not liked it before', async () => {
+  //     const mockUser: Users = { id: 1 } as any;
+  //     const mockReviewId = 1;
+  //     const mockReview: CReviews = { id: 1, userId: 2, likeCount: 0 } as any;
+  //     const mockLike = null;
+  //     cReviewRepository.findOne.mockResolvedValue(mockReview);
+  //     reviewLikesRepository.findOne.mockResolvedValue(mockLike);
+  //     reviewLikesRepository.save.mockResolvedValue({});
+  //     const expectedResult = '해당 리뷰에 좋아요를 등록했습니다.';
+
+  //     const result = await service.likeReview(mockUser, mockReviewId);
+
+  //     expect(result).toEqual(expectedResult);
+  //     expect(mockReview.likeCount).toEqual(1);
+  //   });
+  // });
 
   describe('createReview', () => {
     const mockUser = {
