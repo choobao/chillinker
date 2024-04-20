@@ -295,8 +295,6 @@ export class ReviewService {
 
       const formattedScore = parseFloat(score.toFixed(1));
 
-      console.log(score, formattedScore);
-
       await this.webContentRepository.update(
         { id: webContentId },
         { starRate: formattedScore },
@@ -316,6 +314,8 @@ export class ReviewService {
     const findReview = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
     });
+
+    console.log(findReview);
 
     if (!findReview) {
       throw new NotFoundException('해당 리뷰를 찾을 수 없습니다.');
@@ -337,6 +337,8 @@ export class ReviewService {
           cReviewId: reviewId,
         },
       });
+
+      console.log(like);
 
       if (!like) {
         await this.reviewLikesRepository.save({
@@ -362,6 +364,7 @@ export class ReviewService {
         : '해당 리뷰에 좋아요를 등록했습니다.';
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      console.log(err);
       throw new BadRequestException('리뷰 좋아요에 실패하였습니다.');
     } finally {
       await queryRunner.release();
