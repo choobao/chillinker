@@ -71,7 +71,7 @@ export class WebContentController {
   // }
 
   @Get('search')
-  // @Render('search')
+  @Render('search')
   async search(@Query('query') query: string, @Query('type') type: string) {
     const regex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
 
@@ -98,15 +98,4 @@ export class WebContentController {
       return { type, keyword, webnovels };
     }
   }
-
-  // @Get('books/:webContentId')
-  // @Render('detailContent')
-  // async getContent(
-  //   @Param('webContentId', ParseIntPipe) id: number,
-  //   @Query('type') type: ContentType,
-  // ) {
-  //   const findContent = await this.webContentService.findContent(id, type);
-  //   console.log(findContent);
-  //   return findContent;
-  // }
 }
