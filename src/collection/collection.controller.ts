@@ -52,10 +52,10 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 상세 조회' })
   @Get('/info/:collectionId')
-  @Render('/')
+  @Render('collection/collection_detail')
   async myCollection(@Param('collectionId') collectionId: number) {
-    const myCol = await this.collectionService.getMyCol(collectionId);
-    return myCol;
+    const collection = await this.collectionService.getMyCol(collectionId);
+    return { collection };
   }
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
@@ -76,9 +76,10 @@ export class CollectionController {
 
   @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
   @Get('/:userId')
+  @Render('collection/user_collection_list')
   async userCollections(@Param('userId') userId: number) {
-    const userColList = await this.collectionService.getUserColList(userId);
-    return await userColList;
+    const collections = await this.collectionService.getUserColList(userId);
+    return { collections };
   }
 
   @ApiOperation({ summary: '컬렉션 생성' })

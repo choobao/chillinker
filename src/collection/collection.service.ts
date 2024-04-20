@@ -13,6 +13,7 @@ import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
 
 import { StorageService } from '../storage/storage.service';
+import { result } from 'lodash';
 
 @Injectable()
 export class CollectionService {
@@ -81,10 +82,35 @@ export class CollectionService {
   }
 
   // 타 유저 컬렉션 목록 조회
-  async getUserColList(userId: number): Promise<Collections[]> {
-    return await this.colRepository.find({
+  async getUserColList(userId: number) {
+    const collections = await this.colRepository.find({
       where: { userId },
-      select: ['id', 'title', 'desc'],
+      relations: ['contentCollections', 'collectionBookmarks'],
+      select: [
+        'id',
+        'title',
+        'desc',
+        'coverImage',
+        'bookmarkCount',
+        'contentCollections',
+      ],
+    });
+    return collections.map((collection) => {
+      const id = collection.id;
+      const title = collection.title;
+      const desc = collection.desc;
+      const coverImage = collection.coverImage;
+      const bookmarkCount = collection.collectionBookmarks.length;
+      const webContentNumber = collection.contentCollections.length;
+
+      return {
+        id,
+        title,
+        desc,
+        coverImage,
+        bookmarkCount,
+        webContentNumber,
+      };
     });
   }
 
@@ -99,6 +125,11 @@ export class CollectionService {
       .createQueryBuilder('collections')
       .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
       .leftJoinAndSelect('contentCollection.webContent', 'webContent')
+      .leftJoinAndSelect('collections.user', 'user')
+      .leftJoinAndSelect(
+        'collections.collectionBookmarks',
+        'collectionBooknmarks',
+      )
       .where('collections.id = :id', { id: collectionId })
       .getOne();
   }

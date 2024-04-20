@@ -38,6 +38,7 @@ export class WebContentService {
           'webContents.category AS category',
           'webContents.title AS title',
           'webContents.image AS image',
+          'webContents.author AS author',
         ])
         .addSelect('COUNT(pReview.id)', 'pReviewCount')
         .addSelect('COUNT(cReview.id)', 'cReviewCount')
