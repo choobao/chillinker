@@ -1,14 +1,12 @@
-import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
 import { load } from 'cheerio';
 import _ from 'lodash';
-import { title } from 'process';
 import { Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
 import { setTimeout } from 'timers/promises';
-import { PReviews } from 'src/review/entities/platform.reviews.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
-import { ContentType } from 'src/web-content/webContent.type';
+import { PReviews } from '../../review/entities/platform.reviews.entity';
+import { WebContents } from '../../web-content/entities/webContents.entity';
+import { ContentType } from '../../web-content/webContent.type';
 import {
   login_page_btn,
   login_submit_btn,
@@ -39,7 +37,6 @@ import {
   series_title,
 } from '../utils/naver-series.constants';
 import { ConfigService } from '@nestjs/config';
-import { platform } from 'os';
 
 export class NaverSeriesAxios {
   host: string = 'https://series.naver.com';

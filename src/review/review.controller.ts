@@ -18,8 +18,8 @@ import { ReviewService } from './review.service';
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UserInfo } from 'src/utils/userinfo.decorator';
-import { Users } from 'src/user/entities/user.entity';
+import { UserInfo } from '../utils/userinfo.decorator';
+import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 
@@ -58,7 +58,7 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     console.log('df');
-    return await this.reviewService.likeReivew(user, reviewId);
+    return await this.reviewService.likeReview(user, reviewId);
   }
 
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
@@ -128,6 +128,6 @@ export class ReviewController {
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    await this.reviewService.deleteReivew(user, webContentsId, reviewId);
+    await this.reviewService.deleteReview(user, webContentsId, reviewId);
   }
 }

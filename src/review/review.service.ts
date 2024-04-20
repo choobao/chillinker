@@ -10,11 +10,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCReviewsDto } from './dto/review.create.dto';
 import { DataSource, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../user/entities/user.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
 import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
-import { WebContents } from 'src/web-content/entities/webContents.entity';
+import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 
 @Injectable()
@@ -27,10 +27,10 @@ export class ReviewService {
     @InjectRepository(PReviews)
     private readonly platformReviewsRepository: Repository<PReviews>,
     @InjectRepository(ReviewLikes)
-    private readonly reveiewLikesRepository: Repository<ReviewLikes>,
-    private readonly dataSource: DataSource,
+    private readonly reviewLikesRepository: Repository<ReviewLikes>,
     @InjectRepository(WebContents)
     private readonly webContentRepository: Repository<WebContents>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getCReviews(
@@ -268,7 +268,7 @@ export class ReviewService {
     );
   }
 
-  async deleteReivew(user: Users, webContentId: number, reviewId: number) {
+  async deleteReview(user: Users, webContentId: number, reviewId: number) {
     const userId = user.id;
     const findReivew = await this.chillinkerReviewsRepository.findOne({
       where: { id: reviewId },
@@ -308,7 +308,7 @@ export class ReviewService {
     });
   }
 
-  async likeReivew(user: Users, reviewId: number) {
+  async likeReview(user: Users, reviewId: number) {
     const userId = user.id;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -331,7 +331,7 @@ export class ReviewService {
       queryRunner.connect();
       queryRunner.startTransaction();
 
-      const like = await this.reveiewLikesRepository.findOne({
+      const like = await this.reviewLikesRepository.findOne({
         where: {
           userId: userId,
           cReviewId: reviewId,
@@ -339,15 +339,14 @@ export class ReviewService {
       });
 
       if (!like) {
-        await this.reveiewLikesRepository.save({
-          like: 1,
+        await this.reviewLikesRepository.save({
           userId: userId,
           cReviewId: reviewId,
         });
 
         findReview.likeCount += 1;
       } else {
-        await this.reveiewLikesRepository.delete({
+        await this.reviewLikesRepository.delete({
           userId: userId,
           cReviewId: reviewId,
         });
