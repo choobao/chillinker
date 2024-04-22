@@ -33,7 +33,7 @@ export class AuthController {
   redirectToGoogleAuth(@Res() res) {
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const googleRedirectUri = process.env.GOOGLE_CALLBACK_URL;
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUri}`;
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${googleClientId}&redirect_uri=${googleRedirectUri}`;
     res.redirect(HttpStatus.TEMPORARY_REDIRECT, googleAuthUrl);
   }
 
@@ -84,7 +84,7 @@ export class AuthController {
   redirectToKakaoAuth(@Res() res) {
     const kakaoClientId = process.env.KAKAO_CLIENT_ID;
     const kakaoRedirectUri = process.env.KAKAO_CALLBACK_URL;
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${kakaoRedirectUri}`;
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&scope=account_email,profile_nickname,profile_image&client_id=${kakaoClientId}&redirect_uri=${kakaoRedirectUri}`;
     res.redirect(HttpStatus.TEMPORARY_REDIRECT, kakaoAuthUrl);
   }
 
