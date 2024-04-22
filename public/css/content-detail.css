@@ -73,6 +73,11 @@
   background: #e6e6fa;
 } */
 
+.blind-review {
+  display: flex;
+  flex-direction: column;
+}
+
 .editButton {
   width: 60px;
   height: 30px;

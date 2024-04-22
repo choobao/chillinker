@@ -1,0 +1,36 @@
+{
+  "config": {
+    "target": "http://localhost:3000",
+    "phases": [
+      {
+        "duration": 60,
+        "arrivalRate": 30
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "flow": [
+        {
+          "get": {
+            "url": "/main"
+          }
+        },
+        {
+          "post": {
+            "url": "/auth/login",
+            "json": {
+              "email": "test1@test.com",
+              "password": "123123"
+            }
+          }
+        },
+        {
+          "get": {
+            "url": "/hashtag?hashtag=test"
+          }
+        }
+      ]
+    }
+  ]
+}
