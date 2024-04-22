@@ -23,6 +23,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  // 수정
   const config = new DocumentBuilder()
     .setTitle('🛋️ Chillinker 🖇️')
     .setDescription('Chillinker - Webtoons & Webnovel Service')
