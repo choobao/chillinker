@@ -10,6 +10,11 @@ btn1.onclick = function () {
 
 span1.onclick = function () {
   modal1.style.display = 'none';
+
+  // if (eventSource) {
+  //   eventSource.close();
+  //   console.log('SSE connection closed');
+  // }
 };
 
 window.onclick = function (event) {
@@ -23,10 +28,8 @@ $(document).ready(function () {
   $('#profile-alarm-col').click(function () {
     var userId = $('#userId').text();
 
-    const eventSource = new EventSource(`http://localhost:3000/sse/${userId}`);
-
+    let eventSource = new EventSource(`http://localhost:3000/sse/${userId}`);
     eventSource.onmessage = (event) => {
-      console.log('그냥 보내기');
       const data = JSON.parse(event.data);
       console.log('Received data:', data);
     };
