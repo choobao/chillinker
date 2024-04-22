@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 import { Request as RequestType } from 'express';
 import {
   BadRequestException,

@@ -180,4 +180,32 @@ export class UserService {
   async findUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
   }
+
+  async createProviderUser(email: string, nickname: string, provider: string) {
+    if (provider === 'kakao') {
+      const user = await this.userRepository.save({
+        email,
+        nickname,
+        platform: 'kakao',
+      });
+
+      return user;
+    } else if (provider === 'naver') {
+      const user = await this.userRepository.save({
+        email,
+        nickname,
+        platform: 'naver',
+      });
+
+      return user;
+    } else {
+      const user = await this.userRepository.save({
+        email,
+        nickname,
+        platform: 'google',
+      });
+
+      return user;
+    }
+  }
 }
