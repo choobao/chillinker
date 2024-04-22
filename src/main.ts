@@ -5,9 +5,13 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  const configService = app.get(ConfigService);
+  const PORT = configService.get('SERVER_PORT') || 3000;
 
   app.enableCors();
 
@@ -31,7 +35,7 @@ async function bootstrap() {
   app.setBaseViewsDir(path.join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
 
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 
 bootstrap();
