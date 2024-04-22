@@ -1,10 +1,12 @@
 FROM node:20 AS builder
 
+RUN mkdir -p /var/app
+
 WORKDIR /var/app
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm ci
 
 COPY . .
 
@@ -19,4 +21,4 @@ COPY --from=builder /var/app/dist ./dist
 
 ENV NODE_ENV production
 
-CMD [ "node", "dist/main" ]
+CMD [ "node", "dist/main.js" ]
