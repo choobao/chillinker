@@ -16,6 +16,7 @@ import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
+import { SseService } from 'src/sse/sse.service';
 
 @Injectable()
 export class ReviewService {
@@ -31,6 +32,7 @@ export class ReviewService {
     @InjectRepository(WebContents)
     private readonly webContentRepository: Repository<WebContents>,
     private readonly dataSource: DataSource,
+    private readonly sseService: SseService,
   ) {}
 
   async getCReviews(
@@ -315,8 +317,6 @@ export class ReviewService {
       where: { id: reviewId },
     });
 
-    console.log(findReview);
-
     if (!findReview) {
       throw new NotFoundException('해당 리뷰를 찾을 수 없습니다.');
     }
@@ -338,8 +338,6 @@ export class ReviewService {
         },
       });
 
-      console.log(like);
-
       if (!like) {
         await this.reviewLikesRepository.save({
           userId: userId,
@@ -357,6 +355,31 @@ export class ReviewService {
       }
       await this.chillinkerReviewsRepository.save(findReview);
 
+      //테스트용
+      this.sseEvent(
+        findReview.webContentId,
+        findReview.userId,
+        findReview.likeCount,
+      );
+
+      if (findReview.likeCount <= 100) {
+        if (findReview.likeCount % 20 == 0) {
+          this.sseEvent(
+            findReview.webContentId,
+            findReview.userId,
+            findReview.likeCount,
+          );
+        }
+      } else {
+        if (findReview.likeCount % 50 == 0) {
+          this.sseEvent(
+            findReview.webContentId,
+            findReview.userId,
+            findReview.likeCount,
+          );
+        }
+      }
+
       await queryRunner.commitTransaction();
 
       return like
@@ -369,5 +392,16 @@ export class ReviewService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async sseEvent(webContentId: number, userId: number, likeCount: number) {
+    const webContent = await this.webContentRepository.findOne({
+      where: { id: webContentId },
+    });
+    this.sseService.emitReviewLikeCountEvent(
+      webContent.title,
+      userId,
+      likeCount,
+    );
   }
 }

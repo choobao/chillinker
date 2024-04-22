@@ -362,7 +362,6 @@ footer p {
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  height: 330px;
   padding: 30px;
   box-sizing: border-box;
   margin-left: auto;
@@ -487,6 +486,7 @@ footer {
   background-color: #fefefe;
   margin: 10% auto;
   padding: 20px;
+  height: 60%;
   border: 1px solid #e6e6fa;
   width: 40%;
   position: relative;
