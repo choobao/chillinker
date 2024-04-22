@@ -31,7 +31,9 @@ export class WebContentService {
           `JSON_EXTRACT(webContents.platform, '$.${platform}') IS NOT NULL`,
         )
         .andWhere('webContents.contentType = :type', { type })
-        .andWhere('webContents.rank IS NOT NULL')
+        .andWhere('JSON_EXTRACT(webContents.rank, :platform) IS NOT NULL', {
+          platform: `$.${platform}`,
+        })
         .groupBy('webContents.id')
         .select([
           'webContents.id AS id',
