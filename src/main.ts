@@ -4,9 +4,9 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as path from 'path';
 
 async function bootstrap() {
-  //const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors();
@@ -27,8 +27,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.useStaticAssets('public');
-  app.setBaseViewsDir('views');
+  app.useStaticAssets(path.join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(path.join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
 
   await app.listen(3000);
