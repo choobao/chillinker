@@ -73,6 +73,7 @@ export class CollectionController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
+    @UploadedFile() file: Express.Multer.File,
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
     @Body() updateColDto: UpdateColDto,
