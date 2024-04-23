@@ -91,7 +91,7 @@ export class CollectionService {
     return await this.colRepository.save(collection);
   }
 
-  // 컬렉션 수정 _작품 추가, 작품 삭제, 컬렉션 정보 수정
+  // 컬렉션 수정 _컬렉션 정보 수정
   async updateCol(
     collectionId: number,
     updateColDto: UpdateColDto,

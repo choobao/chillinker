@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../user/entities/user.entity';
 import { CollectionBookmarkService } from './collection-bookmark.service';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
