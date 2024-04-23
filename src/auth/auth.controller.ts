@@ -12,14 +12,6 @@ import { GoogleGuard } from './guard/google.guard';
 import { NaverGuard } from './guard/naver.guard';
 import { KakaoGuard } from './guard/kakao.guard';
 
-// interface IOAuthUser {
-//   user: {
-//     nickname: string;
-//     email: string;
-//     password: string;
-//   };
-// }
-
 @Controller('oauth')
 export class AuthController {
   constructor(
@@ -28,8 +20,8 @@ export class AuthController {
   ) {}
 
   //구글 로그인
-  @Get('/google') //엔드포인트는 /login/google
-  @UseGuards(GoogleGuard) //인증과정을 거쳐야하기때문에 UseGuards를 써주고 passport인증으로 AuthGuard를 써준다. 이름은 google로
+  @Get('/google')
+  @UseGuards(GoogleGuard)
   redirectToGoogleAuth(@Res() res) {
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const googleRedirectUri = process.env.GOOGLE_CALLBACK_URL;

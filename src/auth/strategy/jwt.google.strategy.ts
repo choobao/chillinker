@@ -11,9 +11,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     private userService: UserService,
   ) {
     super({
-      clientID: process.env.NAVER_CLIENT_ID,
-      clientSecret: process.env.NAVER_CLIENT_SECRET,
-      callbackURL: process.env.NAVER_CALLBACK_URL,
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
     });
   }
 
@@ -27,14 +27,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       console.log(profile);
       const email = profile._json.email;
       console.log(email);
-      const nickName = profile.displayName;
+      const nickname = profile.displayName;
       const provider = profile.provider;
 
       let user = await this.userService.findUserByEmail(email);
       if (!user) {
         user = await this.userService.createProviderUser(
           email,
-          nickName,
+          nickname,
           provider,
         );
       }

@@ -25,14 +25,14 @@ export class NaverStrategy extends PassportStrategy(Strategy) {
   ) {
     try {
       const email = profile.email;
-      const nickName = profile.nickname;
+      const nickname = profile.nickname;
       const provider = 'naver';
 
       let user = await this.userService.findUserByEmail(email);
       if (!user) {
         user = await this.userService.createProviderUser(
           email,
-          nickName,
+          nickname,
           provider,
         );
       }
