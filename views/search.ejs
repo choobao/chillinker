@@ -65,7 +65,7 @@
                   <li class="searched-card">
                     <a title = <%= item.title %> href="/books/<%= item.id %>">
                       <div class="searched-card-image">
-                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
+                        <img class="searched-card-thumbnail" src="<%= item.image %>"  />
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
@@ -95,7 +95,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </div>
-                        <div class="card-info-star">별점</div>
+                        <div class="card-info-star">별점:<%= item.starRate %></div>
                       </div>
                     </a>
                   </li>
@@ -137,7 +137,7 @@
                               <span class="author-detail"><%= name %></span> <%= role %>
                              </span>
                         </div>
-                        <div class="card-info-star">별점</div>
+                        <div class="card-info-star">별점:<%= item.starRate %></div>
                       </div>
                     </a>
                   </li>
@@ -147,12 +147,12 @@
                 <ul class="result_list" >
                   <% users.forEach((item) => { %>
                   <li class="search-card">
-                    <% if (item.users_profile_image) { %>
-                      <a href="#" class="card">
-                      <img src="<%= item.users_profile_image %>" alt="<%= item.title %>" class="card-image" name="profile-image">
-                    <% } else { %>
-                      <img src="https://picpac.kr/common/img/default_profile.png" alt="기본이미지" class="card-image" name="profile-image">
-                    <% } %>
+                    <a href="/users/<%= item.users_id %>">
+                    <img
+                    src="<%= item.users_profile_image %>"
+                    alt="프로필사진"
+                    onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                    class="profile-img" />
                     <div class="card-info">
                       <div class="card-info-title" style="font-weight: 600;"><%= item.users_nickname %></div>
                       <h4 class="card_author">
@@ -224,7 +224,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </div>
-                        <div class="card-info-star">별점</div>
+                        <div class="card-info-star">별점:<%= item.starRate %></div>
                       </div>
                     </a>
                   </li>

@@ -48,6 +48,8 @@
     <button class="profile-btn" id="profile-bookmark-col">
       내가 북마크한 컬렉션
     </button>
+    <!-- <button class="profile-btn" id="profile-alarm-col">알림</button> -->
+    <span class="userId" id="userId" style="display: none"><%= user.id %></span>
   </div>
 
   <!-- 모달 창 -->
@@ -86,8 +88,22 @@
     </div>
   </div>
 
+  <!-- <div id="alarm-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="alarm-list-wrapper">
+        <ul class="alarm-list">
+          <div>
+            <li>어떤 작품의 댓글 좋아요 수 20개 돌파!</li>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div> -->
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mypage-update.js"></script>
+  <!-- <script src="/js/sse.js"></script> -->
 
   <%- include('footer.ejs') %>
 </body>

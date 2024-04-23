@@ -134,6 +134,7 @@ export class UserController {
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })
   @Get(':id')
+  @Render('userpage')
   async getUserInfo(@Param('id') id: number) {
     return await this.userService.getUserInfoById(id);
   }
