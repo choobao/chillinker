@@ -29,7 +29,7 @@ $('#profile-following').click(function () {
 
 // 내 리뷰
 $('#profile-review').click(function () {
-  window.location.href = '/main'; // 임시로 메인으로 이동함. 추후 수정 요망.
+  window.location.href = '/reviewedTitles';
 });
 
 // 보고싶어요
