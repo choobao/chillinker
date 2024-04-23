@@ -25,4 +25,7 @@ export class ContentCollection {
 
   @Column('int', { name: 'collection_id', nullable: false })
   collectionId: number;
+
+  @Column('int', { name: 'webContent_id', nullable: false })
+  webContentId: number;
 }

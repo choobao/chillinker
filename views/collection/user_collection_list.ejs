@@ -1,0 +1,60 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chillinker</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/collection.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+  </head>
+  <body>
+    <%- include('../header.ejs') %>
+    <main>
+      <div class="collection-list-upper">
+        <h3>컬렉션 목록</h3>
+      </div>
+      <input type="hidden" value="<%= collections %>" />
+      <div class="collections_container">
+        <% collections.forEach((item, index)=> { %>
+          <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
+          <div class="collection" href="/info/<%= item.id %>">
+            <div class="collection_upper">
+              <img class="collection_img"
+                src="<%= item.coverImage%>"
+                alt="커버이미지"
+                onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              />
+              <div class="contents_number">
+                작품수: <%= item.webContentNumber || 0%>
+              </div>
+            </div>
+            <div class="collection_info">
+              <ul>
+                <li class="collection_title"><%= item.title %></li>
+                <li class="collection_desc"><%= item.desc %></li>
+                <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
+                <li class="collection_btn_group">
+                    <button class="bookmark-btn" id="bookmark-btn">이 컬렉션 북마크</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="/js/mycollection_list.js"></script> -->
+    <%- include('../footer.ejs') %>
+  </body>
+  
