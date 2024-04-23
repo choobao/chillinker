@@ -36,6 +36,13 @@
   grid-template-columns: 25% 25% 25% 25%;
 }
 
+.no-content {
+  font-size: large;
+  width: 400%;
+  margin: 200px auto;
+  text-align: center;
+}
+
 .content {
   max-height: max-content;
   margin: 10px;
