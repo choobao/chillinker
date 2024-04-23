@@ -8,8 +8,7 @@ $(document).ready(function () {
       url: '/users/register',
       type: 'POST',
       data: formData,
-      // processData: false,
-      contentType: 'multipart/form-data',
+      processData: false,
       success: function (data) {
         alert('Welcome to Chillinker!');
         window.location.href = '/main';
