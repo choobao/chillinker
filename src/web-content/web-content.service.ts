@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
 import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
+import _ from 'lodash';
 
 @Injectable()
 export class WebContentService {
@@ -21,7 +22,7 @@ export class WebContentService {
     private readonly collectionRepository: Repository<Collections>,
   ) {}
 
-  async findBestWebContents(platform: string, type: ContentType) {
+  async findBestWebContents(platform: string, type: ContentType, user) {
     try {
       const bestWebContents = await this.webContentRepository
         .createQueryBuilder('webContents')
@@ -41,6 +42,7 @@ export class WebContentService {
           'webContents.title AS title',
           'webContents.image AS image',
           'webContents.author AS author',
+          'webContents.isAdult AS isAdult',
         ])
         .addSelect('COUNT(pReview.id)', 'pReviewCount')
         .addSelect('COUNT(cReview.id)', 'cReviewCount')
@@ -48,10 +50,39 @@ export class WebContentService {
         .orderBy('ranking', 'ASC') // ranking에 따라 정렬
         .getRawMany();
 
-      return bestWebContents;
+      return this.blindAdultImage(user, bestWebContents);
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
+  }
+
+  isOver19(birthDate: Date) {
+    const today = new Date();
+    const date19YearsAgo = new Date(
+      today.getFullYear() - 19,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return birthDate <= date19YearsAgo;
+  }
+
+  blindAdultImage(user, contents: WebContents[]) {
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      const adult_image =
+        'https://ssl.pstatic.net/static/m/nstore/thumb/19/home_book_4.png';
+      contents.map((content) => {
+        if (content.isAdult) {
+          content.image = adult_image;
+        }
+        return content;
+      });
+    }
+    return contents;
   }
 
   async searchFromUsers(keyword: string) {
@@ -83,8 +114,8 @@ export class WebContentService {
     return webContents;
   }
 
-  async searchFromWebContents(keyword: string) {
-    const webContents = await this.webContentRepository
+  async searchFromWebContents(keyword: string, user) {
+    let webContents = await this.webContentRepository
       .createQueryBuilder('webContents')
       .where('webContents.title LIKE :keyword', { keyword: `%${keyword}%` })
       .orWhere('webContents.desc LIKE :keyword', { keyword: `%${keyword}%` })
@@ -95,6 +126,7 @@ export class WebContentService {
         keyword: `%${keyword}%`,
       })
       .getMany();
+    webContents = this.blindAdultImage(user, webContents);
 
     const webnovels = webContents.filter(
       (webContent) => webContent.contentType === ContentType.WEBNOVEL,
@@ -110,10 +142,6 @@ export class WebContentService {
   }
 
   async findContent(id: number, type: ContentType) {
-    // const content = await this.webContentRepository
-    //   .createQueryBuilder('webContents')
-    //   .leftJoinAndSelect('webContents.bogosips', 'bogosips')
-    //   .where('webContents.id LIKE :id', { id }).getOne;
 
     const content = await this.webContentRepository.findOne({
       where: { id, contentType: type },
