@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
 
-      console.log(reviewId);
       const editwrapper = document.getElementById(`editWrapper-${index}`);
       const saveButton = document.getElementById(`saveButton-${index}`); // 저장 버튼 선택
       const reviewContent = document.getElementById(`reviewWrapper-${index}`); // 수정할 리뷰 내용 선택
@@ -132,7 +131,7 @@ $(document).ready(function () {
     // 폼 데이터 수집
     var formData = {
       content: $('textarea[name="content"]').val(),
-      rate: parseInt($('input[name="rate"]:checked').val(), 10), // rate를 숫자로 변환
+      rate: Math.round(Number($('input[name="rate"]:checked').val())), // rate를 숫자로 변환
       isSpoiler: $('input[name="isSpoiler"]').is(':checked'), // isSpoiler를 불리언 값으로 변환
     };
 

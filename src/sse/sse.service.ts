@@ -7,7 +7,6 @@ export class SseService {
   private collectionLikes$: Subject<any> = new Subject();
 
   private commentObserver = this.commentLikes$.asObservable();
-
   private collectionObserver = this.collectionLikes$.asObservable();
 
   // 이벤트 발생 함수
@@ -32,16 +31,16 @@ export class SseService {
   }
 
   sendAlarm(userId: number): Observable<any> {
-    console.log(userId);
+    console.log('ㅇㅇ', userId);
     return this.commentObserver.pipe(
       filter((user) => user.id === userId),
       map((user) => {
-        console.log(user);
+        console.log('ㅇㅇ');
         return {
           data: {
             message: `${user.webContent}에 작성한 댓글 좋아요 수 ${user.likeCount}개를 달성했습니다.`,
           },
-        };
+        } as MessageEvent;
       }),
     );
 

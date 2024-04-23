@@ -245,14 +245,14 @@
                         </div>
                       </div>
                       <div class="review-list-right-info">
-                        <div class="reviewWrapper-<%= index %>" id="reviewWrapper-<%= index %>">
+                        <div class="reviewWrapper-<%= index %>"  id="reviewWrapper-<%= index %>">
                         <span class="reviewer_rate" id="reviewer_rate-<%= index %>">평점: <%= item.rate %></span>
                         <p class="review_content js_review_content" id="item-content-<%= index %>"><%= item.content %></p>
                       </div>
-                        <div class="editWrapper-<%= index %>" id="editWrapper-<%= index %>" style="display:none">
+                        <div class="editWrapper-<%= index %> " id="editWrapper-<%= index %>" style="display:none">
                           <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
                             <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
-                          <input type="text" name="editContent" class="edit-review_content js_review_content" id="editInput-<%= index %>"></input>
+                          <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= item.content %>" id="editInput-<%= index %>"></input>
                           <div class="spoiler_input_wrapper" >
                             <input type="checkbox" name="editIsSpoiler"/>
                             <span
