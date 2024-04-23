@@ -44,6 +44,14 @@ export class FollowController {
   @Render('following')
   async getMyFollowing(@UserInfo() user: Users) {
     const followingList = await this.followService.getFollowingList(user.id);
+
+    for (const following of followingList) {
+      following.isFollowing = await this.followService.isFollowing(
+        user.id,
+        following.id,
+      );
+    }
+
     return { followingList };
   }
 

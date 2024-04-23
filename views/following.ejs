@@ -35,18 +35,25 @@
                 <span>팔로잉</span>
             </div>
             <ul class="following_list">
-              <% followingList.forEach(function(following) { %>
+              <% followingList.forEach(function(following,index) { %>
                 <li>
                     <a class="profile_link" href="#">
-                        <img src="profile_sample.png" alt="profile image">
+                      <span class="followId" id="followId-<%= index %>" style="display:none;"><%= following.followings_id.id %></span>
+                      <% if (following.followings_profile_image) { %>
+                        <img src="<%= following.followings_profile_image %>" alt="profile image">
+                    <% } else { %>
+                        <img src="/logo_image/chillinker_logo(2).png" alt="default profile image">
+                    <% } %>
                         <span class="name"><%= following.followings_nickname %></span>
                         <span class="intro"><%= following.followings_email %></span>
                     </a>
-                    <% if (following.isFollowing) { %>
-                      <a class="unfollowing_btn" href="#">언팔로우</a>
-                  <% } else { %>
-                      <a class="unfollowing_btn" href="#">팔로잉</a>
-                  <% } %>
+                    <button class="unfollowing_btn" id="<%= following.followings_id %>-<%= index %>" data-is-following="<%= following.followings %>">
+                      <% if (following.isFollowing) { %>
+                          언팔로우
+                      <% } else { %>
+                          팔로잉
+                      <% } %>
+                  </button>
                 </li>
                 <% }); %>
             </ul>
@@ -54,5 +61,7 @@
         </main>
         <%- include('footer.ejs') %>
       </div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="/js/follow.js"></script>
     </body>
 </html>
