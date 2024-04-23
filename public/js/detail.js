@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const deleteButtons = document.querySelectorAll('.deleteButton');
   const saveButtons = document.querySelectorAll('.saveButton');
   const likeButtons = document.querySelectorAll('.rui_button_white_25');
-  console.log(likeButtons);
 
   editButtons.forEach(function (editButton) {
     editButton.addEventListener('click', function () {
@@ -47,6 +46,35 @@ document.addEventListener('DOMContentLoaded', function () {
       saveButton.style.display = 'block'; // 저장 버튼 보이기
       editwrapper.style.display = 'block'; // 입력 필드 보이기
       reviewContent.style.display = 'none';
+    });
+  });
+
+  const spoilerBtns = document.querySelectorAll('.alert_detail_link');
+  const reviewWraps = document.querySelectorAll('.review-wrapper');
+  const spiolerBlinds = document.querySelectorAll('.alert_article');
+
+  var reviewItems = document.querySelectorAll('.show_review');
+
+  reviewItems.forEach(function (reviewItem) {
+    var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
+    var spiolerBlinds = document.getElementById(`alert_article-${index}`);
+    var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
+    console.log(spiolerBlinds);
+    console.log(reviewWrapper);
+
+    if (spiolerBlinds) {
+      reviewWrapper.style.display = 'none';
+    }
+  });
+
+  spoilerBtns.forEach(function (spoilerBtn) {
+    spoilerBtn.addEventListener('click', function () {
+      const index = this.id.split('-')[1];
+      const spoilerBlind = document.getElementById(`alert_article-${index}`);
+      const reviewWrap = document.getElementById(`review-wrapper-${index}`);
+
+      spoilerBlind.style.display = 'none';
+      reviewWrap.style.display = 'block';
     });
   });
 
