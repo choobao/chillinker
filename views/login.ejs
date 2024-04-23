@@ -2,7 +2,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chillinker</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/login.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -11,27 +11,34 @@
     crossorigin="anonymous"
   ></script>
   <link
-      rel="icon"
-      type="image/png"
-      sizes="16×16"
-      href="/logo_image/favicon-16x16.png"
-    />
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
 </head>
 
 <body>
-  <%- include('header.ejs') %>
+  <div class="container-wrapper">
+    <%- include('header.ejs') %>
 
-  <div class="login-wrapper">
-    <h2>Login</h2>
-    <form method="post" action="/users/login" id="login-form">
-      <input type="email" name="email" placeholder="이메일" required />
-      <input type="password" name="password" placeholder="비밀번호" required />
-      <input type="submit" value="로그인" />
-    </form>
+    <div class="login-wrapper">
+      <h2>Login</h2>
+      <form method="post" action="/users/login" id="login-form">
+        <input type="email" name="email" placeholder="이메일" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="비밀번호"
+          required
+        />
+        <input type="submit" value="로그인" />
+      </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/login.js"></script>
+
+    <%- include('footer.ejs') %>
   </div>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="/js/login.js"></script>
-
-  <%- include('footer.ejs') %>
 </body>

@@ -32,7 +32,6 @@ export class ReviewController {
   @Render('detailContent')
   @Get()
   async getCReivew(
-    @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -46,7 +45,7 @@ export class ReviewController {
     );
 
     const { content, reviewList, totalPages } = result;
-    console.log(user);
+
     return { content, reviewList, totalPages, page, order, option };
   }
 
@@ -58,7 +57,7 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     console.log('df');
-    return await this.reviewService.likeReivew(user, reviewId);
+    return await this.reviewService.likeReview(user, reviewId);
   }
 
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
@@ -123,11 +122,11 @@ export class ReviewController {
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:reviewId')
   @HttpCode(204)
-  async deleteReivew(
+  async deleteReview(
     @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    await this.reviewService.deleteReivew(user, webContentsId, reviewId);
+    await this.reviewService.deleteReview(user, webContentsId, reviewId);
   }
 }
