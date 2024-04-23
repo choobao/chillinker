@@ -58,4 +58,3 @@ export class Collections {
   )
   contentCollections: ContentCollection[];
 }
-

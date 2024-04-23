@@ -61,9 +61,9 @@ export default class MrbluePuppeteer {
         });
       });
 
-      let data: any[] = [];
+      const data: any[] = [];
 
-      for (let work of linkList) {
+      for (const work of linkList) {
         if (work.genre.includes('성인소설' || '라이트노벨')) continue;
         if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
 
@@ -140,9 +140,9 @@ export default class MrbluePuppeteer {
       });
       linkList = [...linkList, ...sixthTo20th];
 
-      let data: any[] = [];
+      const data: any[] = [];
       console.log('3');
-      for (let work of linkList) {
+      for (const work of linkList) {
         if (work.genre.includes('성인소설' || '라이트노벨')) continue;
         if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
 
@@ -201,9 +201,9 @@ export default class MrbluePuppeteer {
         });
       });
 
-      let data: any[] = [];
+      const data: any[] = [];
 
-      for (let work of linkList) {
+      for (const work of linkList) {
         if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
         if (work.genre.includes('에로')) continue;
 
@@ -274,9 +274,9 @@ export default class MrbluePuppeteer {
         });
       });
       linkList = [...linkList, ...sixthTo20th];
-      let data: any[] = [];
+      const data: any[] = [];
 
-      for (let work of linkList) {
+      for (const work of linkList) {
         if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
 
         const realUrl = mrblue_main_url + work.link;

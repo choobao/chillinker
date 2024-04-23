@@ -23,7 +23,15 @@
 .collections_container {
   width: 960px;
   height: auto;
-  margin: auto;
+  margin: 0px auto 40px auto;
+}
+
+.collections_container > h1 {
+  font-size: larger;
+  width: max-content;
+  height: max-content;
+  margin: 200px auto;
+  text-align: center;
 }
 
 .collection {

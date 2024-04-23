@@ -24,8 +24,11 @@
       <div class="collection-list-upper">
         <h3>컬렉션 목록</h3>
       </div>
-      <input type="hidden" value="<%= collections %>" />
+      <!-- <input type="hidden" value="<%= collections %>" /> -->
       <div class="collections_container">
+        <% if(collections.length === 0) { %>
+          <h1 class="no-content">아직 컬렉션이 없습니다.</h1>
+        <% } %>
         <% collections.forEach((item, index)=> { %>
           <span class="collection-userId" id="userId-<%= index %>" style="display:none;"><%= item.userId %></span>
           <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>

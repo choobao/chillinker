@@ -28,6 +28,9 @@
     </div>
     <input type="hidden" value="<%= collection %>" />
     <div class="collections_container">
+      <% if(collection.length === 0) { %>
+        <h1 class="no-content">아직 컬렉션이 없습니다. 컬렉션을 만들어보세요!</h1>
+      <% } %>
       <% collection.forEach((item, index)=> { %>
         <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
         <div class="collection" >

@@ -28,12 +28,8 @@ export class CollectionBookmarkService {
       where: {
         userId,
       },
-      relations: ['collection'],
+      relations: ['collection', 'collection.contentCollections'],
     });
-
-    if (!bookmarkedCollections || bookmarkedCollections.length === 0) {
-      throw new NotFoundException('북마크된 컬렉션이 존재하지 않습니다.');
-    }
 
     return bookmarkedCollections.map((bookmark) => bookmark.collection);
   }
