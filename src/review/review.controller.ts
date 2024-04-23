@@ -74,6 +74,7 @@ export class ReviewController {
   // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  @Render('reviewed_list.ejs')
   @Get('reviewedTitles/:userId')
   async getTitlesWithReviews(@Param('userId') userId: number) {
     const reviews = await this.reviewService.getTitlesWithReviews(userId);

@@ -1,0 +1,59 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
+  <link rel="stylesheet" href="/css/mypage.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
+</head>
+
+<body>
+  <%- include('header.ejs') %>
+
+  <div class="mypage-wrapper">
+    <!-- <span class="material-symbols-outlined"
+        ><a href="/users/mypage/update"> settings </a></span
+      > -->
+    <img
+      src="<%= user.profileImage %>"
+      alt="프로필사진"
+      onerror="this.src='/logo_image/chillinker_logo(2).png'"
+      class="profile-img"
+    />
+    <h2><%= user.nickname %></h2>
+    <span class="profile" id="profile-id" style="display: none"
+      ><%= user.id %></span
+    >
+    <h5><span class="profile-intro"><%= user.intro %></span></h5>
+    <button class="profile-btn" id="profile-follow-col">팔로우</button>
+    <button class="profile-btn" id="profile-bookmark-col">
+      <%= user.nickname %>님의 컬렉션
+    </button>
+    <span
+      class="userId"
+      id="userId"
+      style="display: none"
+      value="<%= user.id %>"
+    ></span>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/follow-click.js"></script>
+
+  <%- include('footer.ejs') %>
+</body>
