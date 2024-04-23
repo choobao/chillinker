@@ -7,6 +7,7 @@ $('#profile-follow-col').click(function () {
     type: 'POST',
     success: function (data) {
       location.reload(true);
+      alert('팔로우 상태를 변경하였습니다.');
     },
     error: function (response) {
       alert(response.responseJSON.message);
