@@ -229,11 +229,13 @@
                               </span>
                             </span>
                             <div class="reviewer-image">
+                              <a href="/users/<%= item.users.id %>">
                               <img
                               src="<%= item.users.profileImage %>"
                               alt="프로필사진"
                               onerror="this.src='/logo_image/chillinker_logo(1).png'"
                               class="profile-img" />
+                            </a>
                             </div>
                             <span class="review_id" id="reviewId-<%= index %>" style="display:none;"><%= item.id %></span>
                             <span class="review_id" style="display:none;"><%= item.isSpoiler %></span>

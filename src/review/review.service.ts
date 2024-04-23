@@ -65,7 +65,7 @@ export class ReviewService {
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
-          .select(['review', 'user.nickname', 'user.profileImage']) // "review"와 "user.nickname" 선택
+          .select(['review', 'user.nickname', 'user.profileImage', 'user.id']) // "review"와 "user.nickname" 선택
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
           .orderBy('review.createdAt', 'DESC') // 정렬 조건
           .take(take)
@@ -86,7 +86,7 @@ export class ReviewService {
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
-          .select(['review', 'user.nickname', 'user.profileImage'])
+          .select(['review', 'user.nickname', 'user.profileImage', 'user.id'])
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
           .orderBy('review.likeCount', 'DESC') // 정렬 조건
           .take(take)
