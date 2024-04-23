@@ -9,7 +9,6 @@ $(document).ready(function () {
       type: 'POST',
       data: formData,
       processData: false,
-      contentType: false,
       success: function (data) {
         alert('Welcome to Chillinker!');
         window.location.href = '/main';
