@@ -29,9 +29,9 @@
     <span class="material-symbols-outlined" id="profile-edit-btn">
       settings
     </span>
-    <!-- <span class="material-symbols-outlined"
-      ><a href="/users/mypage/update"> settings </a></span
-    > -->
+    <!-- <span class="material-symbols-outlined" id="adult-verify-btn">
+      domain_verification
+    </span> -->
     <img
       src="<%= user.profileImage %>"
       alt="프로필사진"
@@ -80,7 +80,13 @@
         /><br />
         <label for="password">비밀번호:</label>
         <input type="password" id="password" name="password" /><br />
-
+        <label for="birthDate">생년월일:</label>
+        <input
+          type="text"
+          id="birthDate"
+          name="birthDate"
+          value="<%= user.birthDate %>"
+        /><br />
         <label for="intro">소개글:</label>
         <textarea id="intro" name="intro"><%= user.intro %></textarea>
         <input type="submit" value="저장" />
