@@ -217,10 +217,16 @@
                     </div>
                     <% } %>
                   <% reviewList.forEach((item,index) => { %>
-                    <% if(item.isSpoiler === 1) { %>
-
-                      <% }else { %>
-                        <% } %>
+                    <div>
+                    <% if(item.isSpoiler === true) { %>
+                      <article class="alert_article">
+                        <p class="alert_description">
+                          <span class="alert_icon"></span>
+                          스포일러가 있는 리뷰입니다.<br>
+                          <button class="alert_detail_link js_view_spoiler_review" type="button">리뷰 보기</button>
+                        </p>
+                      </article>
+                      <% }%>
                     <li class="show-review">
                       <div class="review-list-left-info">
                         <div class="left_contents">
@@ -293,6 +299,16 @@
                 <% }else if(reviewList.length !==0){ %>
               <% reviewList.forEach((item) => { %>
                 <li class="show-review">
+                  <% if(item.isSpoiler === true) { %>
+                    <article class="alert_article">
+                      <p class="alert_description">
+                        <span class="alert_icon"></span>
+                        스포일러가 있는 리뷰입니다.<br>
+                        <button class="alert_detail_link js_view_spoiler_review" type="button">리뷰 보기</button>
+                      </p>
+                    </article>
+                    <% }%>
+                    <div>
                   <div class="review-list-left-info">
                     <div class="left_contents">
                       <p>
@@ -323,6 +339,7 @@
                         </span>
                     </div>
                   </div>
+                </div>
                 </li>
               <% }) %>
             </ul>            
