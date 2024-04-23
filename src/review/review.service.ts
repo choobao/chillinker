@@ -158,7 +158,12 @@ export class ReviewService {
     const reviews = await this.chillinkerReviewsRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.webContent', 'webContent')
-      .select(['webContent.image', 'webContent.title', 'review.rate'])
+      .select([
+        'webContent.image',
+        'webContent.title',
+        'review.rate',
+        'webContent.id',
+      ])
       .where('review.userId = :userId', { userId })
       .getRawMany();
 
@@ -167,6 +172,7 @@ export class ReviewService {
       image: review.webContent_image,
       title: review.webContent_title,
       rate: review.review_rate,
+      id: review.webContent_id,
     }));
 
     return reviewSummaries;

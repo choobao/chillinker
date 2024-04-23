@@ -31,29 +31,31 @@
       <%- include('header.ejs') %>
       <main>
         <div class="inner">
-          <div class="category">
+          <!-- <div class="category">
             <ul>
               <li><a href="#">웹소설</a></li>
               <li><a href="#">웹툰</a></li>
             </ul>
-          </div>
+          </div> -->
           <div class="contents_container">
             <% reviewedWorks.forEach(review => { %>
-            <div class="content">
-              <a href="#">
+            <div class="content" >
+
+              <a href="/books/<%= review.id %>">
                 <img
                   src="<%= review.image %>"
                   alt="썸네일"
                 />
-              </a>
-              <a href="#">
+              
                 <div class="bottom_box">
                   <p class="title"><%= review.title %></p>
                   <p class="rate">나의 평점: <%= review.rate %></p>
                 </div>
               </a>
             </div>
+          
             <% }); %>
+         
           </div>
         </div>
       </main>
