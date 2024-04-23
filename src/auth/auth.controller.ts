@@ -101,4 +101,11 @@ export class AuthController {
   //   async loginKakao(@Req() req: Request & IOAuthUser, @Res() res: Response) {
   //     this.authService.OAuthLogin({ req, res });
   //   }
+
+  @Get('/kakao/logout')
+  async kakaoLogout(@Req() req, @Res() res) {
+    const kakaoLoginout = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.KAKAO_CLIENT_ID}&logout_redirect_uri=http://localhost:3000/oauth/kakao/logout`;
+
+    return res.redirect(kakaoLoginout);
+  }
 }

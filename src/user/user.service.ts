@@ -186,7 +186,8 @@ export class UserService {
       const user = await this.userRepository.save({
         email,
         nickname,
-        platform: 'kakao',
+        // platform: 'kakao',
+        password: 'kakao',
       });
 
       return user;

@@ -23,6 +23,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     done: Function,
   ) {
     try {
+      console.log(profile);
       const email = profile._json && profile._json.kakao_account.email;
       const nickname = profile.displayName;
       const provider = profile.provider;

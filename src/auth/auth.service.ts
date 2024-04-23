@@ -15,10 +15,10 @@ export class AuthService {
     return user;
   }
 
-  async createToken(id: string) {
-    const userEmail = await this.userService.findUserByEmail(id);
+  async createToken(email: string) {
+    const user = await this.userService.findUserByEmail(email);
 
-    const payload = { userEmail };
+    const payload = { user };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_KEY,

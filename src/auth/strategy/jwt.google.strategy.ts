@@ -24,6 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     done: any,
   ) {
     try {
+      console.log(profile);
       const email = profile._json.email;
       console.log(email);
       const nickName = profile.displayName;
