@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/collection_modal.css" />
     <link rel="stylesheet" href="/css/content-detail.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
@@ -49,7 +50,7 @@
               <div class="info-title-wrap">
                 <h1 class="info-title"><%= content.title %></h1>
                 <div class="bonenjung-wrap">
-                  <button type="button" class="bonenjung-button">
+                  <button type="button" class="bonenjung-button" id="collection-btn">
                     <span class="button-contents">
                       <span class="button-icon">📚</span>
                     </span>
@@ -335,6 +336,33 @@
             </div>
             <% } %>
       </div>
+      <!-- 모달 시작 -->
+      <div class="modal">
+        <div class="collection_modal" id="collection-modal">
+          <span class="close">&times;</span>
+          <h3 class="modal_title">컬렉션에 컨텐츠 추가</h3>
+          <div class="modal_content">
+            <form
+              name="add_content_form"
+              method="post"
+              enctype="multipart/form-data"
+              id="addContentForm"
+            >
+              <h4 class="collection_title">내 컬렉션 목록</h4>
+              <select class="collection_select" id="collection-select">
+                <!-- <option value="collection">컬렉션 제목</option> -->
+              </select>
+              <!-- 컨텐츠 id 저장해서 받아오는 부분(숨김) -->
+              <input type="hidden" id="contentIdInput" name="contentId" value="" />
+              <div class="btn_area">
+                <input type="submit" value="완료" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+   
     </main>
     <footer>
       <ul>
