@@ -63,6 +63,7 @@ export class WebContentController {
       mrblueWebnovels,
       kakaoWebtoons,
       kakaoWebnovels,
+      userInfo: this.webContentService.isAdult(req.user),
     };
   }
 
@@ -94,12 +95,12 @@ export class WebContentController {
       ? query
       : query.replace(/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, '') || 'chillinker';
 
-    const { webtoons, webnovels } =
+    const { webtoons, webnovels, userInfo } =
       (await this.webContentService.searchFromWebContents(keyword, req.user)) ??
       {};
 
     if (type == 'webtoons') {
-      return { type, keyword, webtoons };
+      return { type, keyword, webtoons, userInfo };
     } else if (type == 'authors') {
       const authors = await this.webContentService.searchFromAuthors(keyword);
       return { type, keyword, authors };
@@ -111,7 +112,7 @@ export class WebContentController {
         await this.webContentService.searchFromCollections(keyword);
       return { type, keyword, collections };
     } else {
-      return { type, keyword, webnovels };
+      return { type, keyword, webnovels, userInfo };
     }
   }
 }

@@ -12,6 +12,7 @@ import {
   Post,
   Query,
   Render,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
@@ -22,6 +23,7 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
 @ApiTags('REVIEW')
 @Controller()
@@ -29,9 +31,11 @@ export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
+  @UseGuards(OptionalAuthGuard)
   @Render('detailContent')
   @Get('books/:webContentsId')
   async getCReivew(
+    @Req() req,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -39,6 +43,7 @@ export class ReviewController {
   ) {
     const result = await this.reviewService.getCReviews(
       webContentsId,
+      req.user,
       page,
       order,
       option,

@@ -62,8 +62,8 @@
             <% if (type == 'webtoons') { %>
               <div class="result_list">
                 <% webtoons.forEach((item) => { %>
-                  <li class="searched-card">
-                    <a title = <%= item.title %> href="/books/<%= item.id %>">
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a title = <%= item.title %> href = "javascript:void(0);">
                       <div class="searched-card-image">
                         <img class="searched-card-thumbnail" src="<%= item.image %>"  />
                       </div>
@@ -190,10 +190,10 @@
                   <% }); %>
                 </div>
               <% } else { %>
-                <div class="result_list" >
+                <div class="result_list">
                   <% webnovels.forEach((item) => { %>
-                  <li class="searched-card">
-                    <a title = <%= item.title %> href="/books/<%= item.id %>">
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a title = <%= item.title %> href="javascript:void(0);">
                       <div class="searched-card-image">
                         <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
                       </div>
@@ -245,5 +245,6 @@
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     </div>
+    <script src="/js/adult_blind.js"></script>
   </body>
 </html>

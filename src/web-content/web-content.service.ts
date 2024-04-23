@@ -85,6 +85,19 @@ export class WebContentService {
     return contents;
   }
 
+  isAdult(user) {
+    let userInfo = { isAdult: 1 };
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      userInfo.isAdult = 0;
+    }
+    return userInfo;
+  }
+
   async searchFromUsers(keyword: string) {
     const users = await this.userRepository
       .createQueryBuilder('users')
@@ -138,11 +151,11 @@ export class WebContentService {
     return {
       webnovels,
       webtoons,
+      userInfo: this.isAdult(user),
     };
   }
 
   async findContent(id: number, type: ContentType) {
-
     const content = await this.webContentRepository.findOne({
       where: { id, contentType: type },
     });
