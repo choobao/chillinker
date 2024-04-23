@@ -25,7 +25,7 @@ export class CollectionBookmarkController {
   async getBookmarkCollections(@UserInfo() user: Users) {
     const myBookmarkList =
       await this.collectionBookmarkService.getBookmarkColList(user.id);
-    return myBookmarkList;
+    return { myBookmarkList, user };
   }
 
   @ApiOperation({ summary: '컬렉션 북마크 추가' })

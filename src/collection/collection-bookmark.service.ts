@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -45,6 +46,9 @@ export class CollectionBookmarkService {
     if (!collection) {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
     }
+
+    if (collection.userId === userId)
+      throw new NotAcceptableException('자신의 컬렉션은 북마크할 수 없습니다.');
 
     const existingBookmark = await this.colBookRepository.findOne({
       where: { userId, collectionId },

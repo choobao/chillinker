@@ -22,12 +22,17 @@
     <main>
       <h3><%= ${users.nickname}%>님이 북마크한 컬렉션</h3>
       <div class="collections_container">
-        <div class="collection" href="/collections/info/<%= collections.id%>">
+        <% myBookmarkList.forEach((item, index) => {%>
+          <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
+        <div class="collection" href="/collections/info/<%= item.id %>">
           <div class="collection_upper">
-            <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
-            />
+            <a href="info/<%= item.id %>">
+              <img class="collection_img"
+              src="<%= item.coverImage%>"
+              alt="커버이미지"
+              onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              />
+            </a>
             <div class="contents_number">작품수: <%= ${webContents.length} %></div>
           </div>
           <div class="collection_info">
@@ -36,30 +41,13 @@
               <li class="collection_desc"><%= ${collections_desc} %></li>
               <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length}%></li>
               <li class="collection_btn_group">
-                <button class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</button>
+                <button class="remove_bookmark_btn">북마크 취소</button>
               </li>
             </ul>
             
           </div>
         </div>
-        <div class="collection" href="#컬렉션상세페이지">
-          <div class="collection_upper">
-            <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
-            />
-            <div class="contents_number">작품수: <%= ${webContents.length} %></div>
-          </div>
-          <div class="collection_info">
-            <ul>
-              <li class="collection_title"><%= ${collections_title} %></li>
-              <li class="collection_desc"><%= ${collections_desc} %></li>
-              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} %></li>
-            </ul>
-            <a class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</a>
-          </div>
-        </div>
-      </div>
+        <% }) %>
     </main>
     <%- include('footer.ejs') %>
   </body>
