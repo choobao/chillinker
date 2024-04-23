@@ -142,7 +142,7 @@ $(document).ready(function () {
       contentType: 'application/json', // 요청의 Content-Type을 application/json으로 설정
       data: JSON.stringify(formData),
       success: function (data) {
-        location.reload(true);
+        location.href = `${idUrl}?option=c`;
       },
       error: function (response) {
         alert(response.responseJSON.message);

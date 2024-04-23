@@ -74,18 +74,11 @@ export class ReviewController {
   // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-<<<<<<< HEAD
-  @Render('reviewed_list.ejs')
-  @Get('reviewedTitles/:userId')
-  async getTitlesWithReviews(@Param('userId') userId: number) {
-    const reviews = await this.reviewService.getTitlesWithReviews(userId);
-=======
   @UseGuards(AuthGuard('jwt'))
   @Render('reviewed_list')
   @Get('reviewedTitles')
   async getTitlesWithReviews(@UserInfo() user: Users) {
     const reviews = await this.reviewService.getTitlesWithReviews(user.id);
->>>>>>> 80b17d8c5d337588aad7bbfad70f82ccfc43159e
 
     const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
       return new ReviewSummaryDto(
