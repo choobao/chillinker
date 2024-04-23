@@ -48,11 +48,6 @@ export class AuthController {
       .redirect('/main');
   }
 
-  //   async loginGoogle(@Req() req: Request & IOAuthUser, @Res() res: Response) {
-  //     //프로필을 받아온 다음, 로그인 처리해야하는 곳(auth.service.ts에서 선언해준다)
-  //     this.authService.OAuthLogin({ req, res });
-  //   }
-
   //네이버 로그인
   @Get('/naver')
   @UseGuards(NaverGuard)
@@ -74,10 +69,6 @@ export class AuthController {
       .redirect('/main');
   }
 
-  //   async loginNaver(@Req() req: Request & IOAuthUser, @Res() res: Response) {
-  //     this.authService.OAuthLogin({ req, res });
-  //   }
-
   //카카오 로그인
   @Get('/kakao')
   @UseGuards(KakaoGuard)
@@ -98,9 +89,6 @@ export class AuthController {
       .cookie('refreshToken', `Bearer ${refreshToken}`)
       .redirect('/main');
   }
-  //   async loginKakao(@Req() req: Request & IOAuthUser, @Res() res: Response) {
-  //     this.authService.OAuthLogin({ req, res });
-  //   }
 
   @Get('/kakao/logout')
   async kakaoLogout(@Req() req, @Res() res) {
