@@ -1,102 +1,163 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chillinker</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
-    </style>
-    <script
-      src="https://kit.fontawesome.com/0b832ce4c1.js"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16×16"
-      href="/logo_image/favicon-16x16.png"
-    />
-  </head>
-  <body>
-    <%- include('header.ejs') %>
-    <main>
-      <h3><%= ${users_nickname} /%>님의 컬렉션</h3>
-      <div class="collections_container">
-        <div class="collection" href="#컬렉션상세페이지">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/collection.css">
+  <link rel="stylesheet" href="/css/colllection_modal.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
+</head>
+<body>
+  <%- include('../header.ejs') %>
+  <main>
+    <div class="collection-list-upper">
+      <h3><%= users.nickname %>님의 컬렉션</h3>
+      <button class="add_collection_btn" id="add_collection_btn">+새 컬렉션</button>
+    </div>
+    <input type="hidden" value="<%= collection %>" />
+    <div class="collections_container">
+      <% collection.forEach((item, index)=> { %>
+        <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
+        <div class="collection" >
           <div class="collection_upper">
             <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
+              id="collectionBtn-<%= index %>"
+              src="<%= item.coverImage%>"
+              alt="커버이미지"
+              onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              href="/collections/info/<%= item.id %>"
             />
-            <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
+            <div class="contents_number">
+              작품수: <%= item.webContents.length || 0%>
+            </div>
           </div>
           <div class="collection_info">
             <ul>
-              <li class="collection_title"><%= ${collections_title} /%></li>
-              <li class="collection_desc"><%= ${collections_desc} /%></li>
-              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
+              <li class="collection_title" id="collectionBtn-<%= index %>" href="/collections/info/<%= item.id %>"><%= item.title %></li>
+              <li class="collection_desc"><%= item.desc %></li>
+              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
-                <a class="collection_update_btn">수정</a>
-                <a class="collection_delete_btn">삭제</a>
+                <button class="collection_content_adjust_btn" id="collection_content_adjust_btn-<%= index %>">작품관리</button>
+                <button class="collection_edit_btn" id="collection_edit_btn-<%= index %>">수정</button>
+                <button class="collection_delete_btn" id="collection_delete_btn-<%= index %>">삭제</button>
               </li>
             </ul>
-            <div class="add_collection_modal">
-              <h2>컬렉션 수정</h2>
-              <form>
-                <!-- 파일첨부하는 부분 -->
-                <input title/>
-                <input desc/>
-              </form>
-              <button class="add_col_cancle_btn">취소</button>
-              <button class="add_col_execute_btn" href="#?맞나?">확인</button>
+            <!-- 컬렉션 내 컨텐츠 삭제 모달창 -->
+            <div class="remove-content-modal">
+              <div class="collection_modal">
+                <span class="close">&times;</span>
+                <h3 id="remove-content-modal_title" class="remove-content-modal_title">컬렉션 컨텐츠 관리</h3>
+                <div class="modal_content">
+                  <form
+                    name="delete_content_form"
+                    method="delete"
+                    action="/collections/<%= item.id %>/content/<%= item.webContents.webContentId %>"
+                    id="deleteContentForm"
+                  >
+                    <ul class="delete_content_list">       
+                    </ul>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- 컬렉션 수정 모달창 -->
+            <div class="modify-colleciton-modal">
+              <div class="collection_modal">
+                <span class="close">&times;</span>
+                <h3 class="modal_title">컬렉션 수정</h3>
+                <div class="modal_content">
+                  <form
+                    name="update_collection_form"
+                    method="post"
+                    enctype="multipart/form-data"
+                    id="updateCollectionForm"
+                  >
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="collection" href="#컬렉션상세페이지">
-          <div class="collection_upper">
-            <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
-            />
-            <div class="contents_number">작품수: <%= ${webContents.length} /%></div>
-          </div>
-          <div class="collection_info">
-            <ul>
-              <li class="collection_title"><%= ${collections_title} /%></li>
-              <li class="collection_desc"><%= ${collections_desc} /%></li>
-              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} /%></li>
-              <li class="collection_btn_group">
-                <a class="collection_update_btn">수정</a>
-                <a class="collection_delete_btn">삭제</a>
-              </li>
-            </ul>
-            <div class="add_collection_modal">
-              <h2>컬렉션 수정</h2>
-              <form>
-                <!-- 파일첨부하는 부분 -->
-                <input title/>
-                <input desc/>
-              </form>
-              <button class="add_col_cancle_btn">취소</button>
-              <button class="add_col_execute_btn" href="#?맞나?">확인</button>
+      <% }); %>
+    </div>
+    <!-- 컬렉션 생성 모달창 -->
+    <div class="add-collection-modal">
+      <div class="collection_modal" id="collectionModal">
+        <span class="close">&times;</span>
+        <h3 class="modal_title">새 컬렉션</h3>
+        <div class="modal_content">
+          <form
+            name="add_collection_form"
+            method="post"
+            enctype="multipart/form-data"
+            id="addCollectionForm"
+          >
+            <label for="cover">컬렉션 이미지 업로드</label>
+            <br />
+            <input type="file" name="coverImage" id="cover" accept="image/*" />
+            <br />
+            <label for="title">컬렉션 제목</label>
+            <input type="text" name="title" id="title" value="" />
+            <br />
+            <label for="desc">컬렉션 설명</label>
+            <textarea name="desc" id="desc" cols="30" rows="10"></textarea>
+            <br />
+            <div class="btn_area">
+              <input type="submit" value="완료" />
             </div>
-          </div>
+          </form>
         </div>
       </div>
-      <div class="add_collection_modal">
-        <h2>새 컬렉션 만들기</h2>
-        <form>
-          <!-- 파일첨부하는 부분 -->
-          <input title/>
-          <input desc/>
-        </form>
-        <button class="add_col_cancle_btn">취소</button>
-        <button class="add_col_execute_btn" href="#?맞나?">확인</button>
-      </div>
-      <button class="add_collection_btn">+새 컬렉션</button>
-    </main>
-    <%- include('footer.ejs') %>
-  </body>
-</html>
+    </div>
+  </main>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/mycollection_list.js"></script>
+ <script>
+    function deleteContent (collectionId, webContentId) {
+    $.ajax({
+      url: `/collections/${collectionId}/content/${webContentId}`, // 데이터를 전송할 서버의 URL
+      type: 'DELETE',
+      success: function (data) {
+        alert('삭제되었습니다');
+        location.reload(true);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+      },
+    });
+    }
+    var collectionImgBtn = document.querySelectorAll('.collection_img')
+    var collectiontitleBtn= document.querySelectorAll('.collection_title')
+    collectionImgBtn.forEach(function(collectionImgBtn){
+      collectionImgBtn.addEventListener('click', function(){
+        const index =this.id.split('-')[1];
+        const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+        window.location.href = `/collections/info/${collectionId}`
+      })
+    })
+    collectiontitleBtn.forEach(function(collectiontitleBtn){
+      collectiontitleBtn.addEventListener('click', function(){
+        const index =this.id.split('-')[1];
+        const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+        window.location.href = `/collections/info/${collectionId}`
+      })
+    })
+  </script>
+  <%- include('../footer.ejs') %>
+</body>
