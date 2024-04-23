@@ -4,6 +4,10 @@
   width: 100px;
 }
 
+.review-is-null {
+  margin-top: 20px;
+}
+
 .review-wrapper {
   width: 100%;
 }
