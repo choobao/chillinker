@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Render,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -36,21 +37,6 @@ export class CollectionController {
     return await myColList;
   }
 
-  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/info/:collectionId')
-  async myCollection(@Param('collectionId') collectionId: number) {
-    const myCol = await this.collectionService.getMyCol(collectionId);
-    return myCol;
-  }
-
-  @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
-  @Get('/:userId')
-  async userCollections(@Param('userId') userId: number) {
-    const userColList = await this.collectionService.getUserColList(userId);
-    return await userColList;
-  }
-
   @ApiOperation({ summary: '컬렉션 생성' })
   @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
@@ -66,7 +52,22 @@ export class CollectionController {
       createColDto,
       user.id,
     );
-    return createdCollection;
+    return { collections: createdCollection };
+  }
+
+  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/info/:collectionId')
+  async myCollection(@Param('collectionId') collectionId: number) {
+    const myCol = await this.collectionService.getMyCol(collectionId);
+    return myCol;
+  }
+
+  @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
+  @Get('/:userId')
+  async userCollections(@Param('userId') userId: number) {
+    const userColList = await this.collectionService.getUserColList(userId);
+    return await userColList;
   }
 
   @ApiOperation({ summary: '컬렉션 수정' })
@@ -94,11 +95,11 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 추가' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:collectionId/content')
+  @Post('/:collectionId/content/:webContentId')
   async addContentToCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
+    @Param('webContentId') webContentId: number,
   ) {
     const userId = user.id;
 
@@ -125,7 +126,7 @@ export class CollectionController {
   async removeContentFromCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
+    @Param('webContentId') webContentId: number,
   ) {
     const userId = user.id;
     return await this.collectionService.removeContentFromCollection(

@@ -28,6 +28,13 @@ export class FollowController {
   async getMyFollower(@UserInfo() user: Users) {
     const followerList = await this.followService.getFollowerList(user.id);
 
+    for (const follower of followerList) {
+      follower.isFollowing = await this.followService.isFollowing(
+        follower.id,
+        user.id,
+      );
+    }
+
     return { followerList };
   }
 
@@ -64,9 +71,8 @@ export class FollowController {
 
   @ApiOperation({ summary: '팔로워 목록 조회' })
   @Get('users/:id/follows/followerList')
-  @Render('follower.ejs')
+  // @Render('follower.ejs')
   async getFollowerList(@Param('id') followingId: number) {
-    // 린님 기존 코드(json 데이터를 반환하고 있어서 렌더링에 사용될수 없다고 함)
     // return await this.followService.getFollowerList(followingId);
     const followerList = await this.followService.getFollowerList(followingId);
     return { followerList };
