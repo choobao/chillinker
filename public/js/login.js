@@ -9,7 +9,6 @@ $(document).ready(function () {
       success: function (data) {
         window.location.href = '/main';
       },
-      contentType: 'multipart/form-data',
       error: function (response) {
         alert(response.responseJSON.message);
       },
