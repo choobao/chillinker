@@ -1,6 +1,19 @@
 .review-list-left-info {
-  margin: 0 50px 0 0;
-  /* width: 100px; */
+  margin: 0 30px 0 0;
+  float: left;
+  width: 100px;
+}
+
+.review-is-null {
+  margin-top: 20px;
+}
+
+.review-wrapper {
+  width: 100%;
+}
+
+.review-list {
+  padding: 0 40px;
 }
 
 .rui_order {
@@ -45,7 +58,6 @@
 .review-list-right-info {
   display: flex;
   flex-direction: column;
-  width: 1000px;
   justify-content: space-between;
 }
 
@@ -56,6 +68,18 @@
   border-radius: 3px;
   padding: 27px 0;
   text-align: center;
+  width: 1000px;
+  /* position: absolute; */
+  height: 145px;
+}
+
+.edit-delete-btn-wrapper {
+  display: flex;
+}
+
+.editWrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .alert_description {
@@ -78,6 +102,7 @@
   padding: 0;
   font-size: 13px;
   color: #808991;
+  margin-top: 25px;
   line-height: 1.5em;
 }
 

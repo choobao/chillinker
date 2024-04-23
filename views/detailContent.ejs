@@ -208,26 +208,26 @@
               <ul class="rui_order js_review_list_order_wrapper">
                 <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">추천순</a></li></ul>
             </div>
-            <div class="review-list-wrapper"></div>
+            
                <ul class="review-list">
                 <% if(option == 'c'){ %>
                   <% if(reviewList.length ==0){ %>
                     <div class="review-is-null">
-                      <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
+                      <span class="null-review-text">🍀 첫번째 리뷰를 남겨주세요!</span>
                     </div>
                     <% } %>
                   <% reviewList.forEach((item,index) => { %>
-                    <div>
-                    <% if(item.isSpoiler === true) { %>
-                      <article class="alert_article">
-                        <p class="alert_description">
-                          <span class="alert_icon"></span>
-                          스포일러가 있는 리뷰입니다.<br>
-                          <button class="alert_detail_link js_view_spoiler_review" type="button">리뷰 보기</button>
-                        </p>
-                      </article>
-                      <% }%>
-                    <li class="show-review">
+                    <li class="show_review" id="show_review-<%= index %>">
+                      <% if(item.isSpoiler === true) { %>
+                        <article class="alert_article" id="alert_article-<%= index %>">
+                          <p class="alert_description">
+                            <span class="alert_icon"></span>
+                            스포일러가 있는 리뷰입니다.<br>
+                            <button class="alert_detail_link js_view_spoiler_review" id="alert_detail_link js_view_spoiler_review-<%= index %>" type="button">리뷰 보기</button>
+                          </p>
+                        </article>
+                        <% }%>
+                        <div class="review-wrapper" id="review-wrapper-<%= index %>">
                       <div class="review-list-left-info">
                         <div class="left_contents">
                           <p>
@@ -262,20 +262,22 @@
                         <span class="reviewer_rate" id="reviewer_rate-<%= index %>">평점: <%= item.rate %></span>
                         <p class="review_content js_review_content" id="item-content-<%= index %>"><%= item.content %></p>
                       </div>
-                        <div class="editWrapper-<%= index %> " id="editWrapper-<%= index %>" style="display:none">
-                          <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
-                            <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
-                          <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= item.content %>" id="editInput-<%= index %>"></input>
-                          <div class="spoiler_input_wrapper" >
-                            <input type="checkbox" name="editIsSpoiler"/>
-                            <span
-                              for="spoiler_radio_input_write"
-                              class="rui_checkbox_text"
-                              >스포일러가 있습니다.</span>
-                          </div>
-                        </div>
 
-                        <div class="review-Btn">
+                      
+                      <div class="editWrapper" id="editWrapper-<%= index %>" style="display:none">
+                        <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
+                          <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
+                        <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= item.content %>" id="editInput-<%= index %>"></input>
+                        <div class="spoiler_input_wrapper" >
+                          <input type="checkbox" name="editIsSpoiler"/>
+                          <span
+                            for="spoiler_radio_input_write"
+                            class="rui_checkbox_text"
+                            >스포일러가 있습니다.</span>
+                        </div>
+                      </div>
+                      
+                      <div class="review-Btn">
                         <div class="edit-delete-btn-wrapper">
                           <button class="editButton" id="editButton-<%= index %>">수정</button>
                           <button id="saveButton-<%= index %>" class="saveButton" style="display:none;">저장</button>
@@ -293,22 +295,26 @@
                         </button>
                       </div>
                     </div>
+                    </div>
+
+
+                 
                       </div>
                     </li>
                   <% }) %>
                 <% }else if(reviewList.length !==0){ %>
-              <% reviewList.forEach((item) => { %>
-                <li class="show-review">
+              <% reviewList.forEach((item,index) => { %>
+                <li class="show_review" id="show_review-<%= index %>">
                   <% if(item.isSpoiler === true) { %>
-                    <article class="alert_article">
+                    <article class="alert_article"  id="alert_article-<%= index %>">
                       <p class="alert_description">
                         <span class="alert_icon"></span>
                         스포일러가 있는 리뷰입니다.<br>
-                        <button class="alert_detail_link js_view_spoiler_review" type="button">리뷰 보기</button>
+                        <button class="alert_detail_link js_view_spoiler_review"  id="alert_detail_link js_view_spoiler_review-<%= index %>" type="button">리뷰 보기</button>
                       </p>
                     </article>
                     <% }%>
-                    <div>
+                    <div class="review-wrapper" id="review-wrapper-<%= index %>">
                   <div class="review-list-left-info">
                     <div class="left_contents">
                       <p>
@@ -339,6 +345,7 @@
                         </span>
                     </div>
                   </div>
+                  
                 </div>
                 </li>
               <% }) %>
@@ -351,11 +358,10 @@
                 <% } %>
               </ul>
             </nav>
-            
           </div>
           <% }else{ %>
             <div class="review-is-null">
-              <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
+              <span class="null-review-text">🍀 첫번째 리뷰를 남겨주세요!</span>
             </div>
             <% } %>
       </div>
