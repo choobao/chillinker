@@ -11,6 +11,7 @@ import { ReviewLikes } from '../../review/entities/review.likes.entity';
 import { CReviews } from '../../review/entities/chillinker.reviews.entity';
 import { Collections } from '../../collection/entities/collections.entity';
 import { Likes } from '../../like/entities/likes.entity';
+import { now } from 'lodash';
 
 @Entity({
   name: 'users',
@@ -33,6 +34,9 @@ export class Users {
 
   @Column({ type: 'varchar', nullable: true })
   profileImage?: string;
+
+  @Column({ type: 'date', nullable: true })
+  birthDate?: Date;
 
   @CreateDateColumn({
     type: 'timestamp',

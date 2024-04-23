@@ -42,4 +42,9 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty({ example: '갤럭시 씁니다.', description: '소개' })
   intro: string;
+
+  @IsString()
+  @IsNotEmpty({ message: '생년월일을 입력해주세요.' })
+  @ApiProperty({ example: '2000-01-01', description: '생년월일' })
+  birthDate: string;
 }

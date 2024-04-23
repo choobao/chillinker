@@ -372,9 +372,17 @@ footer {
   font-size: 14px;
 }
 
-.material-symbols-outlined {
+#profile-edit-btn {
   position: absolute; /* 절대 위치 설정 */
   top: 0; /* 위쪽 경계에서부터의 위치 */
+  right: 10px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 1px; /* 상단 패딩 고려 */
+}
+
+#adult-verify-btn {
+  position: absolute; /* 절대 위치 설정 */
+  top: 27px; /* 위쪽 경계에서부터의 위치 */
   right: 10px; /* 오른쪽 경계에서부터의 위치 */
   margin-right: 40px; /* 우측 패딩 고려 */
   margin-top: 1px; /* 상단 패딩 고려 */

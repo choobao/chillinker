@@ -3,7 +3,7 @@ import { CreateUserDto } from './create-user.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(
-  PickType(CreateUserDto, ['nickname', 'intro']),
+  PickType(CreateUserDto, ['nickname', 'intro', 'birthDate']),
 ) {
   @IsString()
   @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
