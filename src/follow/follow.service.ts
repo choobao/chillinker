@@ -49,6 +49,7 @@ export class FollowService {
         'followings.id',
         'followings.email',
         'followings.nickname',
+        'followings.intro',
         'followings.profileImage',
       ])
       .where('follows.followerId = :followerId', { followerId })
@@ -73,11 +74,20 @@ export class FollowService {
         'followers.id',
         'followers.email',
         'followers.nickname',
+        'followers.intro',
         'followers.profileImage',
       ])
       .where('follows.followingId = :followingId', { followingId })
       .getRawMany();
 
     return followerList;
+  }
+
+  async isFollowing(followingId: number, followerId: number): Promise<boolean> {
+    const followRelation = { followingId, followerId };
+    const existingFollow = await this.followRepository.findOne({
+      where: followRelation,
+    });
+    return !!existingFollow; // 반환값으로 팔로우 여부를 불리언 값으로 반환
   }
 }

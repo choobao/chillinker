@@ -97,7 +97,7 @@ export class CollectionController {
       createColDto,
       user.id,
     );
-    return createdCollection;
+    return { collections: createdCollection };
   }
 
   @ApiOperation({ summary: '컬렉션 수정' })
@@ -155,20 +155,4 @@ export class CollectionController {
       webContentId,
     );
   }
-
-  // @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
-  // @UseGuards(AuthGuard('jwt'))
-  // @Delete('/:collectionId/content')
-  // async removeContentFromCollection(
-  //   @UserInfo() user: Users,
-  //   @Param('collectionId') collectionId: number,
-  //   @Body('webContentId') webContentId: number,
-  // ) {
-  //   const userId = user.id;
-  //   return await this.collectionService.removeContentFromCollection(
-  //     userId,
-  //     collectionId,
-  //     webContentId,
-  //   );
-  // }
 }
