@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         success: function (data) {
           let editCollection = `<label for="cover">컬렉션 이미지 업로드</label>
             <br />
-            <input type="file" name="cover" id="cover" accept="image/*" />
+            <input type="file" name="coverImage" id="cover" accept="image/*" />
             <input type="submit" value="" />
             <br />
             <label for="title">컬렉션 제목</label>

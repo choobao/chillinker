@@ -169,6 +169,7 @@ export class CollectionService {
 
   // 컬렉션 수정 _작품 추가, 작품 삭제, 컬렉션 정보 수정
   async updateCol(
+    file: Express.Multer.File,
     collectionId: number,
     updateColDto: UpdateColDto,
   ): Promise<Collections> {
@@ -178,7 +179,12 @@ export class CollectionService {
     if (!collection) {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
     }
-
+    let coverImage: string = collection.coverImage || null;
+    if (file) {
+      // 이미지 업로드
+      coverImage = await this.storageService.upload(file);
+    }
+    collection.coverImage = coverImage;
     collection.title = updateColDto.title;
     collection.desc = updateColDto.desc;
 

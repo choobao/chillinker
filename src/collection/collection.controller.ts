@@ -101,14 +101,20 @@ export class CollectionController {
   }
 
   @ApiOperation({ summary: '컬렉션 수정' })
+  @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
+    @UploadedFile() file: Express.Multer.File,
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
     @Body() updateColDto: UpdateColDto,
   ) {
-    return await this.collectionService.updateCol(collectionId, updateColDto);
+    return await this.collectionService.updateCol(
+      file,
+      collectionId,
+      updateColDto,
+    );
   }
 
   @ApiOperation({ summary: '컬렉션 삭제' })
