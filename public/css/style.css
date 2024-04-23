@@ -913,7 +913,7 @@ textarea#intro {
   margin-right: 13px;
 }
 
-.show-review {
+.show_review {
   display: flex;
   padding: 10px;
   margin: 10px;

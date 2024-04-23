@@ -17,6 +17,7 @@ import { PReviews } from './entities/platform.reviews.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 import { SseService } from 'src/sse/sse.service';
+import _ from 'lodash';
 
 @Injectable()
 export class ReviewService {
@@ -35,8 +36,19 @@ export class ReviewService {
     private readonly sseService: SseService,
   ) {}
 
+  isOver19(birthDate: Date) {
+    const today = new Date();
+    const date19YearsAgo = new Date(
+      today.getFullYear() - 19,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return birthDate <= date19YearsAgo;
+  }
+
   async getCReviews(
     webContentId: number,
+    user,
     page?: number,
     order?: string,
     option?: string,
@@ -49,6 +61,16 @@ export class ReviewService {
 
     if (!content) {
       throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
+    }
+
+    if (
+      content.isAdult &&
+      (user === false ||
+        _.isNil(user) ||
+        _.isNil(user.birthDate) ||
+        !this.isOver19(new Date(user.birthDate)))
+    ) {
+      throw new UnauthorizedException('19세 이상만 이용가능한 작품입니다.');
     }
 
     if (option == 'c') {

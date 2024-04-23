@@ -1,4 +1,4 @@
-FROM node:20 AS builder
+FROM node:21 AS builder
 
 RUN mkdir -p /var/app
 
@@ -10,15 +10,16 @@ RUN npm i
 
 COPY . .
 
-RUN npm run build  
+#RUN npm run build  
+CMD [ "npm", "start" ]
+EXPOSE 3000
+# FROM node:21-alpine
 
-FROM node:20-alpine
+# WORKDIR /var/app
 
-WORKDIR /var/app
+# COPY --from=builder /var/app/node_modules ./node_modules
+# COPY --from=builder /var/app/dist ./dist
+# COPY --from=builder /var/app/views ./views
+# COPY --from=builder /var/app/public ./public
 
-COPY --from=builder /var/app/node_modules ./node_modules
-COPY --from=builder /var/app/dist ./dist
-COPY --from=builder /var/app/views ./views
-COPY --from=builder /var/app/public ./public
-
-CMD [ "node", "dist/main.js" ]
+# CMD [ "node", "dist/main.js" ]
