@@ -5,6 +5,7 @@
 /utils
 /tmp
 /log
+/coverage
 
 # Logs
 logs
