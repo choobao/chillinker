@@ -360,7 +360,7 @@ export default class MrbluePuppeteer {
             );
             return items.map((item) => {
               return {
-                writerId: item.querySelector('p > strong')?.textContent,
+                writer: item.querySelector('p > strong')?.textContent,
                 createDate: item
                   .querySelector('p.star-box > span.date')
                   ?.textContent.replace(/\./g, '-'),
@@ -389,7 +389,7 @@ export default class MrbluePuppeteer {
             );
             return items.map((item) => {
               return {
-                writerId: item.querySelector('p > strong')?.textContent,
+                writer: item.querySelector('p > strong')?.textContent,
                 createDate: item
                   .querySelector('p.star-box > span.date')
                   ?.textContent.replace(/\./g, '-'),
