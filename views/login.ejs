@@ -3,6 +3,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chillinker</title>
   <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="/css/style.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -22,23 +23,24 @@
   <div class="container-wrapper">
     <%- include('header.ejs') %>
 
-    <div class="login-wrapper">
-      <h2>Login</h2>
-      <form method="post" action="/users/login" id="login-form">
-        <input type="email" name="email" placeholder="이메일" required />
-        <input
-          type="password"
-          name="password"
-          placeholder="비밀번호"
-          required
-        />
-        <input type="submit" value="로그인" />
-      </form>
-    </div>
+    <main>
+      <div class="login-wrapper">
+        <h2>Login</h2>
+        <form method="post" action="/users/login" id="login-form">
+          <input type="email" name="email" placeholder="이메일" required />
+          <input
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            required
+          />
+          <input type="submit" value="로그인" />
+        </form>
+      </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/js/login.js"></script>
-
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="/js/login.js"></script>
+    </main>
     <%- include('footer.ejs') %>
   </div>
 </body>
