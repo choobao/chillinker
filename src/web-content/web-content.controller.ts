@@ -1,10 +1,21 @@
-import { Controller, Get, Query, Render, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Render,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller()
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(30)
 export class WebContentController {
   constructor(private readonly webContentService: WebContentService) {}
 

@@ -128,17 +128,25 @@ export class WebContentService {
   }
 
   async searchFromWebContents(keyword: string, user) {
+    // let webContents = await this.webContentRepository
+    //   .createQueryBuilder('webContents')
+    //   .where('webContents.title LIKE :keyword', { keyword: `%${keyword}%` })
+    //   .orWhere('webContents.desc LIKE :keyword', { keyword: `%${keyword}%` })
+    //   .orWhere('webContents.category LIKE :keyword', {
+    //     keyword: `%${keyword}%`,
+    //   })
+    //   .orWhere('webContents.keyword LIKE :keyword', {
+    //     keyword: `%${keyword}%`,
+    //   })
+    //   .getMany();
     let webContents = await this.webContentRepository
       .createQueryBuilder('webContents')
-      .where('webContents.title LIKE :keyword', { keyword: `%${keyword}%` })
-      .orWhere('webContents.desc LIKE :keyword', { keyword: `%${keyword}%` })
-      .orWhere('webContents.category LIKE :keyword', {
-        keyword: `%${keyword}%`,
-      })
-      .orWhere('webContents.keyword LIKE :keyword', {
-        keyword: `%${keyword}%`,
-      })
+      .where(
+        `MATCH(web_contents.title, web_contents.desc, web_contents.category, web_contents.keyword) AGAINST(:keyword IN BOOLEAN MODE)`,
+        { keyword: `+${keyword}` },
+      )
       .getMany();
+
     webContents = this.blindAdultImage(user, webContents);
 
     const webnovels = webContents.filter(
