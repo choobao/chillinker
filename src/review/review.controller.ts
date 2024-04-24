@@ -28,7 +28,7 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('REVIEW')
-@UseInterceptors(ErrorInterceptor)
+// @UseInterceptors(ErrorInterceptor)
 @Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}

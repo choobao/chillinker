@@ -200,6 +200,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const index = this.id.split('-')[1];
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
 
+      console.log(reviewId);
+
       $.ajax({
         type: 'Post',
         url: `${idUrl}/${reviewId}/likes`,
@@ -242,6 +244,22 @@ $(document).ready(function () {
         alert(response.responseJSON.message);
       },
     });
+  });
+});
+
+$('#like-btn').click(function () {
+  var contentId = $('#content-id').val();
+
+  $.ajax({
+    url: `/likes/change?contentId=${contentId}`,
+    type: 'POST',
+    data: $(this).serialize(),
+    success: function (data) {
+      location.reload(true);
+    },
+    error: function (response) {
+      alert(response.responseJSON.message);
+    },
   });
 });
 
