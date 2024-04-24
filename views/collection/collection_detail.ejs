@@ -19,6 +19,7 @@
   />
 </head>
 <body>
+  <div class="wrap">
   <%- include('../header.ejs') %>
   <main>
     <div class="collection_wrap">
@@ -39,6 +40,9 @@
           </ul>
         </div>
         <div class="contents_list_container">
+          <% if (collection.contentCollections.length === 0) { %>
+            <h1 class="no-content">아직 컬렉션에 작품이 없습니다. 작품을 추가해보세요!</h1>
+          <% } %>
           <% collection.contentCollections.forEach((item,index) => { %>
             <span class="contentId" id="contentId-<%= index %>" style="display:none;"><%= item.webContent.id %></span>
             <div class="content"  id="contentBtn-<%= index %>">
@@ -70,4 +74,5 @@
     
   </script>
   <%- include('../footer.ejs') %>
+</div>
 </body>

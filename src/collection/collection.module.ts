@@ -14,6 +14,7 @@ import { CollectionBookmarkController } from './collection-bookmark.controller';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ContentCollection } from './entities/content-collections.entity';
 import { StorageService } from '../storage/storage.service';
+import { Users } from '../user/entities/user.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { StorageService } from '../storage/storage.service';
       ContentCollection,
       WebContents,
       StorageService,
+      Users,
     ]),
   ],
   exports: [CollectionService, CollectionBookmarkService],

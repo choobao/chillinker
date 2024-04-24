@@ -24,7 +24,7 @@
 
 <body>
   <%- include('header.ejs') %>
-
+  <!-- <main> -->
   <div class="mypage-wrapper">
     <span class="material-symbols-outlined" id="profile-edit-btn">
       settings
@@ -85,6 +85,7 @@
           type="text"
           id="birthDate"
           name="birthDate"
+          placeholder="형식은 2000-01-01"
           value="<%= user.birthDate %>"
         /><br />
         <label for="intro">소개글:</label>
@@ -107,6 +108,7 @@
     </div>
   </div> -->
 
+  <!-- </main> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mypage-update.js"></script>
   <!-- <script src="/js/sse.js"></script> -->

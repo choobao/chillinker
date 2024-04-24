@@ -53,8 +53,8 @@ describe('LikesService', () => {
   });
 
   describe('findContent test', () => {
-    let userId = 1;
-    let contentId = 11;
+    const userId = 1;
+    const contentId = 11;
 
     const like = {
       id: 1,

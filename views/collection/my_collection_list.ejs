@@ -4,7 +4,7 @@
   <title>Chillinker</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/collection.css">
-  <link rel="stylesheet" href="/css/colllection_modal.css">
+  <link rel="stylesheet" href="/css/collection_modal.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -20,6 +20,7 @@
   />
 </head>
 <body>
+  <div class="wrap">
   <%- include('../header.ejs') %>
   <main>
     <div class="collection-list-upper">
@@ -28,24 +29,32 @@
     </div>
     <input type="hidden" value="<%= collection %>" />
     <div class="collections_container">
+      <% if(collection.length === 0) { %>
+        <h1 class="no-content">아직 컬렉션이 없습니다. 컬렉션을 만들어보세요!</h1>
+      <% } %>
       <% collection.forEach((item, index)=> { %>
         <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
         <div class="collection" >
           <div class="collection_upper">
-            <img class="collection_img"
-              id="collectionBtn-<%= index %>"
-              src="<%= item.coverImage%>"
-              alt="커버이미지"
-              onerror="this.src='/logo_image/chillinker_logo(2).png'"
-              href="/collections/info/<%= item.id %>"
-            />
+            <a href="collections/info/<%= item.id %>">
+              <img class="collection_img"
+                id="collectionBtn-<%= index %>"
+                src="<%= item.coverImage%>"
+                alt="커버이미지"
+                onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              />
+            </a>
             <div class="contents_number">
               작품수: <%= item.webContents.length || 0%>
             </div>
           </div>
           <div class="collection_info">
             <ul>
-              <li class="collection_title" id="collectionBtn-<%= index %>" href="/collections/info/<%= item.id %>"><%= item.title %></li>
+              <li class="collection_title" id="collectionBtn-<%= index %>">
+                <a href="collections/info/<%= item.id %>">
+                  <%= item.title %>
+                </a>
+              </li>
               <li class="collection_desc"><%= item.desc %></li>
               <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
@@ -138,26 +147,7 @@
       },
     });
     }
-    var collectionImgBtn = document.querySelectorAll('.collection_img')
-    var collectiontitleBtn= document.querySelectorAll('.collection_title')
-    collectionImgBtn.forEach(function(collectionImgBtn){
-      collectionImgBtn.addEventListener('click', function(){
-        const index =this.id.split('-')[1];
-        const collectionId = document.getElementById(
-            `collectionId-${index}`
-          ).textContent
-        window.location.href = `/collections/info/${collectionId}`
-      })
-    })
-    collectiontitleBtn.forEach(function(collectiontitleBtn){
-      collectiontitleBtn.addEventListener('click', function(){
-        const index =this.id.split('-')[1];
-        const collectionId = document.getElementById(
-            `collectionId-${index}`
-          ).textContent
-        window.location.href = `/collections/info/${collectionId}`
-      })
-    })
   </script>
   <%- include('../footer.ejs') %>
+</div>
 </body>

@@ -203,7 +203,7 @@ header {
 /*footer*/
 footer {
   width: 100%;
-  height: 200px;
+  min-height: 200px;
   background: #e6e6fa;
   overflow: hidden;
 }
@@ -404,10 +404,11 @@ footer {
 .modal-content {
   background-color: #fefefe;
   margin: 10% auto;
-  padding: 20px;
+  padding: 10px;
   border: 1px solid #e6e6fa;
   width: 40%;
   position: relative;
+  height: auto;
 }
 
 /* 닫기 버튼 스타일 */
