@@ -197,7 +197,6 @@ footer {
   height: 200px;
   background: #e6e6fa;
   overflow: hidden;
-  position: fixed;
   left: 0;
   bottom: 0;
 }
@@ -215,7 +214,6 @@ footer p {
   font-size: 12px;
   text-align: center;
   padding: 20px 0;
-  margin-top: 20px;
 }
 
 /* login, register */
@@ -321,7 +319,6 @@ header {
 footer {
   height: 200px;
   width: 100%;
-  position: relative;
   margin-top: -200px;
 }
 

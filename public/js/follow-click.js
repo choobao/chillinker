@@ -14,3 +14,8 @@ $('#profile-follow-col').click(function () {
     },
   });
 });
+
+$('#profile-bookmark-col').click(function () {
+  const userId = document.getElementById('profile-id').textContent;
+  window.location.href = `/collections/${userId}`;
+});
