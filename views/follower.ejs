@@ -47,11 +47,13 @@
                         <span class="name"><%= follower.followers_nickname %></span>
                         <span class="intro"><%= follower.followers_intro %></span>
                     </a>
-                    <% if (follower.isFollowing) { %>
-                        <button class="unfollowing_btn" id="<%= follower.followers_id %>-<%= index %>" isFollowing="true">언팔로우</button>
-                    <% } else { %>
-                        <button class="unfollowing_btn" id="<%= follower.followers_id %>-<%= index %>" isFollowing="false">팔로잉</button>
-                    <% } %>
+                    <button class="unfollowing_btn" id="<%= follower.followers_id %>-<%= index %>" data-is-following="<%= follower.isFollowing %>">
+                      <% if (follower.isFollowing) { %>
+                          언팔로우
+                      <% } else { %>
+                          팔로잉
+                      <% } %>
+                  </button>
                 </li>
                 <% }); %>
             </ul>

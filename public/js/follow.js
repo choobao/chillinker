@@ -1,62 +1,54 @@
-// 팔로우 버튼 클릭 이벤트
-
 document.addEventListener('DOMContentLoaded', function () {
   const followBtns = document.querySelectorAll('.unfollowing_btn');
 
   followBtns.forEach(function (followBtn) {
+    const isFollowing = followBtn.dataset.isFollowing === 'true';
+    updateButtonState(followBtn, isFollowing);
+
     followBtn.addEventListener('click', function () {
-      const index = this.id.split('-')[1]; // 버튼 id에서 index 추출
       const followId = this.id.split('-')[0];
-      console.log(index, followId);
       const isFollowing = this.dataset.isFollowing === 'true';
+
+      const newState = !isFollowing;
+      updateButtonState(followBtn, newState);
 
       $.ajax({
         type: 'Post',
         url: `/users/${followId}/follows/follow`,
         contentType: 'application/json',
-        data: JSON.stringify({ isFollowing: !isFollowing }),
+        data: JSON.stringify({ isFollowing: newState }),
         success: function (data) {
-          followBtn.textContent = isFollowing ? '팔로잉' : '언팔로우';
-          followBtn.dataset.isFollowing = !isFollowing;
-          //   location.reload(true); // 성공 시 페이지 새로고침
+          localStorage.setItem(`followStatus-${followId}`, newState);
+          location.reload(true);
         },
         error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+          updateButtonState(followBtn, isFollowing);
+          alert(response.responseJSON.message);
         },
       });
     });
   });
+
+  function updateButtonState(button, isFollowing) {
+    button.textContent = isFollowing ? '팔로잉' : '언팔로우';
+    button.dataset.isFollowing = isFollowing;
+  }
+
+  followBtns.forEach(function (followBtn) {
+    const followId = followBtn.id.split('-')[0];
+    const storedStatus = localStorage.getItem(`followStatus-${followId}`);
+    if (storedStatus !== null) {
+      const isFollowing = storedStatus === 'true';
+      updateButtonState(followBtn, isFollowing);
+    }
+  });
 });
 
-// $(document).ready(function () {
-//   // 팔로잉/언팔로우 버튼 클릭 이벤트 처리
-//   $('.unfollowing_btn').on('click', '.unfollowing_btn', function (event) {
-//     event.preventDefault(); // 기본 동작 방지
-
-//     // 클릭된 버튼에 대한 정보 가져오기
-//     var $button = $(this);
-//     var userId = $button.data('id');
-//     console.log('유저아이디 봅시다:', userId);
-//     var isFollowing = $button.data('is-following');
-
-//     // AJAX 요청을 통해 서버에 팔로잉/언팔로우 요청 보내기
-//     $.ajax({
-//       url: `/users/${userId}/follows/follow`,
-//       type: 'POST',
-//       success: function (data) {
-//         // 성공적으로 처리된 경우 버튼 상태 업데이트
-//         $button.text(isFollowing ? '언팔로우' : '팔로잉');
-//         $button.data('is-following', !isFollowing);
-//       },
-//       error: function (xhr, status, error) {
-//         // 에러 처리
-//         console.error('팔로잉/언팔로우 요청 실패:', error);
-//         // 실패 메시지를 사용자에게 보여줄 수도 있음
-//         alert('팔로잉/언팔로우 요청을 처리하는 중에 오류가 발생했습니다.');
-//       },
-//     });
-//   });
-// });
+// 린님 컬렉션 코드
+$('#profile-bookmark-col').click(function () {
+  const userId = document.getElementById('profile-id').textContent;
+  window.location.href = `/collections/${userId}`;
+});
 
 // 무한 스크롤 -> 동작은 하는거 확인 일단 팔로잉 버튼 끝나면 다시 보기
 
