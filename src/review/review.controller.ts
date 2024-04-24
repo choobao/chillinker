@@ -29,8 +29,9 @@ import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('REVIEW')
+// @UseInterceptors(ErrorInterceptor)
 @Controller()
-@UseInterceptors(ErrorInterceptor, CacheInterceptor)
+@UseInterceptors(CacheInterceptor)
 @CacheTTL(30)
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
