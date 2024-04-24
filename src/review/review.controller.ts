@@ -41,6 +41,7 @@ export class ReviewController {
     @Query('order') order?: string,
     @Query('option') option?: string,
   ) {
+    const user = req.user;
     const result = await this.reviewService.getCReviews(
       webContentsId,
       req.user,
@@ -51,7 +52,7 @@ export class ReviewController {
 
     const { content, reviewList, totalPages } = result;
 
-    return { content, reviewList, totalPages, page, order, option };
+    return { content, reviewList, totalPages, page, order, option, user };
   }
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })

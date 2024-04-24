@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/collection_modal.css" />
     <link rel="stylesheet" href="/css/content-detail.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
@@ -26,6 +25,8 @@
   
     <%- include('header.ejs') %>
     <main>
+      <span class="user_id" id="userId" value='<%= user.id %>' style="display:none;"><%= user.id %></span>
+      <span class="content_id" id="contentId" value='<%= content.id %>' style="display:none;"><%= content.id %></span>
       <div class="detail-page-container">
         <div class="content-container">
           <article class="detail-header">
@@ -50,9 +51,9 @@
               <div class="info-title-wrap">
                 <h1 class="info-title"><%= content.title %></h1>
                 <div class="bonenjung-wrap">
-                  <button type="button" class="bonenjung-button" id="collection-btn">
+                  <button type="button" class="bonenjung-button" id="collection-btn" onclick="getCollectionTitles('<%= user.id %>')">
                     <span class="button-contents">
-                      <span class="button-icon">📚</span>
+                      <span class="col-button-icon" id="button-icon">📚</span>
                     </span>
                   </button>
                 </div>
@@ -344,7 +345,7 @@
                           </span>
                         </span>
                     </div>
-                  </div>
+                  </di
                   
                 </div>
                 </li>
@@ -365,8 +366,9 @@
             </div>
             <% } %>
       </div>
+    </div>
       <!-- 모달 시작 -->
-      <div class="modal">
+      <div class="modal" id="modal">
         <div class="collection_modal" id="collection-modal">
           <span class="close">&times;</span>
           <h3 class="modal_title">컬렉션에 컨텐츠 추가</h3>
@@ -390,7 +392,7 @@
           </div>
         </div>
       </div>
-      
+     
    
     </main>
     <footer>
@@ -403,7 +405,7 @@
       </ul>
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
-    <script src="/js/detail-content.js"></script>
+
     <script src="/js/detail.js"></script>
   </body>
 </html>

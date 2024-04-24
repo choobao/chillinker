@@ -280,4 +280,15 @@ export class CollectionService {
 
     await this.contentCollectionRepository.remove(contentCollection);
   }
+
+  async getMyColsTitle(userId: number) {
+    console.log('유저아이디: ', userId);
+    const collections = await this.colRepository.find({
+      where: {
+        userId,
+      },
+    });
+    console.log('컬렉션: ', collections);
+    return collections;
+  }
 }
