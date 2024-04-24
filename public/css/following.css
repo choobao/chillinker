@@ -1,0 +1,45 @@
+.following_title {
+  margin-top: 30px;
+}
+.following_title span {
+  background-color: #e6e6fa;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.following_list {
+  text-align: center;
+  background-color: #e6e6fa;
+  border-radius: 20px;
+  margin: 50px 50px 100px;
+}
+.following_list li {
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+.following_list li a {
+  text-align: left;
+}
+.following_list li .profile_link {
+  width: 500px;
+}
+.following_list li .profile_link img {
+  width: 35px;
+}
+.following_list li .profile_link span {
+  margin: 0 20px;
+}
+.following_list li .profile_link .name {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
+.following_list li .unfollowing_btn {
+  text-align: center;
+  background-color: #dddddd;
+  border-radius: 5px;
+  padding: 15px;
+  width: 120px;
+}

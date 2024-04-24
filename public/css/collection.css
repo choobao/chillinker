@@ -1,0 +1,77 @@
+.collection-list-upper {
+  display: flex;
+}
+
+.collection-list-upper > h3 {
+  font-weight: 500;
+  color: #7b68ee;
+  font-size: 22pt;
+  margin: 20px auto 20px 9%;
+  padding: 5px 20px;
+  width: max-content;
+}
+
+/* 위 오 아 왼 */
+.collection-list-upper > button {
+  margin: 20px 60px 20px auto;
+  max-height: 40px;
+  border-radius: 10px;
+  background-color: #ccbeff;
+  padding: 0 10px;
+}
+
+.collections_container {
+  width: 960px;
+  height: auto;
+  margin: 0px auto 40px auto;
+}
+
+.collections_container > h1 {
+  font-size: larger;
+  width: max-content;
+  height: max-content;
+  margin: 200px auto;
+  text-align: center;
+}
+
+.collection {
+  width: 80%;
+  height: 500px;
+  margin: 10px auto 10px auto;
+  border-style: solid;
+  border-color: #ccbeff;
+  border-radius: 10px;
+}
+.collection_upper {
+  margin: 0 auto;
+}
+.collection_upper > a > img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-bottom: #ccbeff solid;
+}
+.collection_upper > div {
+  max-width: 200px;
+  margin: 5px 0 0 auto;
+  text-align: right;
+  padding-right: 40px;
+}
+.collection_info > ul {
+  margin: auto 5%;
+}
+.collection_btn_group {
+  width: max-content;
+  margin: auto 5% auto auto;
+}
+.collection_btn_group > button {
+  width: max-content;
+  margin: 5px;
+  background-color: #ddd4fe;
+  border-radius: 5px;
+  padding: 5px 10px 5px 10px;
+}
+.collection_title {
+  font-size: 24px;
+  max-width: max-content;
+}

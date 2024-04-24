@@ -1,0 +1,67 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
+  <link rel="stylesheet" href="/public/css/collection_modal.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+</head>
+
+<body>
+  <div class="collection_modal">
+    <span class="close">&times;</span>
+    <h3 class="modal_title">컬렉션에 컨텐츠 추가</h3>
+    <div class="modal_content">
+      <form
+        name="add_content_form"
+        method="post"
+        enctype="multipart/form-data"
+        id="addContentForm"
+      >
+        <h4 class="collection_title">내 컬렉션 목록</h4>
+        <select class="collection_select">
+          <option value="collection">컬렉션 제목</option>
+        </select>
+        <br />
+        <h4 class="collection_title">새 컬렉션 생성</h4>
+        <label for="cover">컬렉션 이미지 업로드</label>
+        <br />
+        <input type="file" name="cover" id="cover" accept="image/*" />
+        <br />
+        <input type="submit" value="업로드" />
+        <br />
+        <label for="title">컬렉션 제목</label>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          value="<%= collections.title %>"
+        />
+        <br />
+        <label for="desc">컬렉션 설명</label>
+        <textarea name="desc" id="" cols="30" rows="10">
+<%= collections.desc %></textarea
+        >
+        <br />
+        <!-- 컨텐츠 id 저장해서 받아오는 부분(숨김) -->
+        <input type="hidden" id="contentIdInput" name="contentId" value="" />
+        <div class="btn_area">
+          <input type="submit" value="완료" />
+          <button class="cancel_btn">취소</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/content_modal.js"></script>
+</body>

@@ -1,0 +1,457 @@
+@charset "utf-8";
+/***
+    The new CSS reset - version 1.8.5 (last updated 14.6.2023)
+    GitHub page: https://github.com/elad2412/the-new-css-reset
+***/
+
+/*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+    - The "html" attribute is exclud, because otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
+ */
+
+*:where(
+    :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
+  ) {
+  all: unset;
+  display: revert;
+}
+
+/* Preferred box-sizing value */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Reapply the pointer cursor for anchor tags */
+a,
+button {
+  cursor: revert;
+}
+
+/* Remove list styles (bullets/numbers) */
+ol,
+ul,
+menu {
+  list-style: none;
+}
+
+/* For images to not be able to exceed their container */
+img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+}
+
+/* removes spacing between cells in tables */
+table {
+  border-collapse: collapse;
+}
+
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+input,
+textarea {
+  -webkit-user-select: auto;
+}
+
+/* revert the 'white-space' property for textarea elements on Safari */
+textarea {
+  white-space: revert;
+}
+
+/* minimum style to allow to style meter element */
+meter {
+  -webkit-appearance: revert;
+  appearance: revert;
+}
+
+/* preformatted text - use only for this feature */
+:where(pre) {
+  all: revert;
+}
+
+/* reset default text opacity of input placeholder */
+::placeholder {
+  color: unset;
+}
+
+/* remove default dot (•) sign */
+::marker {
+  content: initial;
+}
+
+/* fix the feature of 'hidden' attribute.
+   display:revert; revert to element instead of attribute */
+:where([hidden]) {
+  display: none;
+}
+
+/* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element */
+:where([contenteditable]:not([contenteditable='false'])) {
+  -moz-user-modify: read-write;
+  -webkit-user-modify: read-write;
+  overflow-wrap: break-word;
+  -webkit-line-break: after-white-space;
+  -webkit-user-select: auto;
+}
+
+/* apply back the draggable feature - exist only in Chromium and Safari */
+:where([draggable='true']) {
+  -webkit-user-drag: element;
+}
+
+/* Revert Modal native behavior */
+:where(dialog:modal) {
+  all: revert;
+}
+
+/*rayout*/
+body {
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-size: 16px;
+  padding-top: 90px;
+  height: auto;
+}
+
+/*header*/
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 90px;
+  background: #e6e6fa;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  z-index: 10;
+}
+.inner_header {
+  width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.inner_header img {
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  max-width: 50px;
+  max-height: 50px;
+}
+.inner_header h1 {
+  font-size: 40px;
+  font-family: 'Sriracha', cursive;
+  color: #7b62cc;
+  font-weight: 400;
+  padding: 10px 0;
+}
+.inner_header h1 a {
+  display: block;
+}
+.inner_header h1 a:hover {
+  color: #6a5acd;
+}
+
+.inner_header .header_right {
+  display: flex;
+  margin-left: auto;
+  padding-top: 20px;
+}
+
+.inner_header .search_box {
+  margin-right: 50px;
+}
+.inner_header .search_box form input[type='search'] {
+  color: #999;
+  background-color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+.inner_header .search_box form input[type='submit'] {
+  display: none;
+}
+.inner_header .search_box form i {
+  cursor: pointer;
+}
+.inner_header .search_box form i:hover {
+  color: #6a5acd;
+}
+
+.inner_header ul {
+  bottom: 15px;
+  display: flex;
+  margin-left: auto;
+}
+.inner_header ul li {
+  margin: 0 20px;
+  font-size: 16px;
+  font-weight: 400;
+}
+.inner_header ul li a {
+  display: block;
+  text-decoration: none;
+}
+.inner_header ul li a:hover {
+  color: #6a5acd;
+}
+
+/*footer*/
+footer {
+  width: 100%;
+  min-height: 200px;
+  background: #e6e6fa;
+  overflow: hidden;
+}
+footer ul {
+  text-align: center;
+  padding-top: 100px;
+  font-size: 20px;
+}
+footer ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+footer p {
+  font-size: 12px;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 20px;
+}
+
+/* login, register */
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 90px;
+  background: #e6e6fa;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.inner_header {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.inner_header .header_right,
+.inner_header ul {
+  display: flex;
+  align-items: center;
+}
+
+.inner_header h1 {
+  font-size: 40px;
+  font-family: 'Sriracha', cursive;
+  color: #7b62cc;
+  font-weight: 400;
+}
+
+.login-wrapper,
+.register-wrapper,
+.mypage-wrapper {
+  margin: 130px auto 200px;
+  width: 300px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.login-wrapper > h2,
+.register-wrapper > h2,
+.mypage-wrapper {
+  font-size: 24px;
+  color: #7b68ee;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+input[type='checkbox'] {
+  all: revert;
+}
+
+#login-form > input,
+#register-form > input,
+#profile-form > input {
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+}
+
+#login-form > input::placeholder,
+#register-form > input::placeholder,
+#profile-form > input::placeholder {
+  color: #d2d2d2;
+}
+
+#login-form > input[type='submit'],
+#register-form > input[type='submit'],
+#profile-form > input[type='submit'] {
+  color: #fff;
+  font-size: 16px;
+  background-color: #7b68ee;
+  margin-top: 20px;
+  text-align: center;
+}
+
+body {
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+footer {
+  margin-top: auto;
+}
+
+/* mypage */
+.profile-btn {
+  width: 200px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
+.profile-btn-small {
+  width: 97px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
+
+.profile-btn:hover,
+.profile-btn-small:hover {
+  background-color: #e6e6fa;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-intro {
+  font-size: 14px;
+}
+
+#profile-edit-btn {
+  position: absolute; /* 절대 위치 설정 */
+  top: 0; /* 위쪽 경계에서부터의 위치 */
+  right: 10px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 1px; /* 상단 패딩 고려 */
+}
+
+#adult-verify-btn {
+  position: absolute; /* 절대 위치 설정 */
+  top: 27px; /* 위쪽 경계에서부터의 위치 */
+  right: 10px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 1px; /* 상단 패딩 고려 */
+}
+
+/* profile edit */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 10px;
+  border: 1px solid #e6e6fa;
+  width: 40%;
+  position: relative;
+  height: auto;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #7b68ee;
+  cursor: pointer;
+}
+
+/* 폼 요소 스타일 */
+.modal > form {
+  margin-top: 20px;
+}
+
+textarea#intro {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.profile-update-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  opacity: 0.5;
+}
+
+.profile-update-img-label:hover {
+  filter: grayscale(90%);
+}

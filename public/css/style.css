@@ -1,0 +1,925 @@
+@charset "utf-8";
+/***
+    The new CSS reset - version 1.8.5 (last updated 14.6.2023)
+    GitHub page: https://github.com/elad2412/the-new-css-reset
+***/
+
+/*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+    - The "html" attribute is exclud, because otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
+ */
+
+*:where(
+    :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
+  ) {
+  all: unset;
+  display: revert;
+}
+
+/* Preferred box-sizing value */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Reapply the pointer cursor for anchor tags */
+a,
+button {
+  cursor: revert;
+}
+
+/* Remove list styles (bullets/numbers) */
+ol,
+ul,
+menu {
+  list-style: none;
+}
+
+/* For images to not be able to exceed their container */
+img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+}
+
+/* removes spacing between cells in tables */
+table {
+  border-collapse: collapse;
+}
+
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+input,
+textarea {
+  -webkit-user-select: auto;
+}
+
+/* revert the 'white-space' property for textarea elements on Safari */
+textarea {
+  white-space: revert;
+}
+
+/* minimum style to allow to style meter element */
+meter {
+  -webkit-appearance: revert;
+  appearance: revert;
+}
+
+/* preformatted text - use only for this feature */
+:where(pre) {
+  all: revert;
+}
+
+/* reset default text opacity of input placeholder */
+::placeholder {
+  color: unset;
+}
+
+/* remove default dot (•) sign */
+::marker {
+  content: initial;
+}
+
+/* fix the feature of 'hidden' attribute.
+   display:revert; revert to element instead of attribute */
+:where([hidden]) {
+  display: none;
+}
+
+/* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element */
+:where([contenteditable]:not([contenteditable='false'])) {
+  -moz-user-modify: read-write;
+  -webkit-user-modify: read-write;
+  overflow-wrap: break-word;
+  -webkit-line-break: after-white-space;
+  -webkit-user-select: auto;
+}
+
+/* apply back the draggable feature - exist only in Chromium and Safari */
+:where([draggable='true']) {
+  -webkit-user-drag: element;
+}
+
+/* Revert Modal native behavior */
+:where(dialog:modal) {
+  all: revert;
+}
+
+/*rayout*/
+body {
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-size: 16px;
+  padding-top: 90px;
+  height: 100%;
+}
+main {
+  min-height: calc(100vh - 200px);
+}
+.wrap {
+  width: 100%;
+  overflow: hidden;
+  /* height: auto; */
+  min-height: 100%;
+}
+
+main .inner {
+  width: 1200px;
+  margin: auto;
+}
+
+/*header*/
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 90px;
+  background: #e6e6fa;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  z-index: 10;
+}
+.inner_header {
+  width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.inner_header img {
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  max-width: 50px;
+  max-height: 50px;
+}
+.inner_header h1 {
+  font-size: 40px;
+  font-family: 'Sriracha', cursive;
+  color: #7b62cc;
+  font-weight: 400;
+  padding: 10px 0;
+}
+.inner_header h1 a {
+  display: block;
+}
+.inner_header h1 a:hover {
+  color: #6a5acd;
+}
+
+.inner_header .header_right {
+  display: flex;
+  margin-left: auto;
+  padding-top: 20px;
+}
+
+.inner_header .search_box {
+  margin-right: 50px;
+}
+.inner_header .search_box form input[type='search'] {
+  color: #999;
+  background-color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+.inner_header .search_box form input[type='submit'] {
+  display: none;
+}
+.inner_header .search_box form i {
+  cursor: pointer;
+}
+.inner_header .search_box form i:hover {
+  color: #6a5acd;
+}
+
+.inner_header ul {
+  bottom: 15px;
+  display: flex;
+  margin-left: auto;
+}
+.inner_header ul li {
+  margin: 0 20px;
+  font-size: 16px;
+  font-weight: 400;
+}
+.inner_header ul li a {
+  display: block;
+  text-decoration: none;
+}
+.inner_header ul li a:hover {
+  color: #6a5acd;
+}
+
+/* main */
+.ranking_box {
+  background-color: #fff;
+  margin: 20px;
+  width: calc(100% - 40px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.prev-button {
+  background-color: #ccbeff;
+  margin: auto 10px auto 10px;
+  width: 50px;
+  height: 50px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+}
+
+.next-button {
+  background-color: #ccbeff;
+  margin: auto 10px auto 10px;
+  width: 50px;
+  height: 50px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+}
+
+.ranking_title {
+  background-color: #a791ff;
+  color: #fff;
+  padding: 10px;
+  margin: 0;
+  border-radius: 5px;
+}
+
+.searched-card-thumbnail {
+  width: 170px;
+}
+
+.card-thumbnail-image {
+  width: 170px;
+}
+
+.card_container {
+  width: 100%;
+  /* max-width: 960px; */
+  margin: 0 auto;
+  display: flex;
+}
+
+.searched-card {
+  margin: 20px;
+}
+
+.card-info-title {
+  color: rgb(31, 31, 31);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-info-card_author {
+  color: rgb(160, 160, 160);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slider {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.contents_box {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  margin: 0 auto;
+  width: calc(100% + 40px); /* 카드 너비 4개 + 여백 */
+  transition: transform 0.5s ease-in-out;
+}
+
+.contents {
+  flex: 0 0 240px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.contents:last-child {
+  border: none;
+}
+
+.contents img {
+  width: 100%;
+  height: 70%;
+  display: block;
+  margin: 0 auto 10px;
+  object-fit: cover;
+}
+
+.contents_title,
+.contents_category,
+.contents_reviewCount,
+.contents_ranking {
+  margin: 5px 0;
+  text-align: center;
+}
+
+/*footer*/
+footer {
+  width: 100%;
+  height: 200px;
+  background: #e6e6fa;
+  overflow: hidden;
+  margin-top: auto;
+}
+footer ul {
+  text-align: center;
+  padding-top: 100px;
+  font-size: 20px;
+}
+footer ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+footer p {
+  font-size: 12px;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 20px;
+}
+
+/* login, register */
+
+.login-wrapper,
+.register-wrapper,
+.mypage-wrapper {
+  width: 400px;
+  /* height: 330px; */
+  padding: 30px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.login-wrapper > h2,
+.register-wrapper > h2,
+.mypage-wrapper {
+  font-size: 24px;
+  color: #7b68ee;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+input[type='checkbox'] {
+  all: revert;
+}
+
+#login-form > input,
+#register-form > input,
+#profile-form > input {
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+}
+
+#login-form > input::placeholder,
+#register-form > input::placeholder,
+#profile-form > input::placeholder {
+  color: #d2d2d2;
+}
+
+#login-form > input[type='submit'],
+#register-form > input[type='submit'],
+#profile-form > input[type='submit'] {
+  color: #fff;
+  font-size: 16px;
+  background-color: #7b68ee;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* mypage */
+.profile-btn {
+  width: 200px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
+.profile-btn-small {
+  width: 97px;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #7b68ee;
+  color: #fff;
+  font-size: 14px;
+}
+
+.profile-btn:hover,
+.profile-btn-small:hover {
+  background-color: #e6e6fa;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-intro {
+  font-size: 14px;
+}
+
+.material-symbols-outlined {
+  position: absolute; /* 절대 위치 설정 */
+  top: 0; /* 위쪽 경계에서부터의 위치 */
+  right: 50px; /* 오른쪽 경계에서부터의 위치 */
+  margin-right: 40px; /* 우측 패딩 고려 */
+  margin-top: 40px; /* 상단 패딩 고려 */
+}
+
+/* profile edit */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  height: 60%;
+  border: 1px solid #e6e6fa;
+  width: 40%;
+  position: relative;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #7b68ee;
+  cursor: pointer;
+}
+
+/* 폼 요소 스타일 */
+.modal > form {
+  margin-top: 20px;
+}
+
+textarea#intro {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.profile-update-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  opacity: 0.5;
+}
+
+.profile-update-img-label:hover {
+  filter: grayscale(90%);
+}
+
+.detail-page-container {
+  display: flex;
+  margin: 0 auto;
+  width: 1200px;
+  /* height: 1600px; */
+  flex-direction: column;
+  margin-bottom: 150px;
+}
+
+.review-info-sedtion {
+  display: flex;
+}
+.detail-introduce {
+  padding: 0 30px 70px 30px;
+}
+.review-container {
+  width: 1200px;
+}
+
+.info-metadata-wrap {
+  margin: 20px 0;
+}
+
+.review-input-left {
+  display: table-cell;
+  width: 120px;
+  padding: 32px 0 20px 0;
+  text-align: center;
+  cursor: default;
+}
+
+.review-input-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.detail-keyword {
+  padding: 0 30px 70px 30px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: center;
+  width: 1200px;
+  padding: 40px 30px;
+  position: relative;
+}
+
+.title-text {
+  display: inline-block;
+  font-size: 20px;
+  /* color: #59667a; */
+  color: #000;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 24px;
+}
+
+.header-thumbnail {
+  width: 220px;
+  float: left;
+}
+.book-title {
+  display: block;
+  font-size: 17px;
+  color: #59667a;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thumbnail {
+  width: 180px;
+  max-height: 313px;
+}
+
+.header-info-wrap {
+  width: 635px;
+}
+
+.header-thumnail-image {
+  color: #666;
+  line-height: 1em;
+}
+
+.header-preference {
+  margin-top: 12px;
+  width: 180px;
+  text-align: center;
+}
+
+.preference-button {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 130px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
+}
+
+.bonenjung-button {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 45px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
+}
+
+.dk-block-title {
+  margin-bottom: 15px;
+  padding: 10px 0 8px 0;
+  border-bottom: 2px solid #7b68ee;
+}
+
+.search-dk-block-title {
+  margin-bottom: 15px;
+
+  border-bottom: 2px solid #7b68ee;
+}
+
+.info-title {
+  font-size: 30px;
+  line-height: 1.3em;
+  color: #333;
+  font-weight: 700;
+  word-break: keep-all;
+  word-wrap: break-word;
+  margin-top: 8px;
+}
+
+.info-category-wrap {
+  height: 14px;
+  font-size: 12px;
+  color: #333;
+}
+
+.metadataa metadata-writer {
+  font-size: 13px;
+  color: #666;
+  line-height: 17px;
+  padding-bottom: 5px;
+}
+
+.platform-image {
+  width: 60px;
+}
+
+.result_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bonenjung-wrap {
+  float: right;
+}
+
+.keyword-item {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 3px;
+  padding: 0 10px;
+  background: #f3f4f5;
+}
+
+.keyword {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.metadata-item- .author-item-wrapper {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.author-detail {
+  /* font-size: 13px; */
+  color: #666;
+  line-height: 1em;
+  font-weight: 700;
+  /* cursor: pointer; */
+}
+
+.search-card {
+  padding: 15px;
+}
+
+.card-image {
+  width: 200px;
+  height: 200px;
+}
+
+.review-info-section {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.review-input-left {
+  display: table-cell;
+  width: 120px;
+  padding: 32px 0 20px 0;
+  text-align: center;
+  cursor: default;
+}
+
+.review-input-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.review_input_textarea {
+  border: 2px solid #d1d5d9;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 112px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.03em;
+  padding: 12px 15px;
+  line-height: 1.5em;
+  color: #a7b1bb;
+  resize: vertical;
+}
+
+.review-testarea-wrapper {
+  color: #666;
+  font-size: 12px;
+  line-height: 1em;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* .write_button_wrapper {
+  padding: 10px 0;
+  height: 30px;
+} */
+
+/* .spoiler_input_wrapper {
+  float: right;
+}
+
+.write_button_wrapper {
+  display: inline-block;
+} */
+
+.rui_button_blue_30 .js_review_write_btn .write_button .disabled {
+  background: #ccc;
+  border-color: #ccc;
+  box-shadow: none;
+  opacity: 1;
+}
+
+/* .rui_checkbox_input {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #b9bcc2;
+  background-color: transparent;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 #e5e5e5;
+  border-radius: 4px;
+} */
+
+.spolier_and_wirte_button_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 10px;
+}
+
+.pagination {
+  display: flex;
+}
+
+.paginnation-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+#myform fieldset {
+  display: inline-block;
+  direction: rtl;
+  border: 0;
+}
+#myform fieldset legend {
+  text-align: right;
+}
+#myform input[type='radio'] {
+  display: none;
+}
+#myform label {
+  font-size: 3em;
+  color: transparent;
+  text-shadow: 0 0 0 #f0f0f0;
+}
+#myform label:hover {
+  text-shadow: 0 0 0 #6a5acd;
+}
+#myform label:hover ~ label {
+  text-shadow: 0 0 0 #6a5acd;
+}
+#myform input[type='radio']:checked ~ label {
+  text-shadow: 0 0 0 #6a5acd;
+}
+
+.review_list_section {
+  margin-top: 25px;
+}
+
+.rui_tab_and_order {
+  position: relative;
+  cursor: default;
+}
+
+.rui_tab_2 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 2px solid #d1d5d9;
+  cursor: default;
+}
+
+.rui_tab_2 .tab_list a.active,
+.rui_tab_2 .tab_list button.active {
+  color: #40474d;
+}
+
+.rui_tab_2 .tab_list {
+  font-family:
+    ridi-roboto,
+    Helvetica Neue,
+    Apple SD Gothic Neo,
+    '나눔고딕',
+    Nanum Gothic,
+    '돋움',
+    arial,
+    Dotum,
+    Tahoma,
+    Geneva,
+    sans-serif;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  margin-right: 13px;
+}
+
+.show_review {
+  display: flex;
+  padding: 10px;
+  margin: 10px;
+}
+
+.reviewer_id {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.review_date {
+  color: #808991;
+  font-size: 12px;
+  line-height: 16px;
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contents Like List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/reviewed_list.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+      </style>
+      <script
+        src="https://kit.fontawesome.com/0b832ce4c1.js"
+        crossorigin="anonymous"
+      ></script>
+      <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+</head>
+<body>
+    <div class="wrap">
+      <%- include('header.ejs') %>
+        <main>
+          <div class="inner">
+            <div class="category">
+              <!-- <ul> -->
+                <!-- <li><a href="/user/bogosips/wishes">보고싶어요</a></li> -->
+                <!-- <li><a href="/user/bogosips/watchings">보는중</a></li> -->
+              <!-- </ul> -->
+              <br />
+            <select id="sort-option" name="sort" onchange="updateOrderType(this)">
+                <option value="ADD_DT">추가 오름차순</option>
+                <option value="ADD_DT_DESC">추가 내림차순</option>
+                <option value="NEW">발매 오름차순</option>
+                <option value="OLD">발매 내림차순</option>
+            </select>
+            <script>
+              // Define orderType object with sorting types
+              const orderType = {
+                  ADD_DT: 'ADD_DT',
+                  ADD_DT_DESC: 'ADD_DT_DESC',
+                  NEW: 'NEW',
+                  OLD: 'OLD'
+              };
+          
+              function updateOrderType(selectElement) {
+                  console.log("updateOrderType function called");
+          
+                  // 선택한 옵션의 값
+                  const selectedValue = selectElement.value;
+                  
+                  // 선택한 값에 해당하는 orderType 가져오기
+                  const orderTypeInfo = getOrderTypeInfo(selectedValue);
+          
+                  // orderTypeInfo를 사용하여 필요한 작업 수행
+                  console.log(orderTypeInfo);
+              }
+          
+              // 선택한 값에 따라 적절한 orderType 반환
+              function getOrderTypeInfo(selectedValue) {
+                  switch(selectedValue) {
+                      case 'ADD_DT':
+                          return orderType.ADD_DT;
+                      case 'ADD_DT_DESC':
+                          return orderType.ADD_DT_DESC;
+                      case 'NEW':
+                          return orderType.NEW;
+                      case 'OLD':
+                          return orderType.OLD;
+                      default:
+                          return null;
+                  }
+              }
+          </script>
+            </div>
+            <div class="contents_container">
+              <% content.forEach(function(content) { %>
+              <div class="content">
+                <a href="/books/<%= content.webContent.id %>">
+                  <img src="<%= content.webContent.image %>" alt="썸네일">
+                </a>
+                <a href="#">
+                  <div class="bottom_box">
+                    <p class="title"><%= content.webContent.title %></p>
+                  </div>
+                </a>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </main>
+        <script src="/js/liked_list.js"></script>
+        <%- include('footer.ejs') %>
+      </div>
+    </body>
+</html>

@@ -1,0 +1,78 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/collection-detail.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
+</head>
+<body>
+  <div class="wrap">
+  <%- include('../header.ejs') %>
+  <main>
+    <div class="collection_wrap">
+      <div class="collection" id="collectionId-<%= collection.id%>">
+        <div class="collection_detail_info">
+          <ul>
+            <li class="collection_title"><%= collection.title%></li>
+            <li class="collection_desc"><%= collection.desc%></li>
+            <li class="collection_user_nickname">
+              만든이: <%= collection.user.nickname%>
+            </li>
+            <li class="contents_number">
+              작품수: <%= collection.contentCollections.length%>
+            </li>
+            <li class="collection_bookmarked_number">
+              북마크수: <%= collection.collectionBookmarks.length || 0%>
+            </li>
+          </ul>
+        </div>
+        <div class="contents_list_container">
+          <% if (collection.contentCollections.length === 0) { %>
+            <h1 class="no-content">아직 컬렉션에 작품이 없습니다. 작품을 추가해보세요!</h1>
+          <% } %>
+          <% collection.contentCollections.forEach((item,index) => { %>
+            <span class="contentId" id="contentId-<%= index %>" style="display:none;"><%= item.webContent.id %></span>
+            <div class="content"  id="contentBtn-<%= index %>">
+              <img src="<%= item.webContent.image %>" alt="작품 표지" />
+              <div class="content_info">
+                <h3 class="contents_title"><%= item.webContent.title %></h3>
+                <h4 class="contents_category"><%= item.webContent.category %></h4>
+                <h4 class="contents_author"><%= item.webContent.author %></h4>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+      var contentBtn = document.querySelectorAll('.content')
+      contentBtn.forEach(function(contentBtn){
+        contentBtn.addEventListener('click', function(){
+          const index =this.id.split('-')[1];
+          const contentId = document.getElementById(
+            `contentId-${index}`
+          ).textContent
+          window.location.href = `/books/${contentId}`
+        })
+      })
+      
+    
+  </script>
+  <%- include('../footer.ejs') %>
+</div>
+</body>
