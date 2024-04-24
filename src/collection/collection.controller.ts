@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Render,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -31,24 +32,54 @@ export class CollectionController {
   @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
+  @Render('collection/my_collection_list')
   async myCollections(@UserInfo() user: Users) {
     const myColList = await this.collectionService.getMyColList(user.id);
-    return await myColList;
+    return { collection: myColList, users: user };
   }
 
-  @ApiOperation({ summary: '내 컬렉션 상세 조회' })
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/info/:collectionId')
-  async myCollection(@Param('collectionId') collectionId: number) {
+  @Post('/info/:collectionId')
+  async getTitles(@Param('collectionId') collectionId: number) {
+    const myCol = await this.collectionService.getTitles(collectionId);
+    return myCol;
+  }
+
+  @Get('/col-list/info/:collectionId')
+  async Collection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
   }
 
+  @ApiOperation({ summary: '컬렉션 상세 조회' })
+  @Get('/info/:collectionId')
+  @Render('collection/collection_detail')
+  async myCollection(@Param('collectionId') collectionId: number) {
+    const collection = await this.collectionService.getMyCol(collectionId);
+    return { collection };
+  }
+
+  @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:collectionId/content/:webContentId')
+  async removeContentFromCollection(
+    @UserInfo() user: Users,
+    @Param('collectionId') collectionId: number,
+    @Param('webContentId') webContentId: number,
+  ) {
+    const userId = user.id;
+    return await this.collectionService.removeContentFromCollection(
+      userId,
+      collectionId,
+      webContentId,
+    );
+  }
+
   @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
   @Get('/:userId')
+  @Render('collection/user_collection_list')
   async userCollections(@Param('userId') userId: number) {
-    const userColList = await this.collectionService.getUserColList(userId);
-    return await userColList;
+    const collections = await this.collectionService.getUserColList(userId);
+    return { collections };
   }
 
   @ApiOperation({ summary: '컬렉션 생성' })
@@ -66,10 +97,11 @@ export class CollectionController {
       createColDto,
       user.id,
     );
-    return createdCollection;
+    return { collections: createdCollection };
   }
 
   @ApiOperation({ summary: '컬렉션 수정' })
+  @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
   @Patch('/:collectionId')
   async updateCollection(
@@ -78,7 +110,11 @@ export class CollectionController {
     @Param('collectionId') collectionId: number,
     @Body() updateColDto: UpdateColDto,
   ) {
-    return await this.collectionService.updateCol(collectionId, updateColDto);
+    return await this.collectionService.updateCol(
+      file,
+      collectionId,
+      updateColDto,
+    );
   }
 
   @ApiOperation({ summary: '컬렉션 삭제' })
@@ -95,11 +131,11 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 추가' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:collectionId/content')
+  @Post('/:collectionId/content/:webContentId')
   async addContentToCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
+    @Param('webContentId') webContentId: number,
   ) {
     const userId = user.id;
 
@@ -114,22 +150,6 @@ export class CollectionController {
     }
 
     return await this.collectionService.addContentToCollection(
-      userId,
-      collectionId,
-      webContentId,
-    );
-  }
-
-  @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('/:collectionId/content')
-  async removeContentFromCollection(
-    @UserInfo() user: Users,
-    @Param('collectionId') collectionId: number,
-    @Body('webContentId') webContentId: number,
-  ) {
-    const userId = user.id;
-    return await this.collectionService.removeContentFromCollection(
       userId,
       collectionId,
       webContentId,

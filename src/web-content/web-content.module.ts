@@ -6,10 +6,11 @@ import { WebContents } from './entities/webContents.entity';
 import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { Likes } from '../like/entities/likes.entity';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Likes, WebContents, Users, Collections])],
-  providers: [WebContentService],
+  providers: [WebContentService, OptionalAuthGuard],
   controllers: [WebContentController],
   exports: [WebContentService],
 })

@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const deleteButtons = document.querySelectorAll('.deleteButton');
   const saveButtons = document.querySelectorAll('.saveButton');
   const likeButtons = document.querySelectorAll('.rui_button_white_25');
-  console.log(likeButtons);
 
   editButtons.forEach(function (editButton) {
     editButton.addEventListener('click', function () {
@@ -39,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
 
-      console.log(reviewId);
       const editwrapper = document.getElementById(`editWrapper-${index}`);
       const saveButton = document.getElementById(`saveButton-${index}`); // 저장 버튼 선택
       const reviewContent = document.getElementById(`reviewWrapper-${index}`); // 수정할 리뷰 내용 선택
@@ -48,6 +46,35 @@ document.addEventListener('DOMContentLoaded', function () {
       saveButton.style.display = 'block'; // 저장 버튼 보이기
       editwrapper.style.display = 'block'; // 입력 필드 보이기
       reviewContent.style.display = 'none';
+    });
+  });
+
+  const spoilerBtns = document.querySelectorAll('.alert_detail_link');
+  const reviewWraps = document.querySelectorAll('.review-wrapper');
+  const spiolerBlinds = document.querySelectorAll('.alert_article');
+
+  var reviewItems = document.querySelectorAll('.show_review');
+
+  reviewItems.forEach(function (reviewItem) {
+    var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
+    var spiolerBlinds = document.getElementById(`alert_article-${index}`);
+    var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
+    console.log(spiolerBlinds);
+    console.log(reviewWrapper);
+
+    if (spiolerBlinds) {
+      reviewWrapper.style.display = 'none';
+    }
+  });
+
+  spoilerBtns.forEach(function (spoilerBtn) {
+    spoilerBtn.addEventListener('click', function () {
+      const index = this.id.split('-')[1];
+      const spoilerBlind = document.getElementById(`alert_article-${index}`);
+      const reviewWrap = document.getElementById(`review-wrapper-${index}`);
+
+      spoilerBlind.style.display = 'none';
+      reviewWrap.style.display = 'block';
     });
   });
 
@@ -132,7 +159,7 @@ $(document).ready(function () {
     // 폼 데이터 수집
     var formData = {
       content: $('textarea[name="content"]').val(),
-      rate: parseInt($('input[name="rate"]:checked').val(), 10), // rate를 숫자로 변환
+      rate: Math.round(Number($('input[name="rate"]:checked').val())), // rate를 숫자로 변환
       isSpoiler: $('input[name="isSpoiler"]').is(':checked'), // isSpoiler를 불리언 값으로 변환
     };
 
@@ -143,7 +170,7 @@ $(document).ready(function () {
       contentType: 'application/json', // 요청의 Content-Type을 application/json으로 설정
       data: JSON.stringify(formData),
       success: function (data) {
-        location.reload(true);
+        location.href = `${idUrl}?option=c`;
       },
       error: function (response) {
         alert(response.responseJSON.message);

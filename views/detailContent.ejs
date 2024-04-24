@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/collection_modal.css" />
     <link rel="stylesheet" href="/css/content-detail.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
@@ -49,7 +50,7 @@
               <div class="info-title-wrap">
                 <h1 class="info-title"><%= content.title %></h1>
                 <div class="bonenjung-wrap">
-                  <button type="button" class="bonenjung-button">
+                  <button type="button" class="bonenjung-button" id="collection-btn">
                     <span class="button-contents">
                       <span class="button-icon">📚</span>
                     </span>
@@ -207,16 +208,26 @@
               <ul class="rui_order js_review_list_order_wrapper">
                 <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">추천순</a></li></ul>
             </div>
-            <div class="review-list-wrapper"></div>
+            
                <ul class="review-list">
                 <% if(option == 'c'){ %>
                   <% if(reviewList.length ==0){ %>
                     <div class="review-is-null">
-                      <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
+                      <span class="null-review-text">🍀 첫번째 리뷰를 남겨주세요!</span>
                     </div>
                     <% } %>
                   <% reviewList.forEach((item,index) => { %>
-                    <li class="show-review">
+                    <li class="show_review" id="show_review-<%= index %>">
+                      <% if(item.isSpoiler === true) { %>
+                        <article class="alert_article" id="alert_article-<%= index %>">
+                          <p class="alert_description">
+                            <span class="alert_icon"></span>
+                            스포일러가 있는 리뷰입니다.<br>
+                            <button class="alert_detail_link js_view_spoiler_review" id="alert_detail_link js_view_spoiler_review-<%= index %>" type="button">리뷰 보기</button>
+                          </p>
+                        </article>
+                        <% }%>
+                        <div class="review-wrapper" id="review-wrapper-<%= index %>">
                       <div class="review-list-left-info">
                         <div class="left_contents">
                           <p>
@@ -228,11 +239,13 @@
                               </span>
                             </span>
                             <div class="reviewer-image">
+                              <a href="/users/<%= item.users.id %>">
                               <img
                               src="<%= item.users.profileImage %>"
                               alt="프로필사진"
                               onerror="this.src='/logo_image/chillinker_logo(1).png'"
                               class="profile-img" />
+                            </a>
                             </div>
                             <span class="review_id" id="reviewId-<%= index %>" style="display:none;"><%= item.id %></span>
                             <span class="review_id" style="display:none;"><%= item.isSpoiler %></span>
@@ -249,20 +262,22 @@
                         <span class="reviewer_rate" id="reviewer_rate-<%= index %>">평점: <%= item.rate %></span>
                         <p class="review_content js_review_content" id="item-content-<%= index %>"><%= item.content %></p>
                       </div>
-                        <div class="editWrapper-<%= index %> " id="editWrapper-<%= index %>" style="display:none">
-                          <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
-                            <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
-                          <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= item.content %>" id="editInput-<%= index %>"></input>
-                          <div class="spoiler_input_wrapper" >
-                            <input type="checkbox" name="editIsSpoiler"/>
-                            <span
-                              for="spoiler_radio_input_write"
-                              class="rui_checkbox_text"
-                              >스포일러가 있습니다.</span>
-                          </div>
-                        </div>
 
-                        <div class="review-Btn">
+                      
+                      <div class="editWrapper" id="editWrapper-<%= index %>" style="display:none">
+                        <span class="reviewer_rate" id="editRateInputq-<%= index %>" >평점:
+                          <input type="text" name='editRate' class="reviewer_rate" id="editRateInput-<%= index %>"></input></span>
+                        <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= item.content %>" id="editInput-<%= index %>"></input>
+                        <div class="spoiler_input_wrapper" >
+                          <input type="checkbox" name="editIsSpoiler"/>
+                          <span
+                            for="spoiler_radio_input_write"
+                            class="rui_checkbox_text"
+                            >스포일러가 있습니다.</span>
+                        </div>
+                      </div>
+                      
+                      <div class="review-Btn">
                         <div class="edit-delete-btn-wrapper">
                           <button class="editButton" id="editButton-<%= index %>">수정</button>
                           <button id="saveButton-<%= index %>" class="saveButton" style="display:none;">저장</button>
@@ -280,12 +295,26 @@
                         </button>
                       </div>
                     </div>
+                    </div>
+
+
+                 
                       </div>
                     </li>
                   <% }) %>
                 <% }else if(reviewList.length !==0){ %>
-              <% reviewList.forEach((item) => { %>
-                <li class="show-review">
+              <% reviewList.forEach((item,index) => { %>
+                <li class="show_review" id="show_review-<%= index %>">
+                  <% if(item.isSpoiler === true) { %>
+                    <article class="alert_article"  id="alert_article-<%= index %>">
+                      <p class="alert_description">
+                        <span class="alert_icon"></span>
+                        스포일러가 있는 리뷰입니다.<br>
+                        <button class="alert_detail_link js_view_spoiler_review"  id="alert_detail_link js_view_spoiler_review-<%= index %>" type="button">리뷰 보기</button>
+                      </p>
+                    </article>
+                    <% }%>
+                    <div class="review-wrapper" id="review-wrapper-<%= index %>">
                   <div class="review-list-left-info">
                     <div class="left_contents">
                       <p>
@@ -316,6 +345,8 @@
                         </span>
                     </div>
                   </div>
+                  
+                </div>
                 </li>
               <% }) %>
             </ul>            
@@ -327,14 +358,40 @@
                 <% } %>
               </ul>
             </nav>
-            
           </div>
           <% }else{ %>
             <div class="review-is-null">
-              <span class="null-review-text">첫번째 리뷰를 남겨주세요!</span>
+              <span class="null-review-text">🍀 첫번째 리뷰를 남겨주세요!</span>
             </div>
             <% } %>
       </div>
+      <!-- 모달 시작 -->
+      <div class="modal">
+        <div class="collection_modal" id="collection-modal">
+          <span class="close">&times;</span>
+          <h3 class="modal_title">컬렉션에 컨텐츠 추가</h3>
+          <div class="modal_content">
+            <form
+              name="add_content_form"
+              method="post"
+              enctype="multipart/form-data"
+              id="addContentForm"
+            >
+              <h4 class="collection_title">내 컬렉션 목록</h4>
+              <select class="collection_select" id="collection-select">
+                <!-- <option value="collection">컬렉션 제목</option> -->
+              </select>
+              <!-- 컨텐츠 id 저장해서 받아오는 부분(숨김) -->
+              <input type="hidden" id="contentIdInput" name="contentId" value="" />
+              <div class="btn_area">
+                <input type="submit" value="완료" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+   
     </main>
     <footer>
       <ul>
