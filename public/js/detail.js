@@ -22,6 +22,72 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+$(document).ready(function () {
+  $('#collection-btn').click(function () {
+    $('#modal').show();
+    $('#collection-modal').show();
+
+    $('.close').click(function () {
+      $('#modal').hide();
+      $('#collection-modal').hide();
+    });
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+        window.onclick = null;
+      }
+    };
+
+    var userId = document.getElementById('userId').textContent;
+    var contentId = document.getElementById('contentId').textContent;
+
+    $.ajax({
+      type: 'GET',
+      url: `/collections/title/${userId}`,
+      success: function (datas) {
+        let editCollections = '';
+
+        datas.forEach(function (data) {
+          let editCollection = `
+          <div class='col-title' id='col_title-${data.id}'>
+            <label class='col-title-list' for="title-${data.id}">${data.title}</label>
+            <br />
+            <div class="btn_area">
+              <button type="button" class="preference-button col-add-btn">
+                추가
+              </button>
+            </div>
+          </div>
+          `;
+          editCollections += editCollection;
+        });
+        $('.modal_content').html(editCollections);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+      },
+    });
+  });
+
+  $('.collection_modal').on('click', '.col-add-btn', function () {
+    var userId = document.getElementById('userId').textContent;
+    var contentId = document.getElementById('contentId').textContent;
+    var collectionId = $(this).closest('.col-title').attr('id').split('-')[1];
+
+    $.ajax({
+      type: 'POST',
+      url: `/collections/${collectionId}/content/${contentId}`,
+      success: function (datas) {
+        alert(`작품이 추가되었습니다!`);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+      },
+    });
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   var url = window.location.href;
   var idUrl = url.split('?')[0];
@@ -178,3 +244,31 @@ $(document).ready(function () {
     });
   });
 });
+
+// function getCollectionTitles(userId) {
+//   $('#modal').show();
+//   $('#collection-modal').show();
+
+//   console.log('유저:', userId);
+
+//   $.ajax({
+//     type: 'GET',
+//     url: `/collections/title/${userId}`,
+//     success: function (data) {
+//       console.log(data);
+
+//       let editCollection = `
+//     <label for="title">컬렉션 제목</label>
+//     <input type="text" name="title" id="title" value="${data.title}" />
+//     <br />
+//     <div class="btn_area">
+//       <input type="submit" value="완료"/>
+//     </div>`;
+//       // 컬렉션 모달 내용 변경
+//       $('.collection_modal').html(editCollection);
+//     },
+//     error: function (response) {
+//       alert(response.responseJSON.message);
+//     },
+//   });
+// }

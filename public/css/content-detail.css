@@ -4,6 +4,15 @@
   width: 100px;
 }
 
+.col-title-list {
+  text-align: center;
+  line-height: 1em;
+  width: 100%;
+  padding: 8px;
+  border: 5px solid #e6e6fa;
+  border-radius: 7px;
+}
+
 .review-is-null {
   margin-top: 20px;
 }
@@ -106,6 +115,20 @@
   line-height: 1.5em;
 }
 
+.col-title {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.modal_title {
+  font-weight: 500;
+  color: #7b68ee;
+  font-size: 22pt;
+
+  width: max-content;
+}
+
 .alert_icon {
   text-indent: -444px;
   font-size: 0;
@@ -118,6 +141,18 @@
   height: 15px;
   vertical-align: -15%;
   margin-right: 2px;
+}
+
+.collection_modal {
+  display: none;
+  width: 600px;
+  height: 650px;
+  border-radius: 20px;
+  padding: 50px;
+  position: relative;
+  background-color: #fefefe;
+  border: 1px solid #e6e6fa;
+  margin: 450px auto;
 }
 
 .alert_detail_link {

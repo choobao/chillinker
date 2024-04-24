@@ -155,4 +155,10 @@ export class CollectionController {
       webContentId,
     );
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/title/:userId')
+  async getMyColsTitle(@Param('userId') userId: number) {
+    return await this.collectionService.getMyColsTitle(userId);
+  }
 }
