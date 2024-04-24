@@ -349,7 +349,7 @@ export class CrawlerService {
               Object.keys(webContent.platform)[0] in existingContent.platform
             ) {
               if (webContent.rank !== null) {
-                await queryRunner.manager
+                const webContent = await queryRunner.manager
                   .createQueryBuilder()
                   .update(WebContents)
                   .set({
@@ -357,6 +357,8 @@ export class CrawlerService {
                   })
                   .where('id = :id', { id: contentId })
                   .execute();
+
+                
 
                 console.log(
                   '이미 플랫폼 정보가 DB에 존재해서 랭크만 업데이트시켜주면 되는 경우',
@@ -446,6 +448,7 @@ export class CrawlerService {
         throw err;
       } finally {
         await queryRunner.release();
+
       }
 
       // redis 업데이트

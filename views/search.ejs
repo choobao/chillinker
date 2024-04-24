@@ -248,5 +248,19 @@
     </footer>
     </div>
     <script src="/js/adult_blind.js"></script>
+    <script>
+      window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+
+        if (type) {
+          const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
+          webnovelBtn.classList.add('selected');
+        }
+      }
+    </script>
   </body>
 </html>

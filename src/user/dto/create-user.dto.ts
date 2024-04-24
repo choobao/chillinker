@@ -44,6 +44,7 @@ export class CreateUserDto {
   @ApiProperty({ example: '갤럭시 씁니다.', description: '소개' })
   intro: string;
 
+  @IsOptional()
   @IsDateString()
   @ApiProperty({ example: '2000-01-01', description: '생년월일' })
   birthDate: string;
