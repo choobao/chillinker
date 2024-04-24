@@ -1,0 +1,52 @@
+body,
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  font-family: 'IBM Plex Sans KR', sans-serif;
+}
+
+.error-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.error-code,
+.error-message {
+  margin: 0;
+  padding: 5px 0;
+}
+
+.error-code {
+  color: #272148;
+  font-size: 90px;
+}
+
+.error-message {
+  color: #473994;
+  font-size: 20px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.main-link {
+  display: inline-block;
+  margin-top: 20px;
+  background-color: #7b68ee;
+  color: #fff;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.main-link:hover {
+  background-color: #e6e6fa;
+  color: black;
+}

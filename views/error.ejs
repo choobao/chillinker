@@ -1,0 +1,35 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chillinker</title>
+  <link rel="stylesheet" href="/css/error.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+  </style>
+  <script
+    src="https://kit.fontawesome.com/0b832ce4c1.js"
+    crossorigin="anonymous"
+  ></script>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16×16"
+    href="/logo_image/favicon-16x16.png"
+  />
+</head>
+
+<body>
+  <div class="container-wrapper">
+    <!-- <%- include('header.ejs') %> -->
+
+    <body>
+      <div class="error-container">
+        <h1 class="error-code"><%= err.code %></h1>
+        <p class="error-message"><%= err.message %></p>
+        <a href="/main" class="main-link">메인으로 돌아가기</a>
+      </div>
+    </body>
+
+    <!-- <%- include('footer.ejs') %> -->
+  </div>
+</body>
