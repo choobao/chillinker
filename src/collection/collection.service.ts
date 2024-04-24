@@ -15,6 +15,7 @@ import { UpdateColDto } from './dto/updateCol.dto';
 import { StorageService } from '../storage/storage.service';
 import { result } from 'lodash';
 import { Users } from '../user/entities/user.entity';
+import _ from 'lodash';
 
 @Injectable()
 export class CollectionService {
@@ -299,5 +300,69 @@ export class CollectionService {
     });
     console.log('컬렉션: ', collections);
     return collections;
+  }
+
+  async getMyColBlind(collectionId: number, user) {
+    const collectionInfo = await this.colRepository
+      .createQueryBuilder('collections')
+      .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
+      .leftJoinAndSelect('contentCollection.webContent', 'webContent')
+      .leftJoinAndSelect('collections.user', 'user')
+      .leftJoinAndSelect(
+        'collections.collectionBookmarks',
+        'collectionBooknmarks',
+      )
+      .where('collections.id = :id', { id: collectionId })
+      .getOne();
+
+    const webContents = collectionInfo.contentCollections.map((item) => {
+      return item.webContent;
+    });
+
+    const blindWebContents = this.blindAdultImage(user, webContents);
+    const isAdult = this.isAdult(user);
+    return { collectionInfo, blindWebContents, isAdult };
+  }
+
+  isOver19(birthDate: Date) {
+    const today = new Date();
+    const date19YearsAgo = new Date(
+      today.getFullYear() - 19,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return birthDate <= date19YearsAgo;
+  }
+
+  blindAdultImage(user, contents: WebContents[]) {
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      const adult_image =
+        'https://ssl.pstatic.net/static/m/nstore/thumb/19/home_book_4.png';
+      contents.map((content) => {
+        if (content.isAdult) {
+          content.image = adult_image;
+        }
+        return content;
+      });
+    }
+    return contents;
+  }
+
+  isAdult(user) {
+    const userInfo = { isAdult: 1 };
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      userInfo.isAdult = 0;
+    }
+    return userInfo;
   }
 }

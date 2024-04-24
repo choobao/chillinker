@@ -173,8 +173,10 @@
                 <div class="result_list" >
                   <% collections.forEach((item) => { %>
                   <div class="search-card">
-                    <a href="#" class="card">
-                    <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-thumbnail-image" >
+                    <a href="/collections/info/<%= item.collections_id %>" class="card">
+                    <img src="<%= item.collections_cover_image %>" alt="<%= item.title %>" 
+                    class="card-thumbnail-image"
+                    onerror="this.src='/images/readCollection.png'" >
                     <div class="card-info">
                       <h3 class="card-info-title" style="font-weight: 600;"><%= item.collections_title %></h3>
                       <h4 class="card_author">
