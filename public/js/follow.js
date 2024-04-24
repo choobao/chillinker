@@ -1,4 +1,50 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const followBtns = document.querySelectorAll('.following_btn');
+
+  followBtns.forEach(function (followBtn) {
+    const isFollowing = followBtn.dataset.isFollowing === 'true';
+    updateButtonState(followBtn, isFollowing);
+
+    followBtn.addEventListener('click', function () {
+      const followId = this.id.split('-')[0];
+      const isFollowing = this.dataset.isFollowing === 'true';
+
+      const newState = !isFollowing;
+      updateButtonState(followBtn, newState);
+
+      $.ajax({
+        type: 'Post',
+        url: `/users/${followId}/follows/follow`,
+        contentType: 'application/json',
+        data: JSON.stringify({ isFollowing: newState }),
+        success: function (data) {
+          localStorage.setItem(`followStatus-${followId}`, newState);
+          location.reload(true);
+        },
+        error: function (response) {
+          updateButtonState(followBtn, isFollowing);
+          alert(response.responseJSON.message);
+        },
+      });
+    });
+  });
+
+  function updateButtonState(button, isFollowing) {
+    button.textContent = isFollowing ? '팔로우' : '팔로우';
+    button.dataset.isFollowing = isFollowing;
+  }
+
+  followBtns.forEach(function (followBtn) {
+    const followId = followBtn.id.split('-')[0];
+    const storedStatus = localStorage.getItem(`followStatus-${followId}`);
+    if (storedStatus !== null) {
+      const isFollowing = storedStatus === 'true';
+      updateButtonState(followBtn, isFollowing);
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
   const followBtns = document.querySelectorAll('.unfollowing_btn');
 
   followBtns.forEach(function (followBtn) {
@@ -30,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function updateButtonState(button, isFollowing) {
-    button.textContent = isFollowing ? '팔로잉' : '언팔로우';
+    button.textContent = isFollowing ? '언팔로잉' : '언팔로잉';
     button.dataset.isFollowing = isFollowing;
   }
 
@@ -42,12 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
       updateButtonState(followBtn, isFollowing);
     }
   });
-});
-
-// 린님 컬렉션 코드
-$('#profile-bookmark-col').click(function () {
-  const userId = document.getElementById('profile-id').textContent;
-  window.location.href = `/collections/${userId}`;
 });
 
 // 무한 스크롤 -> 동작은 하는거 확인 일단 팔로잉 버튼 끝나면 다시 보기
