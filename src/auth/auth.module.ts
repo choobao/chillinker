@@ -17,6 +17,6 @@ import { UserModule } from '../user/user.module';
     }),
     UserModule,
   ],
-  providers: [JwtStrategy],
+  providers: [JwtStrategy, ConfigService],
 })
 export class AuthModule {}
