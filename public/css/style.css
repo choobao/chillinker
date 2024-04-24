@@ -112,14 +112,16 @@ body {
   font-family: 'IBM Plex Sans KR', sans-serif;
   font-size: 16px;
   padding-top: 90px;
-  height: auto;
+  height: 100%;
+}
+main {
+  min-height: calc(100vh - 200px);
 }
 .wrap {
   width: 100%;
   overflow: hidden;
-  height: auto;
-  /* min-height: 100%; */
-  padding-bottom: 200px;
+  /* height: auto; */
+  min-height: 100%;
 }
 
 main .inner {
@@ -338,6 +340,7 @@ footer {
   height: 200px;
   background: #e6e6fa;
   overflow: hidden;
+  margin-top: auto;
 }
 footer ul {
   text-align: center;
@@ -362,7 +365,7 @@ footer p {
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  height: 330px;
+  /* height: 330px; */
   padding: 30px;
   box-sizing: border-box;
   margin-left: auto;
@@ -416,10 +419,6 @@ body {
   display: flex;
   flex-direction: column;
   overflow: auto;
-}
-
-footer {
-  margin-top: auto;
 }
 
 /* mypage */

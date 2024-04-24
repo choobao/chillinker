@@ -60,20 +60,8 @@ export class ReviewController {
     return await this.reviewService.likeReview(user, reviewId);
   }
 
-  // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  // @Render('reviewed_list.ejs')
-  // @Get('reviewedTitles/:userId')
-  // async getTitlesWithReviews(@Param('userId') userId: number) {
-  //   const reviews = await this.reviewService.getTitlesWithReviews(userId);
-
-  //   const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
-  //     return new ReviewSummaryDto(review.image, review.title, review.rate);
-  //   });
-
-  //   return { reviewedWorks: reviewSummaries };
-  // }
-
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  @Render('reviewed_list.ejs')
   @Get('reviewedTitles/:userId')
   async getTitlesWithReviews(@Param('userId') userId: number) {
     const reviews = await this.reviewService.getTitlesWithReviews(userId);
@@ -84,6 +72,18 @@ export class ReviewController {
 
     return { reviewedWorks: reviewSummaries };
   }
+
+  // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  // @Get('reviewedTitles/:userId')
+  // async getTitlesWithReviews(@Param('userId') userId: number) {
+  //   const reviews = await this.reviewService.getTitlesWithReviews(userId);
+
+  //   const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
+  //     return new ReviewSummaryDto(review.image, review.title, review.rate);
+  //   });
+
+  //   return { reviewedWorks: reviewSummaries };
+  // }
 
   @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
