@@ -188,7 +188,7 @@ class KakaopageAxios {
   }
 
   async getDailyRank_20_WebContents(contentType: Type) {
-    let items = await this.requestDailyRanking(contentType);
+    const items = await this.requestDailyRanking(contentType);
     const ids = items.slice(0, 20).map((item) => ({
       id: +item.eventLog.eventMeta.series_id,
       rank: +item.rank,

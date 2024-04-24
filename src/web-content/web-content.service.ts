@@ -86,7 +86,7 @@ export class WebContentService {
   }
 
   isAdult(user) {
-    let userInfo = { isAdult: 1 };
+    const userInfo = { isAdult: 1 };
     if (
       user === false ||
       _.isNil(user) ||

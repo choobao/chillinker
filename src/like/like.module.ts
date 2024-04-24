@@ -8,6 +8,6 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Likes, WebContents])],
   providers: [LikeService],
-  controllers: [LikeController]
+  controllers: [LikeController],
 })
 export class LikeModule {}

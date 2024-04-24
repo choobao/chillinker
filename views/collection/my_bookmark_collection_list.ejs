@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/collection.css">
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -18,48 +19,70 @@
     />
   </head>
   <body>
-    <%- include('header.ejs') %>
+    <%- include('../header.ejs') %>
     <main>
-      <h3><%= ${users.nickname}%>님이 북마크한 컬렉션</h3>
+      <div class="collection-list-upper">
+        <h3><%= user.nickname%>님이 북마크한 컬렉션</h3>
+      </div>
+      
       <div class="collections_container">
-        <div class="collection" href="/collections/info/<%= collections.id%>">
+        <% if(myBookmarkList.length === 0) { %>
+          <h1 class="no-content">아직 북마크가 없습니다. 컬렉션을 북마크해보세요!</h1>
+        <% } %>
+        <% myBookmarkList.forEach((item, index) => {%>
+          <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
+        <div class="collection" href="/collections/info/<%= item.id %>">
           <div class="collection_upper">
-            <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
-            />
-            <div class="contents_number">작품수: <%= ${webContents.length} %></div>
+            <a href="collections/info/<%= item.id %>">
+              <img class="collection_img"
+              src="<%= item.coverImage%>"
+              alt="커버이미지"
+              onerror="this.src='/logo_image/chillinker_logo(2).png'"
+              />
+            </a>
+            <div class="contents_number">작품수: <%= item.contentCollections.length || 0 %></div>
           </div>
           <div class="collection_info">
             <ul>
-              <li class="collection_title"><%= ${collections_title}/%></li>
-              <li class="collection_desc"><%= ${collections_desc} %></li>
-              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length}%></li>
+              <li class="collection_title">
+                <a href="collections/info/<%= item.id %>">
+                  <%= item.title%>
+                </a>
+              </li>
+              <li class="collection_desc"><%= item.desc %></li>
+              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
-                <button class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</button>
+                <button class="remove_bookmark_btn" id="collectionId-<%= index %>">북마크 취소</button>
               </li>
             </ul>
-            
           </div>
         </div>
-        <div class="collection" href="#컬렉션상세페이지">
-          <div class="collection_upper">
-            <img class="collection_img"
-              src="#"
-              alt="/logo_image/chillinker_logo(2).png"
-            />
-            <div class="contents_number">작품수: <%= ${webContents.length} %></div>
-          </div>
-          <div class="collection_info">
-            <ul>
-              <li class="collection_title"><%= ${collections_title} %></li>
-              <li class="collection_desc"><%= ${collections_desc} %></li>
-              <li class="collection_bookmarked_number"><%= ${collections_bookmarks.length} %></li>
-            </ul>
-            <a class="remove_bookmark_btn" href="#하이퍼링크로 API 작동시키나..?">북마크 취소</a>
-          </div>
-        </div>
+        <% }) %>
       </div>
     </main>
-    <%- include('footer.ejs') %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      var removebookmarkBtn = document.querySelectorAll('.remove_bookmark_btn')
+      removebookmarkBtn.forEach(function(removebookmarkBtn){
+        removebookmarkBtn.addEventListener('click', function(){
+          const index =this.id.split('-')[1];
+          const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+        
+        $.ajax({
+          url: `/bookmark/${collectionId}`,
+          type: 'DELETE',
+          success: function () {
+            alert('북마크가 삭제되었습니다.');
+            window.location.href = '/bookmark'; // 이전 페이지(컬렉션)로 리다이렉트
+          },
+          error: function (response) {
+            alert(response.responseJSON.message);
+          },
+        });
+        })
+      })
+    </script>
+    <%- include('../footer.ejs') %>
   </body>

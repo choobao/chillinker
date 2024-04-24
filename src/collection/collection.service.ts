@@ -14,6 +14,7 @@ import { UpdateColDto } from './dto/updateCol.dto';
 
 import { StorageService } from '../storage/storage.service';
 import { result } from 'lodash';
+import { Users } from '../user/entities/user.entity';
 
 @Injectable()
 export class CollectionService {
@@ -24,6 +25,8 @@ export class CollectionService {
     private webContentRepository: Repository<WebContents>,
     @InjectRepository(ContentCollection)
     private contentCollectionRepository: Repository<ContentCollection>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
 
     private readonly storageService: StorageService,
   ) {}
@@ -83,6 +86,9 @@ export class CollectionService {
 
   // 타 유저 컬렉션 목록 조회
   async getUserColList(userId: number) {
+    const existUser = await this.userRepository.findOneBy({ id: userId });
+    if (!existUser)
+      throw new NotFoundException('해당 유저를 찾을 수 없습니다.');
     const collections = await this.colRepository.find({
       where: { userId },
       relations: ['contentCollections', 'collectionBookmarks'],
@@ -92,6 +98,7 @@ export class CollectionService {
         'desc',
         'coverImage',
         'bookmarkCount',
+        'userId',
         'contentCollections',
       ],
     });
@@ -102,12 +109,14 @@ export class CollectionService {
       const coverImage = collection.coverImage;
       const bookmarkCount = collection.collectionBookmarks.length;
       const webContentNumber = collection.contentCollections.length;
+      const userId = collection.userId;
 
       return {
         id,
         title,
         desc,
         coverImage,
+        userId,
         bookmarkCount,
         webContentNumber,
       };

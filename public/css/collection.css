@@ -10,6 +10,7 @@
   padding: 5px 20px;
   width: max-content;
 }
+
 /* 위 오 아 왼 */
 .collection-list-upper > button {
   margin: 20px 60px 20px auto;
@@ -17,13 +18,20 @@
   border-radius: 10px;
   background-color: #ccbeff;
   padding: 0 10px;
-  color: #7b68ee;
 }
 
 .collections_container {
   width: 960px;
   height: auto;
-  margin: auto;
+  margin: 0px auto 40px auto;
+}
+
+.collections_container > h1 {
+  font-size: larger;
+  width: max-content;
+  height: max-content;
+  margin: 200px auto;
+  text-align: center;
 }
 
 .collection {
@@ -37,7 +45,7 @@
 .collection_upper {
   margin: 0 auto;
 }
-.collection_upper > img {
+.collection_upper > a > img {
   width: 100%;
   max-height: 300px;
   object-fit: cover;
@@ -49,14 +57,12 @@
   text-align: right;
   padding-right: 40px;
 }
-.collection_info > ul > li {
-  margin-left: 40px;
+.collection_info > ul {
+  margin: auto 5%;
 }
 .collection_btn_group {
-  width: fit-content;
-  position: absolute;
-  margin-right: 40px;
-  margin-left: 80%;
+  width: max-content;
+  margin: auto 5% auto auto;
 }
 .collection_btn_group > button {
   width: max-content;

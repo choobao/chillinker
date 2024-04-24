@@ -208,11 +208,11 @@ export class ReviewService {
   }
 
   async calculateScore(webContentId: number) {
-    let getRate = await this.webContentRepository.findOne({
+    const getRate = await this.webContentRepository.findOne({
       where: { id: webContentId },
     });
 
-    let totalUser = await this.chillinkerReviewsRepository.count({
+    const totalUser = await this.chillinkerReviewsRepository.count({
       where: { webContentId },
     });
 
