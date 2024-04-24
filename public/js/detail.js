@@ -80,6 +80,8 @@ $(document).ready(function () {
       url: `/collections/${collectionId}/content/${contentId}`,
       success: function (datas) {
         alert(`작품이 추가되었습니다!`);
+        $('#modal').hide();
+        $('#collection-modal').hide();
       },
       error: function (response) {
         alert(response.responseJSON.message);
