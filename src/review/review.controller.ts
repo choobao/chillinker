@@ -14,6 +14,7 @@ import {
   Render,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateCReviewsDto } from './dto/review.create.dto';
@@ -24,8 +25,10 @@ import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('REVIEW')
+@UseInterceptors(ErrorInterceptor)
 @Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
