@@ -15,6 +15,7 @@ import { RedisModule } from './redis/redis.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { StorageModule } from './storage/storage.module';
 import { LikeModule } from './like/like.module';
+import { SseModule } from './sse/sse.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -62,6 +63,7 @@ const typeOrmModuleOptions = {
     CrawlerModule,
     LikeModule,
     StorageModule,
+    SseModule,
   ],
   controllers: [ReviewController],
   providers: [],

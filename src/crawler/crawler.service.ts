@@ -202,7 +202,7 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('0 5 * * *')
+  @Cron('26 19 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
@@ -237,7 +237,7 @@ export class CrawlerService {
 
       let begin_time = new Date().getTime();
       console.log('네이버 크롤링 시작');
-      let naverData = await this.createNaverSeries(
+      const naverData = await this.createNaverSeries(
         naverCurrNumWebnovel,
         naverCurrNumWebtoon,
         50,
@@ -251,7 +251,7 @@ export class CrawlerService {
       begin_time = new Date().getTime();
       console.log('카카오 크롤링 시작');
 
-      let kakaoData = await this.createKakaopages(
+      const kakaoData = await this.createKakaopages(
         kakaoCurrPageWebnovel,
         kakaoCurrPageWebtoon,
       );
@@ -264,7 +264,7 @@ export class CrawlerService {
       begin_time = new Date().getTime();
       console.log('리디북스 크롤링 시작');
 
-      let ridiData = await this.createRidibooks(
+      const ridiData = await this.createRidibooks(
         ridiCurrRnovels,
         ridiCurrRFnovels,
         ridiCurrFnovels,
@@ -280,7 +280,7 @@ export class CrawlerService {
       console.log('미스터 블루 작업 시작.');
       begin_time = new Date().getTime();
 
-      let mrblueData = await this.createMrblue(
+      const mrblueData = await this.createMrblue(
         mbWebnovelCurPage,
         mbWebnovelMaxPage,
         mbWebtoonCurPage,

@@ -75,7 +75,7 @@ export class LikeService {
 
   async findContents(userId: number, sortType: string) {
     try {
-      let orderMethod = this.orderType[sortType];
+      const orderMethod = this.orderType[sortType];
 
       let likes;
       if (sortType === 'NEW' || sortType === 'OLD') {

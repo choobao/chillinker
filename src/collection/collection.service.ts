@@ -13,6 +13,8 @@ import { CreateColDto } from './dto/createCol.dto';
 import { UpdateColDto } from './dto/updateCol.dto';
 
 import { StorageService } from '../storage/storage.service';
+import { result } from 'lodash';
+import { Users } from '../user/entities/user.entity';
 
 @Injectable()
 export class CollectionService {
@@ -23,23 +25,101 @@ export class CollectionService {
     private webContentRepository: Repository<WebContents>,
     @InjectRepository(ContentCollection)
     private contentCollectionRepository: Repository<ContentCollection>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
 
     private readonly storageService: StorageService,
   ) {}
 
+  async getTitles(collectionId: number) {
+    const data = await this.getMyCol(collectionId);
+    return data.contentCollections.map((contentCol) => {
+      return {
+        title: contentCol.webContent.title,
+        id: contentCol.webContent.id,
+      };
+    });
+  }
+
   // 내 컬렉션 목록 조회
   async getMyColList(userId: number) {
-    return await this.colRepository.find({
+    const collections = await this.colRepository.find({
       where: { userId },
-      select: ['id', 'title', 'desc'],
+      relations: [
+        'contentCollections',
+        'contentCollections.webContent',
+        'collectionBookmarks',
+      ],
+      select: [
+        'id',
+        'title',
+        'desc',
+        'coverImage',
+        'bookmarkCount',
+        'contentCollections',
+      ],
+    });
+    return collections.map((collection) => {
+      const id = collection.id;
+      const title = collection.title;
+      const desc = collection.desc;
+      const coverImage = collection.coverImage;
+      const bookmarkCount = collection.collectionBookmarks.length;
+      const webContents = collection.contentCollections.map(
+        (contentCollection) => {
+          const webContentId = contentCollection.webContentId;
+          const webContentTitle = contentCollection.webContent.title;
+          return { webContentId, webContentTitle };
+        },
+      );
+
+      return {
+        id,
+        title,
+        desc,
+        coverImage,
+        bookmarkCount,
+        webContents,
+      };
     });
   }
 
   // 타 유저 컬렉션 목록 조회
-  async getUserColList(userId: number): Promise<Collections[]> {
-    return await this.colRepository.find({
+  async getUserColList(userId: number) {
+    const existUser = await this.userRepository.findOneBy({ id: userId });
+    if (!existUser)
+      throw new NotFoundException('해당 유저를 찾을 수 없습니다.');
+    const collections = await this.colRepository.find({
       where: { userId },
-      select: ['id', 'title', 'desc'],
+      relations: ['contentCollections', 'collectionBookmarks'],
+      select: [
+        'id',
+        'title',
+        'desc',
+        'coverImage',
+        'bookmarkCount',
+        'userId',
+        'contentCollections',
+      ],
+    });
+    return collections.map((collection) => {
+      const id = collection.id;
+      const title = collection.title;
+      const desc = collection.desc;
+      const coverImage = collection.coverImage;
+      const bookmarkCount = collection.collectionBookmarks.length;
+      const webContentNumber = collection.contentCollections.length;
+      const userId = collection.userId;
+
+      return {
+        id,
+        title,
+        desc,
+        coverImage,
+        userId,
+        bookmarkCount,
+        webContentNumber,
+      };
     });
   }
 
@@ -54,6 +134,11 @@ export class CollectionService {
       .createQueryBuilder('collections')
       .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
       .leftJoinAndSelect('contentCollection.webContent', 'webContent')
+      .leftJoinAndSelect('collections.user', 'user')
+      .leftJoinAndSelect(
+        'collections.collectionBookmarks',
+        'collectionBooknmarks',
+      )
       .where('collections.id = :id', { id: collectionId })
       .getOne();
   }
@@ -93,6 +178,7 @@ export class CollectionService {
 
   // 컬렉션 수정 _컬렉션 정보 수정
   async updateCol(
+    file: Express.Multer.File,
     collectionId: number,
     updateColDto: UpdateColDto,
   ): Promise<Collections> {
@@ -102,7 +188,12 @@ export class CollectionService {
     if (!collection) {
       throw new NotFoundException('컬렉션이 존재하지 않습니다.');
     }
-
+    let coverImage: string = collection.coverImage || null;
+    if (file) {
+      // 이미지 업로드
+      coverImage = await this.storageService.upload(file);
+    }
+    collection.coverImage = coverImage;
     collection.title = updateColDto.title;
     collection.desc = updateColDto.desc;
 

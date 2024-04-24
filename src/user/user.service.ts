@@ -31,7 +31,7 @@ export class UserService {
   ) {}
 
   async register(file: Express.Multer.File, createUserDto: CreateUserDto) {
-    const { email, password, nickname, intro } = createUserDto;
+    const { email, password, nickname, intro, birthDate } = createUserDto;
 
     const existingtUser = await this.findUserByEmail(email);
     if (existingtUser) {
@@ -54,6 +54,7 @@ export class UserService {
       nickname,
       intro,
       profileImage,
+      birthDate,
     });
 
     return { message: '회원가입되었습니다. 로그인해주세요!' };
@@ -98,7 +99,10 @@ export class UserService {
   }
 
   async getUserInfoById(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['followings', 'followers'],
+    });
 
     if (!user) {
       throw new NotFoundException('해당회원을 찾을 수 없습니다.');
@@ -111,7 +115,7 @@ export class UserService {
     id: number,
     updateUserDto: UpdateUserDto,
   ) {
-    const { nickname, intro, password } = updateUserDto;
+    const { nickname, intro, password, birthDate } = updateUserDto;
 
     if (!nickname && !intro) {
       throw new BadRequestException('수정할 것을 입력해주세요.');
@@ -119,7 +123,7 @@ export class UserService {
 
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['profileImage', 'password'],
+      select: ['profileImage', 'password', 'birthDate'],
     });
 
     if (!(await compare(password, user.password))) {
@@ -139,6 +143,7 @@ export class UserService {
       nickname,
       intro,
       profileImage,
+      birthDate,
     });
   }
 

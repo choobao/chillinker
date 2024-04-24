@@ -12,6 +12,7 @@ import {
   Post,
   Query,
   Render,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
@@ -22,16 +23,19 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
 @ApiTags('REVIEW')
-@Controller('books/:webContentsId')
+@Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
+  @UseGuards(OptionalAuthGuard)
   @Render('detailContent')
-  @Get()
+  @Get('books/:webContentsId')
   async getCReivew(
+    @Req() req,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
@@ -39,6 +43,7 @@ export class ReviewController {
   ) {
     const result = await this.reviewService.getCReviews(
       webContentsId,
+      req.user,
       page,
       order,
       option,
@@ -51,7 +56,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:reviewId/likes')
+  @Post('books/:webContentsId/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
@@ -60,20 +65,8 @@ export class ReviewController {
     return await this.reviewService.likeReview(user, reviewId);
   }
 
-  @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  @Render('reviewed_list.ejs')
-  @Get('reviewedTitles/:userId')
-  async getTitlesWithReviews(@Param('userId') userId: number) {
-    const reviews = await this.reviewService.getTitlesWithReviews(userId);
-
-    const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
-      return new ReviewSummaryDto(review.image, review.title, review.rate);
-    });
-
-    return { reviewedWorks: reviewSummaries };
-  }
-
   // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  // @Render('reviewed_list.ejs')
   // @Get('reviewedTitles/:userId')
   // async getTitlesWithReviews(@Param('userId') userId: number) {
   //   const reviews = await this.reviewService.getTitlesWithReviews(userId);
@@ -85,9 +78,28 @@ export class ReviewController {
   //   return { reviewedWorks: reviewSummaries };
   // }
 
+  @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
+  @UseGuards(AuthGuard('jwt'))
+  @Render('reviewed_list')
+  @Get('reviewedTitles')
+  async getTitlesWithReviews(@UserInfo() user: Users) {
+    const reviews = await this.reviewService.getTitlesWithReviews(user.id);
+
+    const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
+      return new ReviewSummaryDto(
+        review.image,
+        review.title,
+        review.rate,
+        review.id,
+      );
+    });
+
+    return { reviewedWorks: reviewSummaries };
+  }
+
   @ApiOperation({ summary: '리뷰 작성' })
   @UseGuards(AuthGuard('jwt'))
-  @Post()
+  @Post('books/:webContentsId')
   async createReview(
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @UserInfo() user: Users,
@@ -103,7 +115,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 수정' })
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/:reviewId')
+  @Patch('books/:webContentsId/:reviewId')
   async modifyReview(
     @UserInfo() user: Users,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
@@ -120,7 +132,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 삭제' })
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/:reviewId')
+  @Delete('books/:webContentsId/:reviewId')
   @HttpCode(204)
   async deleteReview(
     @UserInfo() user: Users,

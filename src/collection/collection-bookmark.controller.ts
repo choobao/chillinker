@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Render,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,10 +23,12 @@ export class CollectionBookmarkController {
   @ApiOperation({ summary: '컬렉션 북마크 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
   @Get('/')
+  @Render('collection/my_bookmark_collection_list')
   async getBookmarkCollections(@UserInfo() user: Users) {
+    const userId = user.id;
     const myBookmarkList =
-      await this.collectionBookmarkService.getBookmarkColList(user.id);
-    return myBookmarkList;
+      await this.collectionBookmarkService.getBookmarkColList(userId);
+    return { myBookmarkList, user };
   }
 
   @ApiOperation({ summary: '컬렉션 북마크 추가' })

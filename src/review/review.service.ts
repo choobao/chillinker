@@ -16,6 +16,8 @@ import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
+import { SseService } from 'src/sse/sse.service';
+import _ from 'lodash';
 
 @Injectable()
 export class ReviewService {
@@ -31,10 +33,22 @@ export class ReviewService {
     @InjectRepository(WebContents)
     private readonly webContentRepository: Repository<WebContents>,
     private readonly dataSource: DataSource,
+    private readonly sseService: SseService,
   ) {}
+
+  isOver19(birthDate: Date) {
+    const today = new Date();
+    const date19YearsAgo = new Date(
+      today.getFullYear() - 19,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return birthDate <= date19YearsAgo;
+  }
 
   async getCReviews(
     webContentId: number,
+    user,
     page?: number,
     order?: string,
     option?: string,
@@ -47,6 +61,16 @@ export class ReviewService {
 
     if (!content) {
       throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
+    }
+
+    if (
+      content.isAdult &&
+      (user === false ||
+        _.isNil(user) ||
+        _.isNil(user.birthDate) ||
+        !this.isOver19(new Date(user.birthDate)))
+    ) {
+      throw new UnauthorizedException('19세 이상만 이용가능한 작품입니다.');
     }
 
     if (option == 'c') {
@@ -63,7 +87,7 @@ export class ReviewService {
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
-          .select(['review', 'user.nickname', 'user.profileImage']) // "review"와 "user.nickname" 선택
+          .select(['review', 'user.nickname', 'user.profileImage', 'user.id']) // "review"와 "user.nickname" 선택
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
           .orderBy('review.createdAt', 'DESC') // 정렬 조건
           .take(take)
@@ -84,7 +108,7 @@ export class ReviewService {
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
           .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
-          .select(['review', 'user.nickname', 'user.profileImage'])
+          .select(['review', 'user.nickname', 'user.profileImage', 'user.id'])
           .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
           .orderBy('review.likeCount', 'DESC') // 정렬 조건
           .take(take)
@@ -158,7 +182,12 @@ export class ReviewService {
     const reviews = await this.chillinkerReviewsRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.webContent', 'webContent')
-      .select(['webContent.image', 'webContent.title', 'review.rate'])
+      .select([
+        'webContent.image',
+        'webContent.title',
+        'review.rate',
+        'webContent.id',
+      ])
       .where('review.userId = :userId', { userId })
       .getRawMany();
 
@@ -167,6 +196,7 @@ export class ReviewService {
       image: review.webContent_image,
       title: review.webContent_title,
       rate: review.review_rate,
+      id: review.webContent_id,
     }));
 
     return reviewSummaries;
@@ -178,11 +208,11 @@ export class ReviewService {
   }
 
   async calculateScore(webContentId: number) {
-    let getRate = await this.webContentRepository.findOne({
+    const getRate = await this.webContentRepository.findOne({
       where: { id: webContentId },
     });
 
-    let totalUser = await this.chillinkerReviewsRepository.count({
+    const totalUser = await this.chillinkerReviewsRepository.count({
       where: { webContentId },
     });
 
@@ -315,8 +345,6 @@ export class ReviewService {
       where: { id: reviewId },
     });
 
-    console.log(findReview);
-
     if (!findReview) {
       throw new NotFoundException('해당 리뷰를 찾을 수 없습니다.');
     }
@@ -338,8 +366,6 @@ export class ReviewService {
         },
       });
 
-      console.log(like);
-
       if (!like) {
         await this.reviewLikesRepository.save({
           userId: userId,
@@ -357,6 +383,31 @@ export class ReviewService {
       }
       await this.chillinkerReviewsRepository.save(findReview);
 
+      //테스트용
+      this.sseEvent(
+        findReview.webContentId,
+        findReview.userId,
+        findReview.likeCount,
+      );
+
+      if (findReview.likeCount <= 100) {
+        if (findReview.likeCount % 20 == 0) {
+          this.sseEvent(
+            findReview.webContentId,
+            findReview.userId,
+            findReview.likeCount,
+          );
+        }
+      } else {
+        if (findReview.likeCount % 50 == 0) {
+          this.sseEvent(
+            findReview.webContentId,
+            findReview.userId,
+            findReview.likeCount,
+          );
+        }
+      }
+
       await queryRunner.commitTransaction();
 
       return like
@@ -369,5 +420,16 @@ export class ReviewService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async sseEvent(webContentId: number, userId: number, likeCount: number) {
+    const webContent = await this.webContentRepository.findOne({
+      where: { id: webContentId },
+    });
+    this.sseService.emitReviewLikeCountEvent(
+      webContent.title,
+      userId,
+      likeCount,
+    );
   }
 }

@@ -27,14 +27,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% naverWebtoons.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                       
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -51,14 +52,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% naverWebnovels.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -75,14 +77,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% kakaoWebtoons.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                   
                       </div>
                     <% }); %>
                   </div>
@@ -99,14 +102,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% kakaoWebnovels.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -123,14 +127,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% ridiWebtoons.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -147,14 +152,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% ridiWebnovels.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -171,14 +177,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% mrblueWebtoons.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                     
                       </div>
                     <% }); %>
                   </div>
@@ -195,14 +202,15 @@
                 <div class="slider">
                   <div class="contents_box">
                     <% mrblueWebnovels.forEach((item) => { %>
-                      <div class="contents">
-                        <a href="/books/<%= item.id %>">
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                      
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title">제목: <%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      </a>
+                      
                       </div>
                     <% }); %>
                   </div>
@@ -216,5 +224,6 @@
       </main>
       <%- include('footer.ejs') %>
     </div>
+    <script src="/js/adult_blind.js"></script>
   </body>
 </html>
