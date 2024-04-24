@@ -16,8 +16,6 @@ import { CrawlerModule } from './crawler/crawler.module';
 import { StorageModule } from './storage/storage.module';
 import { LikeModule } from './like/like.module';
 import { SseModule } from './sse/sse.module';
-import { CacheModule, CacheModuleAsyncOptions } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -38,19 +36,6 @@ const typeOrmModuleOptions = {
   inject: [ConfigService],
 };
 
-const cacheModuleOptions: CacheModuleAsyncOptions = {
-  imports: [ConfigModule],
-  inject: [ConfigService],
-  useFactory: async (configService: ConfigService) => ({
-    store: redisStore,
-    host: configService.get<string>('REDIS_HOST'),
-    port: configService.get<number>('REDIS_PORT'),
-    username: configService.get<string>('REDIS_USERNAME'),
-    password: configService.get<string>('REDIS_PASSWORD'),
-    no_ready_check: true,
-  }),
-};
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -67,7 +52,7 @@ const cacheModuleOptions: CacheModuleAsyncOptions = {
       // }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-    CacheModule.registerAsync({ isGlobal: true, ...cacheModuleOptions }),
+
     AuthModule,
     UserModule,
     FollowModule,

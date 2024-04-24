@@ -26,13 +26,10 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('REVIEW')
 // @UseInterceptors(ErrorInterceptor)
 @Controller()
-@UseInterceptors(CacheInterceptor)
-@CacheTTL(30)
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 

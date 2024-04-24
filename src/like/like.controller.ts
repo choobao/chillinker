@@ -15,12 +15,10 @@ import { Users } from '../user/entities/user.entity';
 import _ from 'lodash';
 import { LikeService } from './like.service';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('LIKE')
 @Controller()
-@UseInterceptors(ErrorInterceptor, CacheInterceptor)
-@CacheTTL(30)
+@UseInterceptors(ErrorInterceptor)
 @UseGuards(AuthGuard('jwt'))
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
