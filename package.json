@@ -21,6 +21,7 @@
     "build:css": "npx tailwindcss public/css/input.css -o public/css/output.css --watch"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.13.1",
     "@google-cloud/storage": "^7.9.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.1",
