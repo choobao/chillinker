@@ -19,6 +19,7 @@
     />
   </head>
   <body>
+    <div class="wrap">
     <%- include('../header.ejs') %>
     <main>
       <div class="collection-list-upper">
@@ -58,8 +59,8 @@
           </div>
         </div>
         <% }) %>
-      </div>
     </main>
+  </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       var removebookmarkBtn = document.querySelectorAll('.remove_bookmark_btn')
@@ -85,4 +86,5 @@
       })
     </script>
     <%- include('../footer.ejs') %>
+  </div>
   </body>

@@ -417,13 +417,6 @@ input[type='checkbox'] {
   text-align: center;
 }
 
-body {
-  /* min-height: 100vh; */
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-}
-
 /* mypage */
 .profile-btn {
   width: 200px;
