@@ -12,7 +12,7 @@ $(document).ready(function () {
       contentType: false,
       success: function (data) {
         alert('Welcome to Chillinker!');
-        window.location.href = '/main';
+        window.location.href = '/users/login';
       },
       error: function (response) {
         alert(response.responseJSON.message);

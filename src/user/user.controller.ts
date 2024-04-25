@@ -29,8 +29,10 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Users } from './entities/user.entity';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('USER')
+@UseInterceptors(ErrorInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

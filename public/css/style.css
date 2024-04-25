@@ -147,7 +147,7 @@ header {
   display: flex;
   align-items: center;
 }
-.inner_header img {
+.inner_header .logo_image {
   margin-right: 10px;
   width: 50px;
   height: 50px;
@@ -156,17 +156,22 @@ header {
   max-height: 50px;
 }
 .inner_header h1 {
-  font-size: 40px;
+  /* font-size: 40px;
   font-family: 'Sriracha', cursive;
   color: #7b62cc;
-  font-weight: 400;
-  padding: 10px 0;
+  font-weight: 400; */
+  /* padding: 10px 0; */
+  width: 150px;
 }
 .inner_header h1 a {
   display: block;
+  margin-top: 10px;
 }
 .inner_header h1 a:hover {
-  color: #6a5acd;
+  /* color: #6a5acd; */
+}
+
+.inner_header h1 a .logo_text {
 }
 
 .inner_header .header_right {
@@ -922,4 +927,10 @@ textarea#intro {
   color: #808991;
   font-size: 12px;
   line-height: 16px;
+}
+
+.selected {
+  background-color: #6a5acd; /* 선택된 요소의 배경색 */
+  color: #fff; /* 선택된 요소의 글자색 */
+  border-radius: 4px;
 }

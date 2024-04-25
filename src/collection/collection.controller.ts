@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Render,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +22,7 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
 // import { Collections } from './entities/collections.entity';
 
@@ -50,12 +52,12 @@ export class CollectionController {
     return myCol;
   }
 
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({ summary: '컬렉션 상세 조회' })
   @Get('/info/:collectionId')
   @Render('collection/collection_detail')
-  async myCollection(@Param('collectionId') collectionId: number) {
-    const collection = await this.collectionService.getMyCol(collectionId);
-    return { collection };
+  async myCollection(@Param('collectionId') collectionId: number, @Req() req) {
+    return await this.collectionService.getMyColBlind(collectionId, req.user);
   }
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })

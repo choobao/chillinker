@@ -9,14 +9,17 @@ import {
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Users } from '../user/entities/user.entity';
 import { UserInfo } from '../utils/userinfo.decorator';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('FOLLOWS')
+@UseInterceptors(ErrorInterceptor)
 @Controller()
 export class FollowController {
   constructor(private followService: FollowService) {}

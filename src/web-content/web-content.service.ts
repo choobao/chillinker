@@ -139,6 +139,7 @@ export class WebContentService {
         keyword: `%${keyword}%`,
       })
       .getMany();
+
     webContents = this.blindAdultImage(user, webContents);
 
     const webnovels = webContents.filter(
