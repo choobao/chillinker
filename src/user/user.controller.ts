@@ -37,7 +37,6 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '회원가입' })
-  @Render('register')
   @UseInterceptors(FileInterceptor('profileImage'))
   @Post('register')
   @HttpCode(201)
