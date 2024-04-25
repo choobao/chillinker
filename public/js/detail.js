@@ -22,6 +22,22 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+const spoilerBtns = document.querySelectorAll('.alert_detail_link');
+const myReview = document.getElementById(`review-wrapper`);
+
+window.addEventListener('load', function () {
+  spoilerBtns.forEach(function (spoilerBtn) {
+    const index = spoilerBtn.id.split('-')[1];
+    const spoilerBlind = document.getElementById(`alert_article-${index}`);
+
+    // 스포일러 버튼이 존재하는 경우
+    if (spoilerBlind && !myReview) {
+      // 스포일러 버튼의 스타일에 position을 absolute로 설정합니다.
+      spoilerBlind.style.position = 'absolute';
+    }
+  });
+});
+
 $(document).ready(function () {
   $('#collection-btn').click(function () {
     $('#modal').show();
@@ -90,6 +106,17 @@ $(document).ready(function () {
   });
 });
 
+spoilerBtns.forEach(function (spoilerBtn) {
+  spoilerBtn.addEventListener('click', function () {
+    const index = this.id.split('-')[1];
+    const spoilerBlind = document.getElementById(`alert_article-${index}`);
+    const reviewWrap = document.getElementById(`review-wrapper-${index}`);
+
+    spoilerBlind.style.display = 'none';
+    reviewWrap.style.display = 'block';
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   var url = window.location.href;
   var idUrl = url.split('?')[0];
@@ -103,8 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
     likeButton.addEventListener('click', function () {
       const index = this.id.split('-')[1];
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      console.log(reviewId);
 
       $.ajax({
         type: 'Post',
@@ -145,8 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
       isSpoiler: $('input[name="editIsSpoiler"]').is(':checked'), // isSpoiler 불리언 값 변환은 그대로 유지
     };
 
-    console.log(formData);
-
     $.ajax({
       type: 'Patch',
       url: `${idUrl}/${reviewId}`,
@@ -179,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const spoilerBtns = document.querySelectorAll('.alert_detail_link');
   const reviewWraps = document.querySelectorAll('.review-wrapper');
   const spiolerBlinds = document.querySelectorAll('.alert_article');
 
@@ -195,23 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  spoilerBtns.forEach(function (spoilerBtn) {
-    spoilerBtn.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const spoilerBlind = document.getElementById(`alert_article-${index}`);
-      const reviewWrap = document.getElementById(`review-wrapper-${index}`);
-
-      spoilerBlind.style.display = 'none';
-      reviewWrap.style.display = 'block';
-    });
-  });
-
   likeButtons.forEach(function (likeButton) {
     likeButton.addEventListener('click', function () {
       const index = this.id.split('-')[1];
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      console.log(reviewId);
 
       $.ajax({
         type: 'Post',
@@ -273,31 +282,3 @@ $('#like-btn').click(function () {
     },
   });
 });
-
-// function getCollectionTitles(userId) {
-//   $('#modal').show();
-//   $('#collection-modal').show();
-
-//   console.log('유저:', userId);
-
-//   $.ajax({
-//     type: 'GET',
-//     url: `/collections/title/${userId}`,
-//     success: function (data) {
-//       console.log(data);
-
-//       let editCollection = `
-//     <label for="title">컬렉션 제목</label>
-//     <input type="text" name="title" id="title" value="${data.title}" />
-//     <br />
-//     <div class="btn_area">
-//       <input type="submit" value="완료"/>
-//     </div>`;
-//       // 컬렉션 모달 내용 변경
-//       $('.collection_modal').html(editCollection);
-//     },
-//     error: function (response) {
-//       alert(response.responseJSON.message);
-//     },
-//   });
-// }
