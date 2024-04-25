@@ -684,7 +684,7 @@ textarea#intro {
   margin: 0;
   padding: 0;
   display: inline-block;
-  margin-right: 13px;
+  /* margin-right: 13px; */
 }
 
 .show_review {

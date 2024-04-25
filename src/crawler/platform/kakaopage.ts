@@ -34,7 +34,7 @@ class KakaopageAxios {
               page: 0,
             },
           },
-        },
+        }, 
       });
       return data.data.staticLandingRankingSection.groups[0].items;
     } catch (err) {
@@ -180,6 +180,7 @@ class KakaopageAxios {
         content: comment.comment,
         likeCount: comment.likeCount,
         createDate: comment.createDt,
+        isSpoiler: comment.isSpoiler === false ? 0 : 1,
       }));
       return reviews;
     } catch (err) {
