@@ -480,9 +480,10 @@ textarea#intro {
 }
 
 .result_list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 18% 18% 18% 18% 18%;
   justify-content: center;
+  margin-bottom: 40px;
 }
 
 .bonenjung-wrap {
