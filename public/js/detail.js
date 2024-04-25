@@ -69,20 +69,39 @@ $(document).ready(function () {
       success: function (datas) {
         let editCollections = '';
 
-        datas.forEach(function (data) {
-          let editCollection = `
-          <div class='col-title' id='col_title-${data.id}'>
-            <label class='col-title-list' for="title-${data.id}">${data.title}</label>
-            <br />
-            <div class="btn_area">
-              <button type="button" class="preference-button col-add-btn">
-                추가
-              </button>
+        if (datas.length === 0) {
+          // 데이터가 없는 경우 "내 컬렉션이 없습니다" 텍스트를 표시합니다.
+          editCollections = `
+          <div class='new-col'>
+            <div class='new-col-title'>
+              <p>내 컬렉션이 없습니다. 새로운 컬렉션을 만들어보세요!</p>
             </div>
+            <div class="btn_area">
+            <a href="/collections">
+            <button type="button" class="new-col-btn">
+              만들러가기
+            </button></a>
+          </div>
           </div>
           `;
-          editCollections += editCollection;
-        });
+        } else {
+          // 데이터가 있는 경우 컬렉션을 표시합니다.
+          datas.forEach(function (data) {
+            let editCollection = `
+              <div class='col-title' id='col_title-${data.id}'>
+                <label class='col-title-list' for="title-${data.id}">${data.title}</label>
+                <br />
+                <div class="btn_area">
+                  <button type="button" class="preference-button col-add-btn">
+                    추가
+                  </button>
+                </div>
+              </div>
+            `;
+            editCollections += editCollection;
+          });
+        }
+
         $('.modal_content').html(editCollections);
       },
       error: function (response) {

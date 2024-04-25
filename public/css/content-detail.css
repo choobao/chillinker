@@ -118,6 +118,36 @@
   line-height: 1.5em;
 }
 
+.new-col {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-col-title {
+  margin: 0 0 20px;
+}
+
+.new-col-btn {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 100px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
+}
+
 .col-title {
   display: flex;
   align-items: center;
