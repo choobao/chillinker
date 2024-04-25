@@ -326,8 +326,14 @@ textarea#intro {
 }
 
 .review-input-right {
-  display: table-cell;
-  vertical-align: top;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.mb-3 {
+  width: 900px;
+  padding: 10px;
 }
 
 .detail-keyword {
@@ -530,11 +536,6 @@ textarea#intro {
   padding: 32px 0 20px 0;
   text-align: center;
   cursor: default;
-}
-
-.review-input-right {
-  display: table-cell;
-  vertical-align: top;
 }
 
 .review_input_textarea {
