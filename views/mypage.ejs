@@ -64,13 +64,16 @@
             src="<%= user.profileImage %>"
             alt="프로필사진"
             onerror="this.src='/logo_image/chillinker_logo(1).png'"
-            class="profile-update-img" />
+            class="profile-update-img"
+            id="preview-img"
+          />
           <input
             type="file"
             id="profile-update-img-input"
             name="profileImage"
             accept="image/*"
-            style="display: none" /></label
+            style="display: none"
+          /> </label
         ><br />
         <label for="nickname">닉네임:</label>
         <input
@@ -113,6 +116,5 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mypage-update.js"></script>
   <!-- <script src="/js/sse.js"></script> -->
-
   <%- include('footer.ejs') %>
 </body>
