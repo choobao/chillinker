@@ -160,7 +160,8 @@ export class CollectionController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/title/:userId')
-  async getMyColsTitle(@Param('userId') userId: number) {
+  async getMyColsTitle(@UserInfo() user: Users) {
+    const userId = user.id;
     return await this.collectionService.getMyColsTitle(userId);
   }
 }

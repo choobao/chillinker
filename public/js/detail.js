@@ -39,14 +39,22 @@ window.addEventListener('load', function () {
 });
 
 $(document).ready(function () {
-  $('#collection-btn').click(function () {
-    $('#modal').show();
-    $('#collection-modal').show();
+  var userId = document.getElementById('userId').textContent;
+  var contentId = document.getElementById('contentId').textContent;
 
-    $('.close').click(function () {
-      $('#modal').hide();
-      $('#collection-modal').hide();
-    });
+  $('#collection-btn').click(function () {
+    if (!userId) {
+      alert('로그인이 필요한 서비스입니다!');
+      return;
+    } else {
+      $('#modal').show();
+      $('#collection-modal').show();
+
+      $('.close').click(function () {
+        $('#modal').hide();
+        $('#collection-modal').hide();
+      });
+    }
 
     window.onclick = function (event) {
       if (event.target == modal) {
@@ -54,9 +62,6 @@ $(document).ready(function () {
         window.onclick = null;
       }
     };
-
-    var userId = document.getElementById('userId').textContent;
-    var contentId = document.getElementById('contentId').textContent;
 
     $.ajax({
       type: 'GET',

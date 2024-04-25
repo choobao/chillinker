@@ -417,7 +417,7 @@ textarea#intro {
   cursor: pointer;
   line-height: 1em;
   vertical-align: baseline;
-  width: 45px;
+  width: 100px;
   padding: 12px 0;
   /* border: 2px solid #000; */
   border-radius: 7px;
