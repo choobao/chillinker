@@ -37,3 +37,10 @@
 .content .bottom_box .title {
   font-size: 20px;
 }
+
+.empty_contents {
+  font-size: 36px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 150px;
+}

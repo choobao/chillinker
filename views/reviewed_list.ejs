@@ -40,6 +40,7 @@
             </ul>
           </div> -->
           <div class="contents_container">
+            <% if (reviewedWorks.length > 0) { %>
             <% reviewedWorks.forEach(review => { %>
             <div class="content" >
 
@@ -57,7 +58,9 @@
             </div>
           
             <% }); %>
-         
+            <% } else { %>
+              <p class="empty_contents">작성된 리뷰가 존재하지 않습니다.</p>
+            <% } %>
           </div>
         </div>
       </main>
