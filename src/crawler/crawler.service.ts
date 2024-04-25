@@ -202,37 +202,37 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('37 15 * * *')
+  @Cron('13 14 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
 
       const naverCurrNumWebnovel =
-        +(await this.redisService.getValue('naver_webnovel')) || 0;
+        +(await this.redisService.getValue('naver_webnovel')) || 50; //0
       const naverCurrNumWebtoon =
-        +(await this.redisService.getValue('naver_webtoon')) || 0;
+        +(await this.redisService.getValue('naver_webtoon')) || 50;
 
       const kakaoCurrPageWebnovel =
-        +(await this.redisService.getValue('kakao_webnovel')) || 0;
+        +(await this.redisService.getValue('kakao_webnovel')) || 4; // 0
       const kakaoCurrPageWebtoon =
-        +(await this.redisService.getValue('kakao_webtoon')) || 0;
+        +(await this.redisService.getValue('kakao_webtoon')) || 4;
 
       const ridiCurrRnovels =
-        +(await this.redisService.getValue('ridi_curr1650')) || 1;
+        +(await this.redisService.getValue('ridi_curr1650')) || 2; //1
       const ridiCurrRFnovels =
-        +(await this.redisService.getValue('ridi_curr6050')) || 1;
+        +(await this.redisService.getValue('ridi_curr6050')) || 2;
       const ridiCurrFnovels =
-        +(await this.redisService.getValue('ridi_curr1750')) || 1;
+        +(await this.redisService.getValue('ridi_curr1750')) || 2;
       const ridiCurrBnovels =
-        +(await this.redisService.getValue('ridi_curr4150')) || 1;
+        +(await this.redisService.getValue('ridi_curr4150')) || 2;
       const ridiCurrWebtoons =
-        +(await this.redisService.getValue('ridi_curr1600')) || 1;
+        +(await this.redisService.getValue('ridi_curr1600')) || 2;
 
       const mbWebnovelCurPage =
-        +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
+        +(await this.redisService.getValue('mrblueWebnovelCur')) || 2; //1
       const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
       const mbWebtoonCurPage =
-        +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
+        +(await this.redisService.getValue('mrblueWebtoonCur')) || 2;
       const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
 
       let begin_time = new Date().getTime();
@@ -358,8 +358,6 @@ export class CrawlerService {
                   .where('id = :id', { id: contentId })
                   .execute();
 
-                
-
                 console.log(
                   '이미 플랫폼 정보가 DB에 존재해서 랭크만 업데이트시켜주면 되는 경우',
                 );
@@ -448,7 +446,6 @@ export class CrawlerService {
         throw err;
       } finally {
         await queryRunner.release();
-
       }
 
       // redis 업데이트

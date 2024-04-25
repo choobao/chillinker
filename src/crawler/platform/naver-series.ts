@@ -459,7 +459,7 @@ export class NaverSeriesPuppeteer {
           isAdult,
           rank,
           contentType,
-          platform: { naver: url },
+          platform: { naver: url.replace('https://m.', 'https://') },
           keyword: [category],
         };
 
