@@ -94,29 +94,3 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.readAsDataURL(file); // 파일의 내용을 읽어 Data URL 형식의 문자열로 반환
   });
 });
-
-// document
-//   .getElementById('profile-update-img-input')
-//   .addEventListener('change', function (event) {
-//     const file = event.target.files[0]; // 선택된 파일을 가져옵니다.
-
-//     if (file) {
-//       const reader = new FileReader(); // FileReader 인스턴스를 생성합니다.
-
-//       reader.onload = function (e) {
-//         // 파일이 성공적으로 읽혔을 때 실행될 이벤트 핸들러를 설정합니다.
-//         const img = new Image(); // 새로운 이미지 객체를 생성합니다.
-//         img.src = e.target.result; // 읽은 파일의 결과(데이터 URL)를 이미지 소스로 설정합니다.
-//         console.log(img);
-//         img.alt = '선택된 이미지'; // 접근성을 위한 대체 텍스트를 설정합니다.
-
-//         // 이미지를 미리보기 div에 추가합니다.
-//         const preview = document.getElementById('preview-img');
-//         preview.innerHTML = ''; // 기존에 있던 내용을 지웁니다.
-//         preview.appendChild(img); // 새로운 이미지를 추가합니다.
-
-//       };
-
-//       reader.readAsDataURL(file); // 선택된 파일을 읽어 데이터 URL로 반환합니다.
-//     }
-//   });
