@@ -95,25 +95,65 @@ document.addEventListener('DOMContentLoaded', function () {
   var idUrl = url.split('?')[0];
 
   //전체 선택
-  const editButtons = document.querySelectorAll('.editButton');
-  const deleteButtons = document.querySelectorAll('.deleteButton');
-  const saveButtons = document.querySelectorAll('.saveButton');
+  // const editButtons = document.querySelectorAll('.editButton');
+  // const deleteButtons = document.querySelectorAll('.deleteButton');
+  // const saveButtons = document.querySelectorAll('.saveButton');
   const likeButtons = document.querySelectorAll('.rui_button_white_25');
+  editButton.addEventListener('click', function () {
+    // const reviewId = document.getElementById(`myReviewId`).textContent;
 
-  editButtons.forEach(function (editButton) {
-    editButton.addEventListener('click', function () {
-      console.log('클림ㄱ함');
-      const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
+    const editwrapper = document.getElementById(`editWrapper`);
+    const saveButton = document.getElementById(`saveButton`); // 저장 버튼 선택
+    const reviewContent = document.getElementById(`reviewWrapper`); // 수정할 리뷰 내용 선택
 
-      const editwrapper = document.getElementById(`editWrapper-${index}`);
-      const saveButton = document.getElementById(`saveButton-${index}`); // 저장 버튼 선택
-      const reviewContent = document.getElementById(`reviewWrapper-${index}`); // 수정할 리뷰 내용 선택
+    this.style.display = 'none'; // 현재 수정 버튼 숨기기
+    saveButton.style.display = 'block'; // 저장 버튼 보이기
+    editwrapper.style.display = 'block'; // 입력 필드 보이기
+    reviewContent.style.display = 'none';
+  });
 
-      this.style.display = 'none'; // 현재 수정 버튼 숨기기
-      saveButton.style.display = 'block'; // 저장 버튼 보이기
-      editwrapper.style.display = 'block'; // 입력 필드 보이기
-      reviewContent.style.display = 'none';
+  saveButton.addEventListener('click', function () {
+    const reviewId = document.getElementById(`reviewId`).textContent;
+    const editContentInput = document.getElementById(`editInput`); // 수정된 editContent 입력 필드 선택
+    const editRateInput = document.getElementById(`editRateInput`); // 수정된 editRate 입력 필드 선택
+
+    var formData = {
+      content: editContentInput.value, // 수정된 방식으로 값을 가져옴
+      rate: parseInt(editRateInput.value, 10), // 수정된 방식으로 값을 가져옴
+      isSpoiler: $('input[name="editIsSpoiler"]').is(':checked'), // isSpoiler 불리언 값 변환은 그대로 유지
+    };
+
+    console.log(formData);
+
+    $.ajax({
+      type: 'Patch',
+      url: `${idUrl}/${reviewId}`,
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function (data) {
+        location.reload(true);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+        location.reload(true);
+      },
+    });
+  });
+
+  deleteButton.addEventListener('click', function () {
+    const reviewId = document.getElementById(`reviewId`).textContent;
+
+    // 삭제 요청 실행
+    $.ajax({
+      type: 'Delete',
+      url: `${idUrl}/${reviewId}`,
+      contentType: 'application/json',
+      success: function (data) {
+        location.reload(true); // 성공 시 페이지 새로고침
+      },
+      error: function (response) {
+        alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+      },
     });
   });
 
@@ -127,8 +167,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
     var spiolerBlinds = document.getElementById(`alert_article-${index}`);
     var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
-    console.log(spiolerBlinds);
-    console.log(reviewWrapper);
 
     if (spiolerBlinds) {
       reviewWrapper.style.display = 'none';
@@ -143,57 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       spoilerBlind.style.display = 'none';
       reviewWrap.style.display = 'block';
-    });
-  });
-
-  saveButtons.forEach(function (saveButton) {
-    saveButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-      const editContentInput = document.getElementById(`editInput-${index}`); // 수정된 editContent 입력 필드 선택
-      const editRateInput = document.getElementById(`editRateInput-${index}`); // 수정된 editRate 입력 필드 선택
-
-      var formData = {
-        content: editContentInput.value, // 수정된 방식으로 값을 가져옴
-        rate: parseInt(editRateInput.value, 10), // 수정된 방식으로 값을 가져옴
-        isSpoiler: $('input[name="editIsSpoiler"]').is(':checked'), // isSpoiler 불리언 값 변환은 그대로 유지
-      };
-
-      console.log(formData);
-
-      $.ajax({
-        type: 'Patch',
-        url: `${idUrl}/${reviewId}`,
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function (data) {
-          location.reload(true);
-        },
-        error: function (response) {
-          alert(response.responseJSON.message);
-          location.reload(true);
-        },
-      });
-    });
-  });
-
-  deleteButtons.forEach(function (deleteButton) {
-    deleteButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      // 삭제 요청 실행
-      $.ajax({
-        type: 'Delete',
-        url: `${idUrl}/${reviewId}`,
-        contentType: 'application/json',
-        success: function (data) {
-          location.reload(true); // 성공 시 페이지 새로고침
-        },
-        error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-        },
-      });
     });
   });
 

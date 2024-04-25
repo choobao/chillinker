@@ -53,9 +53,18 @@ export class ReviewController {
       option,
     );
 
-    const { content, reviewList, totalPages } = result;
+    const { content, reviewList, totalPages, myReview } = result;
 
-    return { content, reviewList, totalPages, page, order, option, user };
+    return {
+      content,
+      reviewList,
+      totalPages,
+      page,
+      order,
+      option,
+      user,
+      myReview,
+    };
   }
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })

@@ -73,6 +73,14 @@ export class ReviewService {
       throw new UnauthorizedException('19세 이상만 이용가능한 작품입니다.');
     }
 
+    let myReview = {};
+
+    if (user !== false) {
+      myReview = await this.chillinkerReviewsRepository.findOne({
+        where: { userId: user.id, webContentId },
+      });
+    }
+
     if (option == 'c') {
       if (order == 'recent') {
         const reviews = await this.chillinkerReviewsRepository.findOne({
@@ -94,7 +102,7 @@ export class ReviewService {
           .skip((page - 1) * take)
           .getMany();
 
-        return { content, reviewList, totalPages };
+        return { content, reviewList, totalPages, myReview };
       } else {
         const reviews = await this.chillinkerReviewsRepository.findOne({
           where: { webContentId },
@@ -115,7 +123,7 @@ export class ReviewService {
           .skip((page - 1) * take)
           .getMany();
 
-        return { content, reviewList, totalPages };
+        return { content, reviewList, totalPages, myReview };
       }
     } else {
       const reviews = await this.platformReviewsRepository.findOne({
@@ -134,7 +142,7 @@ export class ReviewService {
           skip: (page - 1) * 10,
         });
 
-        return { content, reviewList, totalPages };
+        return { content, reviewList, totalPages, myReview };
       } else {
         const reviews = await this.platformReviewsRepository.findOne({
           where: { webContentId },
@@ -150,7 +158,7 @@ export class ReviewService {
           take: 10,
           skip: (page - 1) * 10,
         });
-        return { content, reviewList, totalPages };
+        return { content, reviewList, totalPages, myReview };
       }
     }
   }
