@@ -19,6 +19,12 @@ body {
   flex-direction: column;
 }
 
+p {
+  color: #a9a7a7;
+  margin: 20px auto;
+  width: fit-content;
+}
+
 .profile-img {
   width: 100px;
   height: 100px;
