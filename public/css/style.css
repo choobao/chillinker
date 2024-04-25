@@ -87,8 +87,7 @@
 }
 
 .contents_box {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 10px 0;
   display: flex;
   margin: 0 auto;
   width: calc(100% + 80px); /* 카드 너비 4개 + 여백 */
@@ -98,12 +97,11 @@
 .contents {
   width: 240px;
   flex: 0 0 240px;
-  margin: 10px;
+  margin: 0 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   border-bottom: 1px solid #eee;
-  padding: 10px 0;
 }
 
 .contents:last-child {
@@ -116,6 +114,8 @@
   display: block;
   margin: 0 auto 10px;
   object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .contents_title,
