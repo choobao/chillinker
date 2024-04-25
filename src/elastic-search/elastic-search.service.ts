@@ -44,7 +44,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('35 3 * * *')
+  @Cron('45 3 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
     const webtoons = webContents.filter(
@@ -110,12 +110,12 @@ export class ElasticSearchService {
             bool: {
               should: [
                 {
-                  wildcard: {
+                  match: {
                     [fieldName1]: `*${keyword}*`,
                   },
                 },
                 {
-                  wildcard: {
+                  match: {
                     [fieldName2]: `*${keyword}*`,
                   },
                 },

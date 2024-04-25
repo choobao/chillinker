@@ -83,7 +83,9 @@
                               <% role = '작가' %>
                               <% }%>
                  <span class="metadata-item- author-item-wrapper">
+                  <a href="/search?type=authors&query=<%= name %>">
                   <span class="author-detail"><%= name %></span> <%= role %>
+                  </a>
                  </span>
                   <% }); %>
                 </p>
@@ -110,10 +112,12 @@
               <% if (content.keyword && content.keyword.length > 0) { %>
                   <% content.keyword.split(',').forEach((item) => { %>
                     <li class="keyword-item">
+                      <a href="/search?type=ck&query=<%= item %>">
                       <span class="detail-keyword">
                         <span class="hash-icon">#</span>
                         <%= item %>
                       </span>
+                      </a>
                     </li>
                   <% }); %>
               <% } %>
