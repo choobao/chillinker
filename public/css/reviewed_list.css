@@ -1,3 +1,12 @@
+.top-title {
+  font-weight: 500;
+  color: #7b68ee;
+  font-size: 22pt;
+  margin: 20px 0;
+  padding: 5px 20px;
+  width: max-content;
+}
+
 .category ul li {
   display: inline-block;
   margin: 40px 10px;
