@@ -689,3 +689,8 @@ textarea#intro {
   color: #fff;
   border-radius: 4px;
 }
+
+.no-result {
+  font-size: 15px;
+  margin-left: 10px;
+}
