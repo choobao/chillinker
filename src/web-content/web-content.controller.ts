@@ -75,23 +75,9 @@ export class WebContentController {
     };
   }
 
-  // @Get('search')
-  // @Render('search')
-  // async search(@Body() searchDto: SearchDto) {
-  //   const keyword = searchDto.keyword;
-  //   const users = await this.webContentService.searchFromUsers(keyword);
-  //   const collections =
-  //     await this.webContentService.searchFromCollections(keyword);
-  //   const { webnovels, webtoons } =
-  //     await this.webContentService.searchFromWebContents(keyword);
-  //   const authors = await this.webContentService.searchFromAuthors(keyword);
-
-  //   return { users, collections, webnovels, webtoons, authors };
-  // }
-
   @UseGuards(OptionalAuthGuard)
   @Get('search')
-  // @Render('search')
+  @Render('search')
   async search(
     @Req() req,
     @Query('query') query: string,
@@ -120,7 +106,11 @@ export class WebContentController {
         await this.webContentService.searchFromCollections(keyword);
       return { type, keyword, collections };
     } else if (type == 'ck') {
-      await this.webContentService.searchFromKeywordCategory(keyword, req.user);
+      const ck = await this.webContentService.searchFromKeywordCategory(
+        keyword,
+        req.user,
+      );
+      return { type, keyword, ck, userInfo };
     } else {
       return { type, keyword, webnovels, userInfo };
     }

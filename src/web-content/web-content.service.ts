@@ -131,16 +131,16 @@ export class WebContentService {
   }
 
   async searchFromKeywordCategory(keyword: string, user) {
-    const keywordCategory = await this.elasticSearchService.searchMultipleField(
+    const ck = await this.elasticSearchService.searchMultipleField(
       'web*',
       keyword,
       'category',
       'keyword',
     );
-    console.log('키워드:', keywordCategory);
-    console.log('키워드 개수: ', keywordCategory.length);
+    console.log('키워드:', ck);
+    console.log('키워드 개수: ', ck.length);
     return {
-      keywordCategory: this.blindAdultImage(user, keywordCategory),
+      ck: this.blindAdultImage(user, ck),
     };
   }
 
