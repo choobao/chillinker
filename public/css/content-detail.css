@@ -74,15 +74,15 @@
 }
 
 .alert_article {
-  margin: 0;
+  margin-left: 120px;
   padding: 0;
   background: #f2f4f5;
   border-radius: 3px;
   padding: 27px 0;
   text-align: center;
-  width: 1000px;
+  width: 900px;
   /* position: absolute; */
-  height: 145px;
+  height: 125px;
 }
 
 .edit-delete-btn-wrapper {
