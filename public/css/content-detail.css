@@ -46,10 +46,6 @@
   cursor: default;
 }
 
-.js_select_tab_option {
-  margin-left: 20px;
-}
-
 .profile-img {
   width: 80px;
   height: 80px;
@@ -268,4 +264,14 @@
 .review-Btn {
   display: flex;
   padding: 10px 0;
+}
+
+.selected {
+  background-color: #6a5acd;
+  color: #fff;
+  border-radius: 4px;
+}
+
+#review_tab > li {
+  margin: 6px 6px 20px 6px;
 }

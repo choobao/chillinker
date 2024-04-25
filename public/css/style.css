@@ -640,7 +640,6 @@ textarea#intro {
   cursor: default;
 }
 
-.rui_tab_2 .tab_list a.active,
 .rui_tab_2 .tab_list button.active {
   color: #40474d;
 }
@@ -686,7 +685,7 @@ textarea#intro {
 }
 
 .selected {
-  background-color: #6a5acd; /* 선택된 요소의 배경색 */
-  color: #fff; /* 선택된 요소의 글자색 */
+  background-color: #6a5acd;
+  color: #fff;
   border-radius: 4px;
 }
