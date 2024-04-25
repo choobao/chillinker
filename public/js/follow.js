@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const newState = !isFollowing;
       updateButtonState(followBtn, newState);
+      alert('팔로우 상태를 변경하였습니다.');
 
       $.ajax({
         type: 'Post',
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const newState = !isFollowing;
       updateButtonState(followBtn, newState);
+      alert('팔로우 상태를 변경하였습니다.');
 
       $.ajax({
         type: 'Post',
