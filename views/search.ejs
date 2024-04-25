@@ -105,7 +105,7 @@
               <div class="result_list">
                 <% authors.forEach((item) => { %>
                   <li class="searched-card">
-                    <a title = <%= item.title %> href="/books/<%= item.webContents_id %>">
+                    <a href="/books/<%= item.webContents_id %>"> 
                       <div class="searched-card-image">
                         <img class="searched-card-thumbnail" src="<%= item.webContents_image %>" alt="<%= item.webContents_title %>"/>
                       </div>
@@ -137,7 +137,7 @@
                               <span class="author-detail"><%= name %></span> <%= role %>
                              </span>
                         </div>
-                        <div class="card-info-star">별점:<%= item.starRate %></div>
+                        <div class="card-info-star">별점:<%= item.webContents_star_rate %></div>
                       </div>
                     </a>
                   </li>

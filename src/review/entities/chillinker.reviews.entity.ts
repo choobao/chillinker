@@ -19,7 +19,7 @@ export class CReviews {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'text', nullable: false })
   content: string;
 
   @Column({ type: 'int', default: 0, nullable: false })
