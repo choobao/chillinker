@@ -60,8 +60,18 @@
 .content_info {
   padding: 10px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .content_info > h3 {
   font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.content_info > h4 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
