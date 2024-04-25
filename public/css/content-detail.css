@@ -286,5 +286,10 @@
 }
 
 #review_tab > li {
-  margin: 6px 6px 20px 6px;
+  padding: 6px 6px 14px 6px;
+}
+
+li.order_list {
+  padding: 5px 10px 0 10px;
+  margin-left: 5px;
 }
