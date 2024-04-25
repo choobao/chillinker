@@ -62,6 +62,9 @@
             <% } %>
             <% if (type == 'webtoons') { %>
               <div class="result_list">
+                <% if(webtoons.length === 0) { %>
+                  <div class="no-result">검색 결과가 없습니다</div>
+                <% } else { %>
                 <% webtoons.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href = "javascript:void(0);">
@@ -101,9 +104,13 @@
                     </a>
                   </li>
                 <% }); %>
+              <% } %>
               </div>
             <% } else if (type == 'authors') { %>
               <div class="result_list">
+                <% if(authors.length === 0) { %>
+                  <div class="no-result">검색 결과가 없습니다</div>
+                <% } else { %>
                 <% authors.forEach((item) => { %>
                   <li class="searched-card">
                     <a href="/books/<%= item.webContents_id %>"> 
@@ -143,9 +150,13 @@
                     </a>
                   </li>
                   <% }); %>
+                  <% } %>
                 </div>
               <% } else if (type == 'users') { %> 
-                <ul class="result_list" >
+                <ul class="result_list">
+                  <% if(users.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% users.forEach((item) => { %>
                   <li class="search-card">
                     <a href="/users/<%= item.users_id %>">
@@ -168,10 +179,14 @@
                     </div>
                     </a>
                   </li>
-                  <% }); %>
+                  <% });  %>
+                  <% } %>
                 </ul>
               <% } else if (type == 'collections') { %>
-                <div class="result_list" >
+                <div class="result_list">
+                  <% if(collections.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% collections.forEach((item) => { %>
                   <div class="search-card">
                     <a href="/collections/info/<%= item.collections_id %>" class="card">
@@ -191,9 +206,13 @@
                     </a>
                   </div>
                   <% }); %>
+                  <% } %>
                 </div>
               <% } else { %>
                 <div class="result_list">
+                  <% if(webnovels.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% webnovels.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href="javascript:void(0);">
@@ -232,6 +251,7 @@
                     </a>
                   </li>
                   <% }); %>
+                  <% } %>
                 </div>
               <% } %>
           </ul>
@@ -257,11 +277,13 @@
         if (type) {
           const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
           selectedBtn.classList.add('selected');
+        
         }else {
           const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
           webnovelBtn.classList.add('selected');
-        }
+        }  
       }
+      
     </script>
   </body>
 </html>
