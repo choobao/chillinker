@@ -689,3 +689,7 @@ textarea#intro {
   color: #fff;
   border-radius: 4px;
 }
+
+div.contents > img {
+  border: 1px solid #d0cbf3;
+}
