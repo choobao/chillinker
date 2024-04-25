@@ -274,7 +274,7 @@
             <div class="rui_tab_and_order">
               <ul class="rui_tab_2 js_review_list_filter_wrapper" id="review_tab">
                 <li class="tab_list">
-                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active">
+                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active pReview">
                     Platform</a>
                 </li>
                 <li class="tab_list">
@@ -283,7 +283,12 @@
                 </li>
               </ul>
               <ul class="rui_order js_review_list_order_wrapper">
-                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">추천순</a></li></ul>
+                <li class="order_list">
+                  <a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a>
+                </li>
+                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option starOrder" data-order="like">추천순</a>
+                </li>
+              </ul>
             </div>
             
                <ul class="review-list">
@@ -484,8 +489,17 @@
           const selectedBtn = document.querySelector(`.tab_list a[href*="option=${option}"]`).parentElement; 
           selectedBtn.classList.add('selected');
         }else {
-          const pReviewBtn = document.querySelector('.active').parentElement;
+          const pReviewBtn = document.querySelector('.pReview').parentElement;
           pReviewBtn.classList.add('selected');
+        }
+
+        const order = urlParams.get('order');
+        if(order) {
+          const selectedBtn = document.querySelector(`.order_list a[href*="order=${order}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const starReviewBtn = document.querySelector('.starOrder').parentElement;
+          starReviewBtn.classList.add('selected');
         }
       }
     </script>
