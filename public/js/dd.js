@@ -50,16 +50,16 @@ $(document).ready(function () {
 
         datas.forEach(function (data) {
           let editCollection = `
-          <div class='col-title' id='col_title-${data.id}'>
-            <label class='col-title-list' for="title-${data.id}">${data.title}</label>
-            <br />
-            <div class="btn_area">
-              <button type="button" class="preference-button col-add-btn">
-                추가
-              </button>
+            <div class='col-title' id='col_title-${data.id}'>
+              <label class='col-title-list' for="title-${data.id}">${data.title}</label>
+              <br />
+              <div class="btn_area">
+                <button type="button" class="preference-button col-add-btn">
+                  추가
+                </button>
+              </div>
             </div>
-          </div>
-          `;
+            `;
           editCollections += editCollection;
         });
         $('.modal_content').html(editCollections);
@@ -94,32 +94,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var url = window.location.href;
   var idUrl = url.split('?')[0];
 
-  const editButtons = document.querySelectorAll('.editButton');
-  const deleteButtons = document.querySelectorAll('.deleteButton');
-  const saveButtons = document.querySelectorAll('.saveButton');
+  //전체 선택
+  // const editButtons = document.querySelectorAll('.editButton');
+  // const deleteButtons = document.querySelectorAll('.deleteButton');
+  // const saveButtons = document.querySelectorAll('.saveButton');
   const likeButtons = document.querySelectorAll('.rui_button_white_25');
-
-  likeButtons.forEach(function (likeButton) {
-    likeButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      console.log(reviewId);
-
-      $.ajax({
-        type: 'Post',
-        url: `${idUrl}/${reviewId}/likes`,
-        contentType: 'application/json',
-        success: function (data) {
-          location.reload(true); // 성공 시 페이지 새로고침
-        },
-        error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-        },
-      });
-    });
-  });
-
   editButton.addEventListener('click', function () {
     // const reviewId = document.getElementById(`myReviewId`).textContent;
 
@@ -133,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
     reviewContent.style.display = 'none';
   });
 
-  //전체 선택
   saveButton.addEventListener('click', function () {
     const reviewId = document.getElementById(`reviewId`).textContent;
     const editContentInput = document.getElementById(`editInput`); // 수정된 editContent 입력 필드 선택
