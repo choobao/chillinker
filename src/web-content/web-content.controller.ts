@@ -83,11 +83,7 @@ export class WebContentController {
     @Query('query') query: string,
     @Query('type') type: string,
   ) {
-    const regex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
-
-    const keyword = regex.test(query)
-      ? query
-      : query.replace(/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, '') || 'chillinker';
+    const keyword = query.trim() === '' ? 'chillinker' : query.trim();
 
     const { webtoons, webnovels, userInfo } =
       (await this.webContentService.searchFromWebContents(keyword, req.user)) ??
