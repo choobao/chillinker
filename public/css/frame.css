@@ -221,10 +221,9 @@ header {
 /*footer*/
 footer {
   width: 100%;
-  height: 200px;
+  min-height: 200px;
   background: #e6e6fa;
   overflow: hidden;
-  margin-top: auto;
 }
 footer ul {
   text-align: center;
