@@ -197,7 +197,7 @@
           </div>
           <div class="review-list-section">
             <div class="rui_tab_and_order">
-              <ul class="rui_tab_2 js_review_list_filter_wrapper">
+              <ul class="rui_tab_2 js_review_list_filter_wrapper" id="review_tab">
                 <li class="tab_list">
                   <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active">
                     Platform</a>
@@ -356,7 +356,7 @@
             <nav aria-label="Page navigation example" class="paginnation-wrapper">
               <ul class="pagination">
                 <% for(let i = 1; i <= totalPages; i++) { %>
-                  <li class="page-item"><a class="page-link" href="/books/<%- content.id %>?option=<%- option %>&page=<%= i %>"><%= i %></a></li>
+                  <li class="page-item"><a class="page-link" href="/books/<%- content.id %>?option=<%- option %>&page=<%= i %>"><%= i %></a>&nbsp;&nbsp;&nbsp;</li>
                 <% } %>
               </ul>
             </nav>
@@ -407,6 +407,19 @@
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     <script src="/js/detail.js"></script>
+    <script>
+      window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const option = urlParams.get('option');
 
+        if (option) {
+          const selectedBtn = document.querySelector(`.tab_list a[href*="option=${option}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const pReviewBtn = document.querySelector('.active').parentElement;
+          pReviewBtn.classList.add('selected');
+        }
+      }
+    </script>
   </body>
 </html>
