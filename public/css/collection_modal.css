@@ -141,3 +141,15 @@
   width: 100%;
   margin-bottom: 30px;
 }
+.no-content {
+  font-size: medium;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.to-main-btn {
+  background-color: #7b68ee;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+}

@@ -57,14 +57,20 @@ document.addEventListener('DOMContentLoaded', function () {
         url: `/collections/info/${collectionId}`, // 데이터를 전송할 서버의 URL
         type: 'POST',
         success: function (data) {
-          let titles = '';
-          data.forEach(({ title, id }) => {
-            titles += `<li>
+          if (data.length === 0) {
+            let message = `<h1 class="no-content"> 아직 컬렉션에 작품이 없습니다.<br> 작품을 담아보세요! </h1>
+            <a class="to-main-btn" href='/main'>메인으로</a>`;
+            $('.delete_content_list').html(message);
+          } else {
+            let titles = '';
+            data.forEach(({ title, id }) => {
+              titles += `<li>
             <label for="remove-content-title">${title}</label>
             <input type="button" value="삭제" onclick="deleteContent(${collectionId}, ${id})" />
           </li>`;
-          });
-          $('.delete_content_list').html(titles);
+            });
+            $('.delete_content_list').html(titles);
+          }
         },
         error: function (response) {
           alert(response.responseJSON.message);
@@ -171,22 +177,5 @@ document.addEventListener('DOMContentLoaded', function () {
         alert(response.responseJSON.message);
       },
     });
-  });
-});
-
-$(document).ready(function () {
-  // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
-  $(window).scroll(function () {
-    if ($(this).scrollTop() > 100) {
-      $('#top-btn').fadeIn();
-    } else {
-      $('#top-btn').fadeOut();
-    }
-  });
-
-  // Top 버튼 클릭시 페이지 상단으로 이동
-  $('#top-btn').click(function () {
-    $('html, body').animate({ scrollTop: 0 }, 800);
-    return false;
   });
 });

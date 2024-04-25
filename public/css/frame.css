@@ -258,3 +258,7 @@ footer p {
   border-radius: 50%;
   color: #fff;
 }
+
+button {
+  cursor: pointer;
+}

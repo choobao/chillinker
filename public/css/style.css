@@ -139,11 +139,9 @@
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  /* height: 330px; */
-  padding: 30px;
+  padding: 30px 30px 50px 30px;
   box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   position: relative;
 }
 
