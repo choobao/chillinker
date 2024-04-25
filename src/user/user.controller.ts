@@ -32,7 +32,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('USER')
-@UseInterceptors(ErrorInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
