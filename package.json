@@ -21,6 +21,7 @@
     "build:css": "npx tailwindcss public/css/input.css -o public/css/output.css --watch"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.13.1",
     "@google-cloud/storage": "^7.9.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.1",
@@ -34,6 +35,8 @@
     "@nestjs/typeorm": "^10.0.2",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^5.5.1",
+    "cache-manager-redis-store": "^3.0.1",
     "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

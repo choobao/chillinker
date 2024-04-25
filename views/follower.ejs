@@ -37,8 +37,8 @@
             <ul class="following_list">
               <% followerList.forEach(function(follower,index) { %>
                 <li>
-                    <a class="profile_link" href="#">
-                      <span class="followId" id="followId-<%= index %>" style="display:none;"><%= follower.followers_id.id %></span>
+                    <a class="profile_link" href="/users/<%= follower.followers_id%>">
+                      <span class="followId" id="followId-<%= index %>" style="display:none;"><%= follower.followers_id %></span>
                     <% if (follower.followers_profile_image) { %>
                         <img src="<%= follower.followers_profile_image %>" alt="profile image">
                     <% } else { %>

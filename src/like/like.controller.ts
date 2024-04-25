@@ -6,6 +6,7 @@ import {
   Query,
   Render,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -13,9 +14,11 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import _ from 'lodash';
 import { LikeService } from './like.service';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('LIKE')
 @Controller()
+@UseInterceptors(ErrorInterceptor)
 @UseGuards(AuthGuard('jwt'))
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
