@@ -10,6 +10,7 @@ import { ContentType } from './webContent.type';
 import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import _ from 'lodash';
+import { ElasticSearchService } from '../elastic-search/elastic-search.service';
 
 @Injectable()
 export class WebContentService {
@@ -20,6 +21,7 @@ export class WebContentService {
     private readonly userRepository: Repository<Users>,
     @InjectRepository(Collections)
     private readonly collectionRepository: Repository<Collections>,
+    private readonly elasticSearchService: ElasticSearchService,
   ) {}
 
   async findBestWebContents(platform: string, type: ContentType, user) {
@@ -66,7 +68,7 @@ export class WebContentService {
     return birthDate <= date19YearsAgo;
   }
 
-  blindAdultImage(user, contents: WebContents[]) {
+  blindAdultImage(user, contents) {
     if (
       user === false ||
       _.isNil(user) ||
@@ -119,39 +121,46 @@ export class WebContentService {
   }
 
   async searchFromAuthors(keyword: string) {
-    const webContents = await this.webContentRepository
-      .createQueryBuilder('webContents')
-      .where('webContents.author LIKE :keyword', { keyword: `%${keyword}%` })
-      .getRawMany();
+    const authors = await this.elasticSearchService.search(
+      'web*',
+      keyword,
+      'author',
+    );
+    console.log('작가:', authors);
+    return authors;
+  }
 
-    return webContents;
+  async searchFromKeywordCategory(keyword: string, user) {
+    const keywordCategory = await this.elasticSearchService.searchMultipleField(
+      'web*',
+      keyword,
+      'category',
+      'keyword',
+    );
+    console.log('키워드:', keywordCategory);
+    console.log('키워드 개수: ', keywordCategory.length);
+    return {
+      keywordCategory: this.blindAdultImage(user, keywordCategory),
+    };
   }
 
   async searchFromWebContents(keyword: string, user) {
-    let webContents = await this.webContentRepository
-      .createQueryBuilder('webContents')
-      .where('webContents.title LIKE :keyword', { keyword: `%${keyword}%` })
-      .orWhere('webContents.desc LIKE :keyword', { keyword: `%${keyword}%` })
-      .orWhere('webContents.category LIKE :keyword', {
-        keyword: `%${keyword}%`,
-      })
-      .orWhere('webContents.keyword LIKE :keyword', {
-        keyword: `%${keyword}%`,
-      })
-      .getMany();
-
-    webContents = this.blindAdultImage(user, webContents);
-
-    const webnovels = webContents.filter(
-      (webContent) => webContent.contentType === ContentType.WEBNOVEL,
+    const webnovels = await this.elasticSearchService.search(
+      'webnovels',
+      keyword,
+      'title',
     );
-    const webtoons = webContents.filter(
-      (webContent) => webContent.contentType === ContentType.WEBTOON,
+    console.log('웹소설:', webnovels);
+    const webtoons = await this.elasticSearchService.search(
+      'webtoons',
+      keyword,
+      'title',
     );
+    console.log('웹툰:', webtoons);
 
     return {
-      webnovels,
-      webtoons,
+      webnovels: this.blindAdultImage(user, webnovels),
+      webtoons: this.blindAdultImage(user, webtoons),
       userInfo: this.isAdult(user),
     };
   }

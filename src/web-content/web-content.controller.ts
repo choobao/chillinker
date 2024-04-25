@@ -91,7 +91,7 @@ export class WebContentController {
 
   @UseGuards(OptionalAuthGuard)
   @Get('search')
-  @Render('search')
+  // @Render('search')
   async search(
     @Req() req,
     @Query('query') query: string,
@@ -119,6 +119,8 @@ export class WebContentController {
       const collections =
         await this.webContentService.searchFromCollections(keyword);
       return { type, keyword, collections };
+    } else if (type == 'ck') {
+      await this.webContentService.searchFromKeywordCategory(keyword, req.user);
     } else {
       return { type, keyword, webnovels, userInfo };
     }
