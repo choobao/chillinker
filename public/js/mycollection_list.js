@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: 'DELETE',
         success: function () {
           alert('컬렉션이 삭제되었습니다.');
-          window.location.href = '/collections'; // 이전 페이지(컬렉션)로 리다이렉트
+          location.reload(true); // 이전 페이지(컬렉션)로 리다이렉트
         },
         error: function (response) {
           alert(response.responseJSON.message);
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  //컨텐츠 수정
+  //컬렉션 수정
   collectionModifyBtn.forEach(function (collectionModifyBtn) {
     collectionModifyBtn.addEventListener('click', function () {
       const index = this.id.split('-')[1];
@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault(); // 기본 제출 동작을 방지
 
         var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-        console.log(formData);
         $.ajax({
           url: `/collections/${collectionId}`, // 데이터를 전송할 서버의 URL
           type: 'PATCH',
@@ -148,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault(); // 기본 제출 동작을 방지
 
     var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-    console.log(formData);
     $.ajax({
       url: '/collections', // 데이터를 전송할 서버의 URL
       type: 'POST',
