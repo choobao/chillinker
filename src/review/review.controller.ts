@@ -70,7 +70,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('books/:webContentsId/:reviewId/likes')
+  @Post('/reviews/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
@@ -154,5 +154,19 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     await this.reviewService.deleteReview(user, webContentsId, reviewId);
+  }
+
+  @Render('reviewTop')
+  @Get('rank/reviews')
+  async getTopReviews(
+    @Query('page') page?: string,
+    @Query('order') order?: string,
+  ) {
+    //탑리뷰
+    const topReviews = await this.reviewService.getTopReviews(+page, order);
+
+    const { reviews, totalPages } = topReviews;
+
+    return { reviews, totalPages, page, order };
   }
 }

@@ -8,6 +8,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.top-review-rank-container {
+  display: flex;
+  width: 1200px;
+  /* justify-content: flex-start; */
+  margin: 30px auto;
+}
+
 .prev-button {
   background-color: #ccbeff;
   margin: auto 10px auto 10px;

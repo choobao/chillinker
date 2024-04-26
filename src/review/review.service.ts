@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCReviewsDto } from './dto/review.create.dto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
 import { ModifyCReviewsDto } from './dto/review.modify.dto';
 import { Users } from '../user/entities/user.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
@@ -438,5 +438,83 @@ export class ReviewService {
       userId,
       likeCount,
     );
+  }
+
+  async getTopReviews(page?: number, order?: string) {
+    const perPage = 10;
+
+    page = page ? page : 1;
+
+    let skip = (page - 1) * perPage;
+    // skip = isNaN(skip) ? 0 : skip;
+
+    //오늘 날짜와 이전 날짜 계산
+    var today = new Date();
+    var threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(today.getDate() - 3);
+
+    const reviewsCount = await this.reviewLikesRepository
+      .createQueryBuilder('reviewLikes')
+      .select('reviewLikes.cReviewId')
+      .innerJoin('reviewLikes.cReviews', 'cReviews')
+      .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
+      .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+      .getRawMany();
+
+    const uniqueReviewsCount = new Set(
+      reviewsCount.map((item) => item.reviewLikes_c_review_id),
+    ).size;
+
+    console.log(uniqueReviewsCount);
+    const totalPages = Math.ceil(uniqueReviewsCount / perPage);
+
+    //리뷰라잌스 테이블에서 최신(createdAt 3일이내) 최대 100개 뽑아옴
+
+    //성인작품 가져올까말까 고민..
+    if (order === 'recent') {
+      const reviews = await this.reviewLikesRepository
+        .createQueryBuilder('reviewLikes')
+        .select('reviewLikes.cReviewId, COUNT(*) as count')
+        .addSelect('cReviews')
+        .addSelect('users')
+        .addSelect(
+          'webContents.id, webContents.title, webContents.image, webContents.likeCount, webContents.starRate, webContents.isAdult, webContents.author',
+        )
+        .innerJoin('reviewLikes.cReviews', 'cReviews')
+        .innerJoin('cReviews.users', 'users')
+        .innerJoin('cReviews.webContent', 'webContents')
+        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
+        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+        .groupBy('reviewLikes.cReviewId')
+        .orderBy('cReviews.createdAt', 'DESC')
+        .offset(skip) // 페이지에 따라 스킵하는 수 계산
+        .limit(perPage) // 페이지당 아이템 수 설정
+        .getRawMany();
+
+      return { reviews, totalPages };
+    } else {
+      const reviews = await this.reviewLikesRepository
+        .createQueryBuilder('reviewLikes')
+        .select('reviewLikes.cReviewId, COUNT(*) as count')
+        .addSelect('cReviews')
+        .addSelect('users')
+        .addSelect(
+          'webContents.id, webContents.title, webContents.image, webContents.likeCount, webContents.starRate, webContents.isAdult, webContents.author',
+        )
+        .innerJoin('reviewLikes.cReviews', 'cReviews')
+        .innerJoin('cReviews.users', 'users')
+        .innerJoin('cReviews.webContent', 'webContents')
+        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
+        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+        .groupBy('reviewLikes.cReviewId')
+        .orderBy('count', 'DESC')
+        .offset(skip) // 페이지에 따라 스킵하는 수 계산
+        .limit(perPage) // 페이지당 아이템 수 설정
+        .getRawMany();
+
+      console.log(reviews.length);
+
+      return { reviews, totalPages };
+    }
   }
 }
