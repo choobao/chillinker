@@ -13,7 +13,6 @@ export class OptionalAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
-    const req = context.switchToHttp().getRequest();
-    return req.user || null;
+    return user;
   }
 }

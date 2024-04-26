@@ -68,8 +68,9 @@ export class WebContentService {
     return birthDate <= date19YearsAgo;
   }
 
-  blindAdultImage(user: Users | null, contents: any[]) {
+  blindAdultImage(user, contents: any[]) {
     if (
+      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))
@@ -86,9 +87,10 @@ export class WebContentService {
     return contents;
   }
 
-  isAdult(user: Users | null) {
+  isAdult(user) {
     const userInfo = { isAdult: 1 };
     if (
+      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))
@@ -174,7 +176,7 @@ export class WebContentService {
   }
 
   // 지난 24시간 이내 생성된 likeCount가 높은 순 상위 20개
-  async getBestLikesContents(user: Users | null) {
+  async getBestLikesContents(type: string, user) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -182,6 +184,7 @@ export class WebContentService {
       .createQueryBuilder('webContents')
       .leftJoinAndSelect('webContents.likes', 'likes')
       .where('likes.createdAt > :yesterday', { yesterday })
+      .andWhere('webContents.contentType = :type', { type })
       .groupBy('webContents.id')
       .orderBy('COUNT(likes.id)', 'DESC')
       .select([
@@ -194,8 +197,60 @@ export class WebContentService {
       ])
       .addSelect('COUNT(likes.id)', 'likeCount')
       .limit(20)
-      .getMany();
+      .getRawMany();
 
-    return contents;
+    return this.blindAdultImage(contents, user);
+  }
+
+  async getBestReviewCountContents(type: string, user) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const contents = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .leftJoinAndSelect('webContents.cReviews', 'reviews')
+      .where('reviews.createdAt > :yesterday', { yesterday })
+      .andWhere('webContents.contentType = :type', { type })
+      .groupBy('webContents.id')
+      .orderBy('COUNT(reviews.id)', 'DESC')
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.image',
+        'webContents.category',
+        'webContents.isAdult',
+        'webContents.author',
+      ])
+      .addSelect('COUNT(reviews.id)', 'reviewCount')
+      .limit(20)
+      .getRawMany();
+
+    return this.blindAdultImage(contents, user);
+  }
+
+  // 컬렉션에 많이 들어간 작품
+  async getBestCollectionContents(type: string, user) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const contents = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .leftJoinAndSelect('webContents.contentCollections', 'cols')
+      .where('cols.createdAt > :yesterday', { yesterday })
+      .andWhere('webContents.contentType = :type', { type })
+      .groupBy('webContents.id')
+      .orderBy('COUNT(cols.id)', 'DESC')
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.image',
+        'webContents.category',
+        'webContents.isAdult',
+        'webContents.author',
+      ])
+      .addSelect('COUNT(cols.id)', 'colCount')
+      .limit(20)
+      .getRawMany();
+
+    return this.blindAdultImage(contents, user);
   }
 }

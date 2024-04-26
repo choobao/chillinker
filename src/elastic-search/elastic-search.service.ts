@@ -42,7 +42,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('59 11 * * *')
+  @Cron('49 14 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
     const webtoons = webContents.filter(

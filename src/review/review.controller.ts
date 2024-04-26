@@ -45,6 +45,7 @@ export class ReviewController {
     @Query('option') option?: string,
   ) {
     const user = req.user;
+    console.log('유저: ', user);
     const result = await this.reviewService.getCReviews(
       webContentsId,
       req.user,
