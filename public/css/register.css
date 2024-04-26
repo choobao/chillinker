@@ -72,8 +72,7 @@ p {
 }
 
 .container-wrapper {
-  min-height: 100%;
-  padding-bottom: 200px;
+  min-height: max-content;
   box-sizing: border-box;
   padding-top: 10px;
 }

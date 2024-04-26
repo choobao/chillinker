@@ -9,5 +9,6 @@ import { WebContents } from '../web-content/entities/webContents.entity';
   imports: [TypeOrmModule.forFeature([WebContents])],
   providers: [ElasticSearchService, ConfigService],
   controllers: [ElasticSearchController],
+  exports: [ElasticSearchService],
 })
 export class ElasticSearchModule {}

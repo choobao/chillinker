@@ -6,6 +6,8 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 import { Repository } from 'typeorm';
 import { ContentType } from '../web-content/webContent.type';
 import { Cron } from '@nestjs/schedule';
+import { bool } from 'joi';
+import { EventEmitter } from 'stream';
 
 @Injectable()
 export class ElasticSearchService {
@@ -42,7 +44,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('59 20 * * *')
+  @Cron('19 9 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
     const webtoons = webContents.filter(
@@ -65,12 +67,67 @@ export class ElasticSearchService {
     }
   }
 
-  async search(indexName: string, keyword: string) {
-    const searchResult = await this.client.search({
-      index: indexName,
-      q: keyword,
-    });
-    console.log('엘라스틱 서치 결과 ', searchResult.hits.hits);
-    return searchResult;
+  async search(indexName: string, keyword: string, fieldName: string) {
+    try {
+      const query = {
+        query: {
+          match: {
+            [fieldName]: {
+              query: keyword,
+            },
+          },
+        },
+      };
+      const result = await this.client.search({
+        index: indexName,
+        body: query,
+        size: 180,
+      });
+      return result.hits.hits.length !== 0
+        ? result.hits.hits.map((item) => item._source)
+        : [];
+    } catch (err) {
+      console.error('검색 중 오류 발생: ', err);
+      throw err;
+    }
+  }
+
+  async searchMultipleField(
+    indexName: string,
+    keyword: string,
+    fieldName1: string,
+    fieldName2: string,
+  ) {
+    try {
+      const result = await this.client.search({
+        index: indexName,
+        body: {
+          query: {
+            bool: {
+              should: [
+                {
+                  match: {
+                    [fieldName1]: `*${keyword}*`,
+                  },
+                },
+                {
+                  match: {
+                    [fieldName2]: `*${keyword}*`,
+                  },
+                },
+              ],
+              minimum_should_match: 1,
+            },
+          },
+        },
+        size: 180,
+      });
+      return result.hits.hits.length !== 0
+        ? result.hits.hits.map((item) => item._source)
+        : [];
+    } catch (err) {
+      console.error('멀티검색 중 에러 발생: ', err);
+      throw err;
+    }
   }
 }

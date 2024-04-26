@@ -75,20 +75,6 @@ export class WebContentController {
     };
   }
 
-  // @Get('search')
-  // @Render('search')
-  // async search(@Body() searchDto: SearchDto) {
-  //   const keyword = searchDto.keyword;
-  //   const users = await this.webContentService.searchFromUsers(keyword);
-  //   const collections =
-  //     await this.webContentService.searchFromCollections(keyword);
-  //   const { webnovels, webtoons } =
-  //     await this.webContentService.searchFromWebContents(keyword);
-  //   const authors = await this.webContentService.searchFromAuthors(keyword);
-
-  //   return { users, collections, webnovels, webtoons, authors };
-  // }
-
   @UseGuards(OptionalAuthGuard)
   @Get('search')
   @Render('search')
@@ -97,11 +83,7 @@ export class WebContentController {
     @Query('query') query: string,
     @Query('type') type: string,
   ) {
-    const regex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
-
-    const keyword = regex.test(query)
-      ? query
-      : query.replace(/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, '') || 'chillinker';
+    const keyword = query.trim() === '' ? 'chillinker' : query.trim();
 
     const { webtoons, webnovels, userInfo } =
       (await this.webContentService.searchFromWebContents(keyword, req.user)) ??
@@ -110,8 +92,11 @@ export class WebContentController {
     if (type == 'webtoons') {
       return { type, keyword, webtoons, userInfo };
     } else if (type == 'authors') {
-      const authors = await this.webContentService.searchFromAuthors(keyword);
-      return { type, keyword, authors };
+      const authors = await this.webContentService.searchFromAuthors(
+        keyword,
+        req.user,
+      );
+      return { type, keyword, authors, userInfo };
     } else if (type == 'users') {
       const users = await this.webContentService.searchFromUsers(keyword);
       return { type, keyword, users };
@@ -119,6 +104,12 @@ export class WebContentController {
       const collections =
         await this.webContentService.searchFromCollections(keyword);
       return { type, keyword, collections };
+    } else if (type == 'ck') {
+      const ck = await this.webContentService.searchFromKeywordCategory(
+        keyword,
+        req.user,
+      );
+      return { type, keyword, ck, userInfo };
     } else {
       return { type, keyword, webnovels, userInfo };
     }

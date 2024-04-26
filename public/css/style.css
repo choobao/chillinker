@@ -87,8 +87,7 @@
 }
 
 .contents_box {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 10px 0;
   display: flex;
   margin: 0 auto;
   width: calc(100% + 80px); /* 카드 너비 4개 + 여백 */
@@ -98,12 +97,11 @@
 .contents {
   width: 240px;
   flex: 0 0 240px;
-  margin: 10px;
+  margin: 0 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   border-bottom: 1px solid #eee;
-  padding: 10px 0;
 }
 
 .contents:last-child {
@@ -116,6 +114,8 @@
   display: block;
   margin: 0 auto 10px;
   object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .contents_title,
@@ -139,11 +139,9 @@
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  /* height: 330px; */
-  padding: 30px;
+  padding: 30px 30px 50px 30px;
   box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   position: relative;
 }
 
@@ -715,21 +713,4 @@ textarea#intro {
 .no-result {
   font-size: 15px;
   margin-left: 10px;
-}
-
-.top_btn {
-  display: none;
-  margin: auto;
-  position: fixed;
-  bottom: 30px;
-  right: 25px;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  box-sizing: border-box;
-  font-size: 20px;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  background-color: #a386ffb9;
-  border-radius: 50%;
-  color: #fff;
 }
