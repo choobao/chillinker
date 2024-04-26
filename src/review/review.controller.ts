@@ -154,4 +154,18 @@ export class ReviewController {
   ) {
     await this.reviewService.deleteReview(user, webContentsId, reviewId);
   }
+
+  @Render('reviewTop')
+  @Get('rank/reviews')
+  async getTopReviews(
+    @Query('page') page?: string,
+    @Query('order') order?: string,
+  ) {
+    //탑리뷰
+    const topReviews = await this.reviewService.getTopReviews(+page, order);
+
+    const { reviews, totalPages } = topReviews;
+
+    return { reviews, totalPages, page, order };
+  }
 }
