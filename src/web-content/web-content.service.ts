@@ -68,7 +68,7 @@ export class WebContentService {
     return birthDate <= date19YearsAgo;
   }
 
-  blindAdultImage(user, contents: any[]) {
+  blindAdultImage(user, contents) {
     if (
       user === false ||
       _.isNil(user) ||
@@ -180,7 +180,7 @@ export class WebContentService {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const contents = await this.webContentRepository
+    let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
       .leftJoinAndSelect('webContents.likes', 'likes')
       .where('likes.createdAt > :yesterday', { yesterday })
@@ -188,25 +188,34 @@ export class WebContentService {
       .groupBy('webContents.id')
       .orderBy('COUNT(likes.id)', 'DESC')
       .select([
-        'webContents.id',
-        'webContents.title',
-        'webContents.image',
-        'webContents.category',
-        'webContents.isAdult',
-        'webContents.author',
+        'webContents.id AS id',
+        'webContents.title AS title',
+        'webContents.image AS image',
+        'webContents.category AS category',
+        'webContents.isAdult AS isAdult',
+        'webContents.author AS author',
       ])
       .addSelect('COUNT(likes.id)', 'likeCount')
       .limit(20)
       .getRawMany();
+    contents =
+      contents.length === 0 || _.isNil(contents)
+        ? []
+        : this.blindAdultImage(
+            user,
+            contents.map((content, idx) => {
+              return { ...content, ranking: idx + 1 };
+            }),
+          );
 
-    return this.blindAdultImage(contents, user);
+    return contents;
   }
 
   async getBestReviewCountContents(type: string, user) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const contents = await this.webContentRepository
+    let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
       .leftJoinAndSelect('webContents.cReviews', 'reviews')
       .where('reviews.createdAt > :yesterday', { yesterday })
@@ -214,25 +223,34 @@ export class WebContentService {
       .groupBy('webContents.id')
       .orderBy('COUNT(reviews.id)', 'DESC')
       .select([
-        'webContents.id',
-        'webContents.title',
-        'webContents.image',
-        'webContents.category',
-        'webContents.isAdult',
-        'webContents.author',
+        'webContents.id AS id',
+        'webContents.title AS title',
+        'webContents.image AS image',
+        'webContents.category AS category',
+        'webContents.isAdult AS isAdult',
+        'webContents.author AS author',
       ])
       .addSelect('COUNT(reviews.id)', 'reviewCount')
       .limit(20)
       .getRawMany();
 
-    return this.blindAdultImage(contents, user);
+    contents =
+      contents.length === 0 || _.isNil(contents)
+        ? []
+        : this.blindAdultImage(
+            user,
+            contents.map((content, idx) => {
+              return { ...content, ranking: idx + 1 };
+            }),
+          );
+    return contents;
   }
 
   // 컬렉션에 많이 들어간 작품
   async getBestCollectionContents(type: string, user) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const contents = await this.webContentRepository
+    let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
       .leftJoinAndSelect('webContents.contentCollections', 'cols')
       .where('cols.createdAt > :yesterday', { yesterday })
@@ -240,17 +258,27 @@ export class WebContentService {
       .groupBy('webContents.id')
       .orderBy('COUNT(cols.id)', 'DESC')
       .select([
-        'webContents.id',
-        'webContents.title',
-        'webContents.image',
-        'webContents.category',
-        'webContents.isAdult',
-        'webContents.author',
+        'webContents.id AS id',
+        'webContents.title AS title',
+        'webContents.image AS image',
+        'webContents.category AS category',
+        'webContents.isAdult AS isAdult',
+        'webContents.author AS author',
       ])
       .addSelect('COUNT(cols.id)', 'colCount')
       .limit(20)
       .getRawMany();
 
-    return this.blindAdultImage(contents, user);
+    contents =
+      contents.length === 0 || _.isNil(contents)
+        ? []
+        : this.blindAdultImage(
+            user,
+            contents.map((content, idx) => {
+              return { ...content, ranking: idx + 1 };
+            }),
+          );
+
+    return contents;
   }
 }
