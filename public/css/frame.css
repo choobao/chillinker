@@ -264,32 +264,32 @@ button {
 }
 
 /* 네비게이션 바 */
-nav {
+.main-nav {
   width: 100%;
   background-color: #9f9aff;
   margin: 0;
   padding: 0;
 }
 
-nav > ul {
+.main-nav > ul {
   width: max-content;
   margin: auto;
   display: flex;
 }
 
-nav > ul > span {
+.main-nav > ul > span {
   color: white;
   margin: auto 0;
 }
 
-nav > ul > li {
+.main-nav > ul > li {
   padding: 8px 20px 8px 20px;
   margin: auto 0;
   cursor: pointer;
   text-align: center;
 }
 
-nav > ul > li > a {
+.main-nav > ul > li > a {
   text-align: center;
   color: white;
 }
