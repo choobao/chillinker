@@ -6,6 +6,7 @@
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/frame.css" />
+    <link rel="stylesheet" href="/css/mainReview.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -33,15 +34,76 @@
         <li><a href="/search?type=ck&query=소년%20드라마%20추리">일반</a></li>
       </ul>
     </nav>
-    <div class="top-review-rank-container">
+    <div class="head-title">
+      <h3 class="top-title">지금 뜨는 코멘트</h3>
       <a href="/rank/reviews">
-      <button type="button" class="preference-button" id="like-btn">
-        <span class="button-contents"> 
-          <span class="button-icon">지금 뜨는 코멘트</span>
-        </span>
-      </button>
+      <span class="review-more">더보기</span>
     </a>
     </div>
+    <div class="top-review-list-container">
+      <div class="card_container">
+        <button class="prev-button">‹</button>
+        <div class="slider">
+          <div class="contents_box">
+      <ul class="top-review-section">
+        <!-- 리뷰카드 시작 -->
+        <% top3Reviews.forEach((item,index) => { %>
+        <li class="review-card" id="reviewId-<%= index %>" val="<%= item.cReviews_id %>">
+          <article>
+            <a class="writer-container" href="/users/<%= item.users_id %>">
+              <img
+                src="<%= item.users_profile_image %>"
+                alt="프로필사진"
+                onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                class="profile-img"
+              />
+              <div class="reivewer-info">
+              <div class="reviewer-id-and-rate">
+              <span class="reviewer_id"><%= item.users_nickname %></span>
+            </a>
+              <span class="reviewer_id">별점: <%= item.cReviews_rate %></span>
+    </div>
+        </div>
+              <div class="review_date"><%= item.cReviews_created_at %></div>
+            <div class="review-content-web-info-container">
+                <a class="webContent-container" href="/books/<%= item.id %>">
+                    <img
+                      src="<%= item.image %>"
+                      alt="작품사진"
+                      onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                      class="webContent-img"
+                    />
+                    <div class="webContent-info-container">
+                    <span class="webContent-title-info"><%= item.title %></span>
+                  </a>
+                  <div class="webContent-info-con">
+                    <%= item.cReviews_content %>
+                  </div>
+                </div>
+            </div>
+            <hr class="css-line">
+            <div class="like-container">
+                <div class="review-like-btn-wrapper">
+                    <button type="button"  id="likeBtn-<%= index %>" class="my-rui_button_white_25">
+                      <span class="rui_button_contents">
+                        <span class="rui_button_icon"></span>
+                        <span class="rui_button_text">
+                          <span class="indent_hidden">👍</span>
+                          <span class="like_count js_like_count"><%= item.cReviews_like_count %></span>
+                        </span>
+                      </span>
+                    </button>
+                  </div> 
+            </div>
+          </article>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+    </div>
+    <button class="next-button">›</button>
+  </div>
+</div>
     <div class="wrap">
       <%- include('header.ejs') %>
       <main>
@@ -645,5 +707,6 @@
       <%- include('footer.ejs') %>
     </div>
     <script src="/js/adult_blind.js"></script>
+    <script src="/js/topReview.js"></script>
   </body>
 </html>

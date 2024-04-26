@@ -33,7 +33,6 @@ export class ReviewService {
     @InjectRepository(WebContents)
     private readonly webContentRepository: Repository<WebContents>,
     private readonly dataSource: DataSource,
-    private readonly sseService: SseService,
   ) {}
 
   isOver19(birthDate: Date) {
@@ -390,30 +389,30 @@ export class ReviewService {
       }
       await this.chillinkerReviewsRepository.save(findReview);
 
-      //테스트용
-      this.sseEvent(
-        findReview.webContentId,
-        findReview.userId,
-        findReview.likeCount,
-      );
+      // //테스트용
+      // this.sseEvent(
+      //   findReview.webContentId,
+      //   findReview.userId,
+      //   findReview.likeCount,
+      // );
 
-      if (findReview.likeCount <= 100) {
-        if (findReview.likeCount % 20 == 0) {
-          this.sseEvent(
-            findReview.webContentId,
-            findReview.userId,
-            findReview.likeCount,
-          );
-        }
-      } else {
-        if (findReview.likeCount % 50 == 0) {
-          this.sseEvent(
-            findReview.webContentId,
-            findReview.userId,
-            findReview.likeCount,
-          );
-        }
-      }
+      // if (findReview.likeCount <= 100) {
+      //   if (findReview.likeCount % 20 == 0) {
+      //     this.sseEvent(
+      //       findReview.webContentId,
+      //       findReview.userId,
+      //       findReview.likeCount,
+      //     );
+      //   }
+      // } else {
+      //   if (findReview.likeCount % 50 == 0) {
+      //     this.sseEvent(
+      //       findReview.webContentId,
+      //       findReview.userId,
+      //       findReview.likeCount,
+      //     );
+      //   }
+      // }
 
       await queryRunner.commitTransaction();
 
@@ -429,16 +428,16 @@ export class ReviewService {
     }
   }
 
-  async sseEvent(webContentId: number, userId: number, likeCount: number) {
-    const webContent = await this.webContentRepository.findOne({
-      where: { id: webContentId },
-    });
-    this.sseService.emitReviewLikeCountEvent(
-      webContent.title,
-      userId,
-      likeCount,
-    );
-  }
+  // async sseEvent(webContentId: number, userId: number, likeCount: number) {
+  //   const webContent = await this.webContentRepository.findOne({
+  //     where: { id: webContentId },
+  //   });
+  //   this.sseService.emitReviewLikeCountEvent(
+  //     webContent.title,
+  //     userId,
+  //     likeCount,
+  //   );
+  // }
 
   async getTopReviews(page?: number, order?: string) {
     const perPage = 10;
@@ -516,5 +515,31 @@ export class ReviewService {
 
       return { reviews, totalPages };
     }
+  }
+
+  async top10Reviews() {
+    var today = new Date();
+    var threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(today.getDate() - 3);
+
+    const reviews = await this.reviewLikesRepository
+      .createQueryBuilder('reviewLikes')
+      .select('reviewLikes.cReviewId, COUNT(*) as count')
+      .addSelect('cReviews')
+      .addSelect('users')
+      .addSelect(
+        'webContents.id, webContents.title, webContents.image, webContents.likeCount, webContents.starRate, webContents.isAdult, webContents.author',
+      )
+      .innerJoin('reviewLikes.cReviews', 'cReviews')
+      .innerJoin('cReviews.users', 'users')
+      .innerJoin('cReviews.webContent', 'webContents')
+      .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
+      .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+      .groupBy('reviewLikes.cReviewId')
+      .orderBy('count', 'DESC')
+      .limit(10) // 페이지당 아이템 수 설정
+      .getRawMany();
+
+    return reviews;
   }
 }

@@ -11,10 +11,14 @@ import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { ReviewService } from 'src/review/review.service';
 
 @Controller()
 export class WebContentController {
-  constructor(private readonly webContentService: WebContentService) {}
+  constructor(
+    private readonly webContentService: WebContentService,
+    private readonly reviewService: ReviewService,
+  ) {}
 
   @ApiOperation({ summary: '메인' })
   @UseGuards(OptionalAuthGuard)
@@ -84,6 +88,9 @@ export class WebContentController {
       );
     const bestCollectionedWebtoons =
       await this.webContentService.getBestCollectionContents('웹툰', req.user);
+
+    const top3Reviews = await this.reviewService.top10Reviews();
+
     return {
       naverWebtoons,
       naverWebnovels,
@@ -100,6 +107,7 @@ export class WebContentController {
       bestReviewedWebtoons,
       bestCollectionedWebnovels,
       bestCollectionedWebtoons,
+      top3Reviews,
     };
   }
 

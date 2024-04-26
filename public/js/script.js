@@ -77,3 +77,14 @@ $(document).ready(function () {
     return false;
   });
 });
+
+document.querySelector('.prev-button').addEventListener('click', function () {
+  const slider = document.querySelector('.slider');
+  slider.scrollLeft -= 1080; // 슬라이드를 좌측으로 이동하는 값 (임의의 값으로 설정)
+});
+
+// 다음 버튼 클릭 시 슬라이드를 다음으로 이동하는 함수
+document.querySelector('.next-button').addEventListener('click', function () {
+  const slider = document.querySelector('.slider');
+  slider.scrollLeft += 1070; // 슬라이드를 우측으로 이동하는 값 (임의의 값으로 설정)
+});
