@@ -70,7 +70,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('books/:webContentsId/:reviewId/likes')
+  @Post('/reviews/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,

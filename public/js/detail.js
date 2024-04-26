@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       $.ajax({
         type: 'Post',
-        url: `${idUrl}/${reviewId}/likes`,
+        url: `/reviews/${reviewId}/likes`,
         contentType: 'application/json',
         success: function (data) {
           location.reload(true); // 성공 시 페이지 새로고침

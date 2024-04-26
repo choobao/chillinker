@@ -47,8 +47,8 @@
         <div class="top-review-list-container">
           <ul class="top-review-section">
             <!-- 리뷰카드 시작 -->
-            <% reviews.forEach((item) => { %>
-            <li class="review-card">
+            <% reviews.forEach((item,index) => { %>
+            <li class="review-card" id="reviewId-<%= index %>" val="<%= item.cReviews_id %>">
               <article>
                 <a class="writer-container" href="/users/<%= item.users_id %>">
                   <img
@@ -84,7 +84,7 @@
                 <hr class="css-line">
                 <div class="like-container">
                     <div class="review-like-btn-wrapper">
-                        <button type="button"  id="likeBtn" class="my-rui_button_white_25 like_button js_like_button">
+                        <button type="button"  id="likeBtn-<%= index %>" class="my-rui_button_white_25">
                           <span class="rui_button_contents">
                             <span class="rui_button_icon"></span>
                             <span class="rui_button_text">
@@ -109,11 +109,8 @@
         </nav>
       </div>
         </div>
-
+        <script src="/js/topReview.js"></script>
       </main>
-      <script src="/js/liked_list.js"></script>
-      <script src="/js/topReview.js"></script>
-      <script src="/js/detail.js"></script>
       <%- include('footer.ejs') %>
     </div>
   </body>
