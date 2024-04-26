@@ -202,7 +202,7 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('41 21 * * *')
+  @Cron('42 1 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
@@ -277,27 +277,27 @@ export class CrawlerService {
         new Date().getTime() - begin_time,
       );
 
-      // console.log('미스터 블루 작업 시작.');
-      // begin_time = new Date().getTime();
+      console.log('미스터 블루 작업 시작.');
+      begin_time = new Date().getTime();
 
-      // const mrblueData = await this.createMrblue(
-      //   mbWebnovelCurPage,
-      //   mbWebnovelMaxPage,
-      //   mbWebtoonCurPage,
-      //   mbWebtoonMaxPage,
-      // );
+      const mrblueData = await this.createMrblue(
+        mbWebnovelCurPage,
+        mbWebnovelMaxPage,
+        mbWebtoonCurPage,
+        mbWebtoonMaxPage,
+      );
 
-      // console.log(
-      //   '미스터 블루 크롤링 끝. 총 걸린 시간은 ',
-      //   new Date().getTime() - begin_time,
-      // );
+      console.log(
+        '미스터 블루 크롤링 끝. 총 걸린 시간은 ',
+        new Date().getTime() - begin_time,
+      );
 
       // title, contentType이 중복되는 요소 제거
       const data = [].concat(
         await this.removeDuplicate(ridiData),
         await this.removeDuplicate(kakaoData),
         await this.removeDuplicate(naverData),
-        //await this.removeDuplicate(mrblueData),
+        await this.removeDuplicate(mrblueData),
       );
 
       console.log('디비 작업 시작.');
@@ -461,8 +461,8 @@ export class CrawlerService {
       await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
       await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
 
-      // await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
-      // await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
+      await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
+      await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
 
       console.log(
         '디비 작업 끝. 총 걸린 시간은 ',
