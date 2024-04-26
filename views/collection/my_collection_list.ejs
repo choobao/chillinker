@@ -28,6 +28,35 @@
       <h3><%= users.nickname %>님의 컬렉션</h3>
       <button class="add_collection_btn" id="add_collection_btn">+새 컬렉션</button>
     </div>
+    <!-- 컬렉션 생성 모달창 -->
+    <div class="add-collection-modal">
+      <div class="collection_modal" id="collectionModal">
+        <span class="close">&times;</span>
+        <h3 class="modal_title">새 컬렉션</h3>
+        <div class="modal_content">
+          <form
+            name="add_collection_form"
+            method="post"
+            enctype="multipart/form-data"
+            id="addCollectionForm"
+          >
+            <label for="cover">컬렉션 이미지 업로드</label>
+            <br />
+            <input type="file" name="coverImage" id="cover" accept="image/*" />
+            <br />
+            <label for="title">컬렉션 제목</label>
+            <input type="text" name="title" id="title" value="" />
+            <br />
+            <label for="desc">컬렉션 설명</label>
+            <textarea name="desc" id="desc" cols="30" rows="10"></textarea>
+            <br />
+            <div class="btn_area">
+              <input type="submit" value="완료" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <input type="hidden" value="<%= collection %>" />
     <div class="collections_container">
       <% if(collection.length === 0) { %>
@@ -102,39 +131,10 @@
         </div>
       <% }); %>
     </div>
-    <!-- 컬렉션 생성 모달창 -->
-    <div class="add-collection-modal">
-      <div class="collection_modal" id="collectionModal">
-        <span class="close">&times;</span>
-        <h3 class="modal_title">새 컬렉션</h3>
-        <div class="modal_content">
-          <form
-            name="add_collection_form"
-            method="post"
-            enctype="multipart/form-data"
-            id="addCollectionForm"
-          >
-            <label for="cover">컬렉션 이미지 업로드</label>
-            <br />
-            <input type="file" name="coverImage" id="cover" accept="image/*" />
-            <br />
-            <label for="title">컬렉션 제목</label>
-            <input type="text" name="title" id="title" value="" />
-            <br />
-            <label for="desc">컬렉션 설명</label>
-            <textarea name="desc" id="desc" cols="30" rows="10"></textarea>
-            <br />
-            <div class="btn_area">
-              <input type="submit" value="완료" />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
   </main>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mycollection_list.js"></script>
- <script>
+  <script>
     function deleteContent (collectionId, webContentId) {
     $.ajax({
       url: `/collections/${collectionId}/content/${webContentId}`, // 데이터를 전송할 서버의 URL

@@ -15,7 +15,7 @@ sliderContainers.forEach((sliderContainer, index) => {
 
   const showSlide = (slideIndex) => {
     contents.forEach((content, index) => {
-      // 8개의 카드만 활성화
+      // 4개의 카드만 활성화
       if (index >= slideIndex && index < slideIndex + 4) {
         content.classList.add('active');
       } else {
@@ -30,9 +30,8 @@ sliderContainers.forEach((sliderContainer, index) => {
     // 카드 그룹 수 계산
     const slideGroupCount = Math.ceil(contents.length / 4);
 
-    if (currentSlides[index] + 4 > contents.length) {
-      // 마지막 카드 그룹으로 이동 (loop back)
-      // currentSlides[index] = (slideGroupCount - 1) * 4;
+    if (currentSlides[index] + 1 > contents.length) {
+      // 처음 카드 그룹으로 이동 (loop back)
       currentSlides[index] = 0;
     }
 
@@ -45,7 +44,7 @@ sliderContainers.forEach((sliderContainer, index) => {
     currentSlides[index] -= 4;
 
     if (currentSlides[index] < 0) {
-      // 처음 카드 그룹으로 이동 (loop back)
+      // 마지막 카드 그룹으로 이동 (loop back)
       currentSlides[index] = contents.length - (contents.length % 4 || 4);
     }
 
