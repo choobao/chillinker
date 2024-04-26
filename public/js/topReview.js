@@ -43,4 +43,22 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+
+  //   background-color: #6a5acd;
+  //   color: #fff;
+  //   border-radius: 7px;
+  //   padding: 2px;
+  const urlParams = new URLSearchParams(window.location.search);
+  const order = urlParams.get('order');
+
+  const searchBtn1 = document.querySelector('.search_btn1');
+  const searchBtn2 = document.querySelector('.search_btn2');
+
+  if (order === 'recent') {
+    searchBtn1.classList.add('active');
+    searchBtn2.classList.remove('active');
+  } else {
+    searchBtn1.classList.remove('active');
+    searchBtn2.classList.add('active');
+  }
 });
