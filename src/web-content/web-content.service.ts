@@ -78,7 +78,7 @@ export class WebContentService {
       const adult_image =
         'https://ssl.pstatic.net/static/m/nstore/thumb/19/home_book_4.png';
       contents.map((content) => {
-        if (content.isAdult) {
+        if (content.isAdult === 1) {
           content.image = adult_image;
         }
         return content;
@@ -120,28 +120,26 @@ export class WebContentService {
     return collections;
   }
 
-  async searchFromAuthors(keyword: string) {
-    const authors = await this.elasticSearchService.search(
+  async searchFromAuthors(keyword: string, user) {
+    let authors = await this.elasticSearchService.search(
       'web*',
       keyword,
       'author',
     );
-    console.log('작가:', authors);
+    authors = this.blindAdultImage(user, authors);
     return authors;
   }
 
   async searchFromKeywordCategory(keyword: string, user) {
-    const ck = await this.elasticSearchService.searchMultipleField(
+    let ck = await this.elasticSearchService.searchMultipleField(
       'web*',
       keyword,
       'category',
       'keyword',
     );
-    console.log('키워드:', ck);
-    console.log('키워드 개수: ', ck.length);
-    return {
-      ck: this.blindAdultImage(user, ck),
-    };
+    ck = this.blindAdultImage(user, ck);
+
+    return ck;
   }
 
   async searchFromWebContents(keyword: string, user) {

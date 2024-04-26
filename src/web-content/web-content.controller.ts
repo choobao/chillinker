@@ -92,8 +92,11 @@ export class WebContentController {
     if (type == 'webtoons') {
       return { type, keyword, webtoons, userInfo };
     } else if (type == 'authors') {
-      const authors = await this.webContentService.searchFromAuthors(keyword);
-      return { type, keyword, authors };
+      const authors = await this.webContentService.searchFromAuthors(
+        keyword,
+        req.user,
+      );
+      return { type, keyword, authors, userInfo };
     } else if (type == 'users') {
       const users = await this.webContentService.searchFromUsers(keyword);
       return { type, keyword, users };

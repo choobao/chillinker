@@ -117,8 +117,8 @@
                   <div class="no-result">검색 결과가 없습니다</div>
                 <% } else { %>
                 <% authors.forEach((item) => { %>
-                  <li class="searched-card">
-                    <a href="/books/<%= item.id %>"> 
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a href="javascript:void(0);"> 
                       <div class="searched-card-image">
                         <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
                       </div>
@@ -215,12 +215,12 @@
                 </div>
                 <% } else if (type == 'ck') { %>
                   <div class="result_list">
-                    <% if(ck.ck.length === 0) { %>
+                    <% if(ck.length === 0) { %>
                       <div class="no-result">검색 결과가 없습니다</div>
                     <% } else { %>
-                    <% ck.ck.forEach((item) => { %>
-                      <li class="searched-card">
-                        <a href="/books/<%= item.id %>"> 
+                    <% ck.forEach((item) => { %>
+                      <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        <a href="javascript:void(0);"> 
                           <div class="searched-card-image">
                             <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
                           </div>

@@ -44,7 +44,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('45 3 * * *')
+  @Cron('19 9 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
     const webtoons = webContents.filter(
@@ -54,8 +54,6 @@ export class ElasticSearchService {
       (content) => content.contentType === ContentType.WEBNOVEL,
     );
 
-    const emitter = new EventEmitter();
-    emitter.setMaxListeners(30);
     try {
       const startTime = new Date().getTime();
       console.log('시작!');
@@ -64,11 +62,9 @@ export class ElasticSearchService {
       await this.indexContents(webnovels, 'webnovels');
       console.log(new Date().getTime() - startTime, ' ms');
     } catch (err) {
-      emitter.setMaxListeners(10);
       console.error('인덱싱 중 오류 발생: ', err);
       throw err;
     }
-    emitter.setMaxListeners(10);
   }
 
   async search(indexName: string, keyword: string, fieldName: string) {
