@@ -99,3 +99,29 @@
   width: 700px;
   margin-bottom: 20px;
 }
+
+.search_btn1 {
+  background-color: transparent;
+  color: #000;
+  border-radius: 7px;
+  padding: 2px;
+}
+
+.search_btn2 {
+  background-color: transparent;
+  color: #000;
+  border-radius: 7px;
+  padding: 2px;
+}
+
+.search_btn1.active,
+.search_btn1:hover {
+  background-color: #6a5acd;
+  color: #fff;
+}
+
+.search_btn2.active,
+.search_btn2:hover {
+  background-color: #6a5acd;
+  color: #fff;
+}
