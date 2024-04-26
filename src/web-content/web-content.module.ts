@@ -8,10 +8,29 @@ import { Collections } from '../collection/entities/collections.entity';
 import { Likes } from '../like/entities/likes.entity';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ElasticSearchService } from '../elastic-search/elastic-search.service';
+import { ReviewService } from 'src/review/review.service';
+import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
+import { PReviews } from 'src/review/entities/platform.reviews.entity';
+import { ReviewLikes } from 'src/review/entities/review.likes.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Likes, WebContents, Users, Collections])],
-  providers: [WebContentService, OptionalAuthGuard, ElasticSearchService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Likes,
+      WebContents,
+      Users,
+      Collections,
+      CReviews,
+      PReviews,
+      ReviewLikes,
+    ]),
+  ],
+  providers: [
+    WebContentService,
+    OptionalAuthGuard,
+    ElasticSearchService,
+    ReviewService,
+  ],
   controllers: [WebContentController],
   exports: [WebContentService],
 })
