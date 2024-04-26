@@ -202,37 +202,38 @@ export class CrawlerService {
   }
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
-  @Cron('54 15 * * *')
+
+  @Cron('42 1 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
 
       const naverCurrNumWebnovel =
-        +(await this.redisService.getValue('naver_webnovel')) || 50; //0
+        +(await this.redisService.getValue('naver_webnovel')) || 0;
       const naverCurrNumWebtoon =
-        +(await this.redisService.getValue('naver_webtoon')) || 50;
+        +(await this.redisService.getValue('naver_webtoon')) || 0;
 
       const kakaoCurrPageWebnovel =
-        +(await this.redisService.getValue('kakao_webnovel')) || 4; // 0
+        +(await this.redisService.getValue('kakao_webnovel')) || 0;
       const kakaoCurrPageWebtoon =
-        +(await this.redisService.getValue('kakao_webtoon')) || 4;
+        +(await this.redisService.getValue('kakao_webtoon')) || 0;
 
       const ridiCurrRnovels =
-        +(await this.redisService.getValue('ridi_curr1650')) || 2; //1
+        +(await this.redisService.getValue('ridi_curr1650')) || 1;
       const ridiCurrRFnovels =
-        +(await this.redisService.getValue('ridi_curr6050')) || 2;
+        +(await this.redisService.getValue('ridi_curr6050')) || 1;
       const ridiCurrFnovels =
-        +(await this.redisService.getValue('ridi_curr1750')) || 2;
+        +(await this.redisService.getValue('ridi_curr1750')) || 1;
       const ridiCurrBnovels =
-        +(await this.redisService.getValue('ridi_curr4150')) || 2;
+        +(await this.redisService.getValue('ridi_curr4150')) || 1;
       const ridiCurrWebtoons =
-        +(await this.redisService.getValue('ridi_curr1600')) || 2;
+        +(await this.redisService.getValue('ridi_curr1600')) || 1;
 
       const mbWebnovelCurPage =
-        +(await this.redisService.getValue('mrblueWebnovelCur')) || 2; //1
+        +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
       const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
       const mbWebtoonCurPage =
-        +(await this.redisService.getValue('mrblueWebtoonCur')) || 2;
+        +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
       const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
 
       let begin_time = new Date().getTime();
@@ -428,6 +429,7 @@ export class CrawlerService {
               pReview.createDate = review.createDate;
               pReview.likeCount = review.likeCount;
               pReview.webContentId = contentId;
+              pReview.isSpoiler = review.isSpoiler ? review.isSpoiler : 0;
               return pReview;
             });
 

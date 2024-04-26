@@ -87,22 +87,21 @@
 }
 
 .contents_box {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 10px 0;
   display: flex;
   margin: 0 auto;
-  width: calc(100% + 40px); /* 카드 너비 4개 + 여백 */
+  width: calc(100% + 80px); /* 카드 너비 4개 + 여백 */
   transition: transform 0.5s ease-in-out;
 }
 
 .contents {
+  width: 240px;
   flex: 0 0 240px;
-  margin: 10px;
+  margin: 0 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   border-bottom: 1px solid #eee;
-  padding: 10px 0;
 }
 
 .contents:last-child {
@@ -115,14 +114,23 @@
   display: block;
   margin: 0 auto 10px;
   object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .contents_title,
 .contents_category,
 .contents_reviewCount,
 .contents_ranking {
-  margin: 5px 0;
+  margin: 5px 10px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.contents_title {
+  font-weight: bold;
 }
 
 /* login, register */
@@ -131,11 +139,9 @@
 .register-wrapper,
 .mypage-wrapper {
   width: 400px;
-  /* height: 330px; */
-  padding: 30px;
+  padding: 30px 30px 50px 30px;
   box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   position: relative;
 }
 
@@ -328,8 +334,14 @@ textarea#intro {
 }
 
 .review-input-right {
-  display: table-cell;
-  vertical-align: top;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.mb-3 {
+  width: 900px;
+  padding: 10px;
 }
 
 .detail-keyword {
@@ -419,7 +431,7 @@ textarea#intro {
   cursor: pointer;
   line-height: 1em;
   vertical-align: baseline;
-  width: 45px;
+  width: 100px;
   padding: 12px 0;
   /* border: 2px solid #000; */
   border-radius: 7px;
@@ -466,9 +478,10 @@ textarea#intro {
 }
 
 .result_list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 18% 18% 18% 18% 18%;
   justify-content: center;
+  margin-bottom: 40px;
 }
 
 .bonenjung-wrap {
@@ -512,10 +525,19 @@ textarea#intro {
 }
 
 .review-info-section {
-  display: table;
+  display: flex;
   table-layout: fixed;
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 70px;
+  flex-direction: column;
+}
+
+.my-review-info-section {
+  display: flex;
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 70px;
+  justify-content: center;
 }
 
 .review-input-left {
@@ -524,11 +546,6 @@ textarea#intro {
   padding: 32px 0 20px 0;
   text-align: center;
   cursor: default;
-}
-
-.review-input-right {
-  display: table-cell;
-  vertical-align: top;
 }
 
 .review_input_textarea {
@@ -666,7 +683,7 @@ textarea#intro {
   margin: 0;
   padding: 0;
   display: inline-block;
-  margin-right: 13px;
+  /* margin-right: 13px; */
 }
 
 .show_review {

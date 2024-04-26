@@ -22,15 +22,39 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-$(document).ready(function () {
-  $('#collection-btn').click(function () {
-    $('#modal').show();
-    $('#collection-modal').show();
+const spoilerBtns = document.querySelectorAll('.alert_detail_link');
+const myReview = document.getElementById(`review-wrapper`);
 
-    $('.close').click(function () {
-      $('#modal').hide();
-      $('#collection-modal').hide();
-    });
+window.addEventListener('load', function () {
+  spoilerBtns.forEach(function (spoilerBtn) {
+    const index = spoilerBtn.id.split('-')[1];
+    const spoilerBlind = document.getElementById(`alert_article-${index}`);
+
+    // 스포일러 버튼이 존재하는 경우
+    if (spoilerBlind && !myReview) {
+      // 스포일러 버튼의 스타일에 position을 absolute로 설정합니다.
+      spoilerBlind.style.position = 'absolute';
+    }
+  });
+});
+
+$(document).ready(function () {
+  var userId = document.getElementById('userId').textContent;
+  var contentId = document.getElementById('contentId').textContent;
+
+  $('#collection-btn').click(function () {
+    if (!userId) {
+      alert('로그인이 필요한 서비스입니다!');
+      return;
+    } else {
+      $('#modal').show();
+      $('#collection-modal').show();
+
+      $('.close').click(function () {
+        $('#modal').hide();
+        $('#collection-modal').hide();
+      });
+    }
 
     window.onclick = function (event) {
       if (event.target == modal) {
@@ -39,29 +63,45 @@ $(document).ready(function () {
       }
     };
 
-    var userId = document.getElementById('userId').textContent;
-    var contentId = document.getElementById('contentId').textContent;
-
     $.ajax({
       type: 'GET',
       url: `/collections/title/${userId}`,
       success: function (datas) {
         let editCollections = '';
 
-        datas.forEach(function (data) {
-          let editCollection = `
-          <div class='col-title' id='col_title-${data.id}'>
-            <label class='col-title-list' for="title-${data.id}">${data.title}</label>
-            <br />
-            <div class="btn_area">
-              <button type="button" class="preference-button col-add-btn">
-                추가
-              </button>
+        if (datas.length === 0) {
+          // 데이터가 없는 경우 "내 컬렉션이 없습니다" 텍스트를 표시합니다.
+          editCollections = `
+          <div class='new-col'>
+            <div class='new-col-title'>
+              <p>내 컬렉션이 없습니다. 새로운 컬렉션을 만들어보세요!</p>
             </div>
+            <div class="btn_area">
+            <a href="/collections">
+            <button type="button" class="new-col-btn">
+              만들러가기
+            </button></a>
+          </div>
           </div>
           `;
-          editCollections += editCollection;
-        });
+        } else {
+          // 데이터가 있는 경우 컬렉션을 표시합니다.
+          datas.forEach(function (data) {
+            let editCollection = `
+              <div class='col-title' id='col_title-${data.id}'>
+                <label class='col-title-list' for="title-${data.id}">${data.title}</label>
+                <br />
+                <div class="btn_area">
+                  <button type="button" class="preference-button col-add-btn">
+                    추가
+                  </button>
+                </div>
+              </div>
+            `;
+            editCollections += editCollection;
+          });
+        }
+
         $('.modal_content').html(editCollections);
       },
       error: function (response) {
@@ -90,102 +130,34 @@ $(document).ready(function () {
   });
 });
 
+spoilerBtns.forEach(function (spoilerBtn) {
+  spoilerBtn.addEventListener('click', function () {
+    const index = this.id.split('-')[1];
+    const spoilerBlind = document.getElementById(`alert_article-${index}`);
+    const reviewWrap = document.getElementById(`review-wrapper-${index}`);
+
+    spoilerBlind.style.display = 'none';
+    reviewWrap.style.display = 'block';
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   var url = window.location.href;
   var idUrl = url.split('?')[0];
 
-  //전체 선택
   const editButtons = document.querySelectorAll('.editButton');
   const deleteButtons = document.querySelectorAll('.deleteButton');
   const saveButtons = document.querySelectorAll('.saveButton');
   const likeButtons = document.querySelectorAll('.rui_button_white_25');
 
-  editButtons.forEach(function (editButton) {
-    editButton.addEventListener('click', function () {
-      console.log('클림ㄱ함');
-      const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      const editwrapper = document.getElementById(`editWrapper-${index}`);
-      const saveButton = document.getElementById(`saveButton-${index}`); // 저장 버튼 선택
-      const reviewContent = document.getElementById(`reviewWrapper-${index}`); // 수정할 리뷰 내용 선택
-
-      this.style.display = 'none'; // 현재 수정 버튼 숨기기
-      saveButton.style.display = 'block'; // 저장 버튼 보이기
-      editwrapper.style.display = 'block'; // 입력 필드 보이기
-      reviewContent.style.display = 'none';
-    });
-  });
-
-  const spoilerBtns = document.querySelectorAll('.alert_detail_link');
-  const reviewWraps = document.querySelectorAll('.review-wrapper');
-  const spiolerBlinds = document.querySelectorAll('.alert_article');
-
-  var reviewItems = document.querySelectorAll('.show_review');
-
-  reviewItems.forEach(function (reviewItem) {
-    var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
-    var spiolerBlinds = document.getElementById(`alert_article-${index}`);
-    var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
-    console.log(spiolerBlinds);
-    console.log(reviewWrapper);
-
-    if (spiolerBlinds) {
-      reviewWrapper.style.display = 'none';
-    }
-  });
-
-  spoilerBtns.forEach(function (spoilerBtn) {
-    spoilerBtn.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const spoilerBlind = document.getElementById(`alert_article-${index}`);
-      const reviewWrap = document.getElementById(`review-wrapper-${index}`);
-
-      spoilerBlind.style.display = 'none';
-      reviewWrap.style.display = 'block';
-    });
-  });
-
-  saveButtons.forEach(function (saveButton) {
-    saveButton.addEventListener('click', function () {
+  likeButtons.forEach(function (likeButton) {
+    likeButton.addEventListener('click', function () {
       const index = this.id.split('-')[1];
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-      const editContentInput = document.getElementById(`editInput-${index}`); // 수정된 editContent 입력 필드 선택
-      const editRateInput = document.getElementById(`editRateInput-${index}`); // 수정된 editRate 입력 필드 선택
-
-      var formData = {
-        content: editContentInput.value, // 수정된 방식으로 값을 가져옴
-        rate: parseInt(editRateInput.value, 10), // 수정된 방식으로 값을 가져옴
-        isSpoiler: $('input[name="editIsSpoiler"]').is(':checked'), // isSpoiler 불리언 값 변환은 그대로 유지
-      };
-
-      console.log(formData);
 
       $.ajax({
-        type: 'Patch',
-        url: `${idUrl}/${reviewId}`,
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function (data) {
-          location.reload(true);
-        },
-        error: function (response) {
-          alert(response.responseJSON.message);
-          location.reload(true);
-        },
-      });
-    });
-  });
-
-  deleteButtons.forEach(function (deleteButton) {
-    deleteButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1]; // 버튼의 id에서 인덱스 추출
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      // 삭제 요청 실행
-      $.ajax({
-        type: 'Delete',
-        url: `${idUrl}/${reviewId}`,
+        type: 'Post',
+        url: `${idUrl}/${reviewId}/likes`,
         contentType: 'application/json',
         success: function (data) {
           location.reload(true); // 성공 시 페이지 새로고침
@@ -197,12 +169,82 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  editButton.addEventListener('click', function () {
+    // const reviewId = document.getElementById(`myReviewId`).textContent;
+
+    const editwrapper = document.getElementById(`editWrapper`);
+    const saveButton = document.getElementById(`saveButton`); // 저장 버튼 선택
+    const reviewContent = document.getElementById(`reviewWrapper`); // 수정할 리뷰 내용 선택
+
+    this.style.display = 'none'; // 현재 수정 버튼 숨기기
+    saveButton.style.display = 'block'; // 저장 버튼 보이기
+    editwrapper.style.display = 'block'; // 입력 필드 보이기
+    reviewContent.style.display = 'none';
+  });
+
+  //전체 선택
+  saveButton.addEventListener('click', function () {
+    const reviewId = document.getElementById(`reviewId`).textContent;
+    const editContentInput = document.getElementById(`editInput`); // 수정된 editContent 입력 필드 선택
+    const editRateInput = document.getElementById(`editRateInput`); // 수정된 editRate 입력 필드 선택
+
+    var formData = {
+      content: editContentInput.value, // 수정된 방식으로 값을 가져옴
+      rate: parseInt(editRateInput.value, 10), // 수정된 방식으로 값을 가져옴
+      isSpoiler: $('input[name="editIsSpoiler"]').is(':checked'), // isSpoiler 불리언 값 변환은 그대로 유지
+    };
+
+    $.ajax({
+      type: 'Patch',
+      url: `${idUrl}/${reviewId}`,
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function (data) {
+        location.reload(true);
+      },
+      error: function (response) {
+        alert(response.responseJSON.message);
+        location.reload(true);
+      },
+    });
+  });
+
+  deleteButton.addEventListener('click', function () {
+    const reviewId = document.getElementById(`reviewId`).textContent;
+
+    // 삭제 요청 실행
+    $.ajax({
+      type: 'Delete',
+      url: `${idUrl}/${reviewId}`,
+      contentType: 'application/json',
+      success: function (data) {
+        location.reload(true); // 성공 시 페이지 새로고침
+      },
+      error: function (response) {
+        alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+      },
+    });
+  });
+
+  const reviewWraps = document.querySelectorAll('.review-wrapper');
+  const spiolerBlinds = document.querySelectorAll('.alert_article');
+
+  var reviewItems = document.querySelectorAll('.show_review');
+
+  reviewItems.forEach(function (reviewItem) {
+    var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
+    var spiolerBlinds = document.getElementById(`alert_article-${index}`);
+    var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
+
+    if (spiolerBlinds) {
+      reviewWrapper.style.display = 'none';
+    }
+  });
+
   likeButtons.forEach(function (likeButton) {
     likeButton.addEventListener('click', function () {
       const index = this.id.split('-')[1];
       const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      console.log(reviewId);
 
       $.ajax({
         type: 'Post',
@@ -264,31 +306,3 @@ $('#like-btn').click(function () {
     },
   });
 });
-
-// function getCollectionTitles(userId) {
-//   $('#modal').show();
-//   $('#collection-modal').show();
-
-//   console.log('유저:', userId);
-
-//   $.ajax({
-//     type: 'GET',
-//     url: `/collections/title/${userId}`,
-//     success: function (data) {
-//       console.log(data);
-
-//       let editCollection = `
-//     <label for="title">컬렉션 제목</label>
-//     <input type="text" name="title" id="title" value="${data.title}" />
-//     <br />
-//     <div class="btn_area">
-//       <input type="submit" value="완료"/>
-//     </div>`;
-//       // 컬렉션 모달 내용 변경
-//       $('.collection_modal').html(editCollection);
-//     },
-//     error: function (response) {
-//       alert(response.responseJSON.message);
-//     },
-//   });
-// }

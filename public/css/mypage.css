@@ -16,18 +16,23 @@ body {
 .login-wrapper,
 .register-wrapper,
 .mypage-wrapper {
-  margin: 130px auto 200px;
+  margin: 40px auto;
   width: 300px;
   box-sizing: border-box;
   position: relative;
 }
 
 .login-wrapper > h2,
-.register-wrapper > h2,
-.mypage-wrapper {
+.register-wrapper > h2 {
   font-size: 24px;
   color: #7b68ee;
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.mypage-wrapper {
+  font-size: 24px;
+  color: #7b68ee;
   text-align: center;
 }
 

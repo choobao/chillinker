@@ -29,7 +29,9 @@
         class="search_input_bar"
         style="height: 50px; background-color: #f5f5fa; padding: 15px"
       >
+      <div class="search-wrapper" style="width: 1200px;  margin: auto;">
         <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
+      </div>
       </div>
     <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
         <div class="search_btn_bar">
@@ -48,6 +50,9 @@
             </li>
             <li class="search_btn5" style="margin-right: 10px;">
               <a href="/search?type=collections&query=<%= keyword %>">컬렉션</a>
+            </li>
+            <li class="search_btn6" style="margin-right: 10px;">
+              <a href="/search?type=ck&query=<%= keyword %>">키워드</a>
             </li>
           </ul>
         </div>
@@ -112,21 +117,21 @@
                   <div class="no-result">검색 결과가 없습니다</div>
                 <% } else { %>
                 <% authors.forEach((item) => { %>
-                  <li class="searched-card">
-                    <a href="/books/<%= item.webContents_id %>"> 
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a href="javascript:void(0);"> 
                       <div class="searched-card-image">
-                        <img class="searched-card-thumbnail" src="<%= item.webContents_image %>" alt="<%= item.webContents_title %>"/>
+                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
-                          <% if (item.webContents_title.length > 14) { %>
-                            <%= item.webContents_title.slice(0, 14) + '...' %>
+                          <% if (item.title.length > 14) { %>
+                            <%= item.title.slice(0, 14) + '...' %>
                           <% } else { %>
-                            <%= item.webContents_title %>
+                            <%= item.title %>
                           <% } %>
                         </div>
                         <div class="card-info-card_author">
-                            <% const arr = item.webContents_author.split(',') %>
+                            <% const arr = item.author.split(',') %>
                             <% let role = arr[0].split('/')[0] %>
                             <% const name = arr[0].split('/')[1] %>
                             <% if(role == 'author' ){ %>
@@ -145,7 +150,7 @@
                               <span class="author-detail"><%= name %></span> <%= role %>
                              </span>
                         </div>
-                        <div class="card-info-star">별점:<%= item.webContents_star_rate %></div>
+                        <div class="card-info-star">별점:<%= item.starRate %></div>
                       </div>
                     </a>
                   </li>
@@ -208,6 +213,52 @@
                   <% }); %>
                   <% } %>
                 </div>
+                <% } else if (type == 'ck') { %>
+                  <div class="result_list">
+                    <% if(ck.length === 0) { %>
+                      <div class="no-result">검색 결과가 없습니다</div>
+                    <% } else { %>
+                    <% ck.forEach((item) => { %>
+                      <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        <a href="javascript:void(0);"> 
+                          <div class="searched-card-image">
+                            <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
+                          </div>
+                          <div class="searched-card-info">
+                            <div class="card-info-title">
+                              <% if (item.title.length > 14) { %>
+                                <%= item.title.slice(0, 14) + '...' %>
+                              <% } else { %>
+                                <%= item.title %>
+                              <% } %>
+                            </div>
+                            <div class="card-info-card_author">
+                                <% const arr = item.author.split(',') %>
+                                <% let role = arr[0].split('/')[0] %>
+                                <% const name = arr[0].split('/')[1] %>
+                                <% if(role == 'author' ){ %>
+                                  <% role = '글' %>
+                                  <% }else if(role =='illustrator'){ %>
+                                    <% role = '그림' %>
+                                    <% }else if(role =='original_author'){ %>
+                                      <% role = '원작' %>
+                                      <% }else if(role =='Author'){ %>
+                                        <% role = '글/그림' %>
+                                        <% }else{ %>
+                                          <% role = '작가' %>
+                                          <% }%>
+                                <%= %>
+                                <span class="metadata-item- author-item-wrapper">
+                                  <span class="author-detail"><%= name %></span> <%= role %>
+                                 </span>
+                            </div>
+                            <div class="card-info-star">별점:<%= item.starRate %></div>
+                          </div>
+                        </a>
+                      </li>
+                      <% }); %>
+                      <% } %>
+                    </div>
               <% } else { %>
                 <div class="result_list">
                   <% if(webnovels.length === 0) { %>
@@ -268,6 +319,7 @@
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     </div>
+    <button class="top_btn" id="top-btn">↑</button>
     <script src="/js/adult_blind.js"></script>
     <script>
       window.onload = function() {
@@ -283,7 +335,22 @@
           webnovelBtn.classList.add('selected');
         }  
       }
-      
+      $(document).ready(function () {
+        // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
+        $(window).scroll(function () {
+          if ($(this).scrollTop() > 100) {
+            $('#top-btn').fadeIn();
+          } else {
+            $('#top-btn').fadeOut();
+          }
+        });
+
+        // Top 버튼 클릭시 페이지 상단으로 이동
+        $('#top-btn').click(function () {
+          $('html, body').animate({ scrollTop: 0 }, 800);
+          return false;
+        });
+      });
     </script>
   </body>
 </html>

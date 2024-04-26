@@ -21,6 +21,13 @@
   width: 100%;
 }
 
+.my-review-wrapper {
+  width: 1000px;
+  padding: 30px;
+  background: #e6e6fa;
+  border-radius: 7px;
+}
+
 .review-list {
   padding: 0 40px;
 }
@@ -67,15 +74,14 @@
 }
 
 .alert_article {
-  margin: 0;
   padding: 0;
   background: #f2f4f5;
   border-radius: 3px;
   padding: 27px 0;
   text-align: center;
-  width: 1000px;
+  width: 1200px;
   /* position: absolute; */
-  height: 145px;
+  height: 125px px;
 }
 
 .edit-delete-btn-wrapper {
@@ -103,12 +109,43 @@
   letter-spacing: -0.03em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin: 0;
+  /* margin: 0; */
   padding: 0;
   font-size: 13px;
   color: #808991;
   margin-top: 25px;
+  margin-bottom: 10px;
   line-height: 1.5em;
+}
+
+.new-col {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-col-title {
+  margin: 0 0 20px;
+}
+
+.new-col-btn {
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  width: 100px;
+  padding: 12px 0;
+  /* border: 2px solid #000; */
+  border-radius: 7px;
+  background: #e6e6fa;
 }
 
 .col-title {
@@ -246,11 +283,16 @@
 .rui_button_white_25 {
   width: 70px;
   height: 30px;
-  background: #e6e6fa;
   border-radius: 7px;
-  border: 2px solid #000;
   text-align: center;
   cursor: pointer;
+}
+
+.my-rui_button_white_25 {
+  width: 70px;
+  height: 30px;
+  border-radius: 7px;
+  text-align: center;
 }
 
 .rui_button_contents {
@@ -264,6 +306,7 @@
 .review-Btn {
   display: flex;
   padding: 10px 0;
+  flex-direction: row-reverse;
 }
 
 .selected {
@@ -273,5 +316,10 @@
 }
 
 #review_tab > li {
-  margin: 6px 6px 20px 6px;
+  padding: 6px 6px 14px 6px;
+}
+
+li.order_list {
+  padding: 5px 10px 0 10px;
+  margin-left: 5px;
 }

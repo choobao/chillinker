@@ -21,56 +21,6 @@
       <main>
         <div class="inner">
           <div class="ranking_box">
-            <div class="naver_webtoon_rank">
-              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
-              <div class="card_container">
-                <button class="prev-button">‹</button>
-                <div class="slider">
-                  <div class="contents_box">
-                    <% naverWebtoons.forEach((item) => { %>
-                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
-                       
-                        <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
-                        <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      
-                      </div>
-                    <% }); %>
-                  </div>
-                </div>
-                <button class="next-button">›</button>
-              </div>
-            </div>
-          </div>
-          <div class="ranking_box">
-            <div class="naver_webnovel_rank">
-              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹소설</h2>
-              <div class="card_container">
-                <button class="prev-button">‹</button>
-                <div class="slider">
-                  <div class="contents_box">
-                    <% naverWebnovels.forEach((item) => { %>
-                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
-                        
-                        <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
-                        <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
-                      
-                      </div>
-                    <% }); %>
-                  </div>
-                </div>
-                <button class="next-button">›</button>
-              </div>
-            </div>
-          </div>
-          <div class="ranking_box">
             <div class="kakao_webtoon_rank">
               <h2 class="ranking_title">카카오 페이지 인기 순위_웹툰</h2>
               <div class="card_container">
@@ -82,7 +32,25 @@
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
@@ -107,7 +75,25 @@
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
@@ -121,6 +107,93 @@
             </div>
           </div>
           <div class="ranking_box">
+            <div class="naver_webtoon_rank">
+              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹툰</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% naverWebtoons.forEach((item) => { %>
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                       
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+          <div class="ranking_box">
+            <div class="naver_webnovel_rank">
+              <h2 class="ranking_title">네이버 시리즈 인기 순위_웹소설</h2>
+              <div class="card_container">
+                <button class="prev-button">‹</button>
+                <div class="slider">
+                  <div class="contents_box">
+                    <% naverWebnovels.forEach((item) => { %>
+                      <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        
+                        <img src="<%= item.image %>" alt="작품 표지"/>
+                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
+                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
+                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                      
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <button class="next-button">›</button>
+              </div>
+            </div>
+          </div>
+    
+          <div class="ranking_box">
             <div class="ridi_webtoon_rank">
               <h2 class="ranking_title">리디북스 인기 순위_웹툰</h2>
               <div class="card_container">
@@ -132,7 +205,25 @@
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
@@ -157,7 +248,25 @@
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
@@ -182,7 +291,25 @@
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
@@ -207,7 +334,25 @@
                       
                         <img src="<%= item.image %>" alt="작품 표지"/>
                         <h3 class="contents_title"><%= item.title %></h3>
-                        <!-- <h4 class="contents_author"><%= item.author %></h4> -->
+                        <h4 class="contents_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
                         <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
                         <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>

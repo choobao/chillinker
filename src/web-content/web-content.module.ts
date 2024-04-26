@@ -7,10 +7,11 @@ import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { Likes } from '../like/entities/likes.entity';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { ElasticSearchService } from '../elastic-search/elastic-search.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Likes, WebContents, Users, Collections])],
-  providers: [WebContentService, OptionalAuthGuard],
+  providers: [WebContentService, OptionalAuthGuard, ElasticSearchService],
   controllers: [WebContentController],
   exports: [WebContentService],
 })

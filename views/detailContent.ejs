@@ -54,7 +54,7 @@
                 <div class="bonenjung-wrap">
                   <button type="button" class="bonenjung-button" id="collection-btn" onclick="getCollectionTitles('<%= user.id %>')">
                     <span class="button-contents">
-                      <span class="col-button-icon" id="button-icon">📚</span>
+                      <span class="col-button-icon" id="button-icon">📚</span> 컬렉션
                     </span>
                   </button>
                 </div>
@@ -83,7 +83,9 @@
                               <% role = '작가' %>
                               <% }%>
                  <span class="metadata-item- author-item-wrapper">
+                  <a href="/search?type=authors&query=<%= name %>">
                   <span class="author-detail"><%= name %></span> <%= role %>
+                  </a>
                  </span>
                   <% }); %>
                 </p>
@@ -110,10 +112,12 @@
               <% if (content.keyword && content.keyword.length > 0) { %>
                   <% content.keyword.split(',').forEach((item) => { %>
                     <li class="keyword-item">
+                      <a href="/search?type=ck&query=<%= item %>">
                       <span class="detail-keyword">
                         <span class="hash-icon">#</span>
                         <%= item %>
                       </span>
+                      </a>
                     </li>
                   <% }); %>
               <% } %>
@@ -139,67 +143,142 @@
               </h2>
             </div>
           </article>
-          <div class="review-info-section">
-            <div class="review-input-right">
-              <form class="mb-3" name="myform" id="myform" method="post" action="/books/<%- content.id %>">
-                <fieldset>
-                  <input type="radio" name="rate" value="5" id="rate1" /><label
-                    for="rate1"
-                    >★</label
-                  >
-                  <input type="radio" name="rate" value="4" id="rate2" /><label
-                    for="rate2"
-                    >★</label
-                  >
-                  <input type="radio" name="rate" value="3" id="rate3" /><label
-                    for="rate3"
-                    >★</label
-                  >
-                  <input type="radio" name="rate" value="2" id="rate4" /><label
-                    for="rate4"
-                    >★</label
-                  >
-                  <input type="radio" name="rate" value="1" id="rate5" /><label
-                    for="rate5"
-                    >★</label
-                  >
-                </fieldset>
-             
-              <div class="review-testarea-wrapper">
-                <textarea
-                  class="review_input_textarea js_review_input_textarea"
-                  name="content"
-                  title="리뷰 입력"
-                  placeholder="리뷰 작성 시 광고 및 욕설, 비속어나 타인을 비방하는 문구를 사용하시면 비공개될 수 있습니다."
-                ></textarea>
-              </div>
-              <div class="buttons_wrapper">
-                <div class="spolier_and_wirte_button_wrapper">
-                  <div class="spoiler_input_wrapper">
-                    <input type="checkbox" name="isSpoiler" />
+       
+            <!-- 만약 리뷰 작성한 적 있다면 -->
+            <% if (myReview !== null && Object.keys(myReview).length !== 0) { %>
+              <div class="my-review-info-section">
+                <div class="my-review-wrapper" id="review-wrapper">
+                <div class="review-list-left-info">
+                  <div class="left_contents">
+                    <p>
+                      <span class="star_rate">
+                        <span class="RSGBookMetadata_StarRate">
+                          <span class="StarRate_IconBox">
+                            <span class="StarRate_IconFill" style="width: 100%"></span>
+                          </span>
+                        </span>
+                      </span>
+                      <div class="reviewer-image">
+                        <img
+                        src="<%= user.profileImage %>"
+                        alt="프로필사진"
+                        onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                        class="profile-img" />
+                      </div>
+                      <span class="review_id" id="reviewId" style="display:none;"><%= myReview.id %></span>
+                      <span class="review_id" style="display:none;"><%= myReview.isSpoiler %></span>
+                      <span class="reviewer_id"><%= user.nickname %></span>
+                      <div class="review_date"><%= myReview.createdAt %></div>
+                      <input type="number" class="reviewer_rate" id="editRateInput-<%= myReview.id %>" style="display:none;" value="<%= myReview.rate %>">
+                    </p>
+                    <div class="review_date_and_report_wrapper">
+                    </div>
+                  </div>
+                </div>
+                <div class="review-list-right-info">
+                  <div class="reviewWrapper"  id="reviewWrapper">
+                  <span class="reviewer_rate" id="reviewer_rate">평점: <%= myReview.rate %></span>
+                  <p class="review_content js_review_content" id="myReview-content"><%= myReview.content %></p>
+                </div>
+
+                
+                <div class="editWrapper" id="editWrapper" style="display:none">
+                  <span class="reviewer_rate" id="editRateInputq" >평점:
+                    <input type="text" name='editRate' class="reviewer_rate" id="editRateInput"  value="<%= myReview.rate %>" ></input></span>
+                  <input type="text" name="editContent" class="edit-review_content js_review_content" value="<%= myReview.content %>" id="editInput"></input>
+                  <div class="spoiler_input_wrapper" >
+                    <input type="checkbox" name="editIsSpoiler"/>
                     <span
                       for="spoiler_radio_input_write"
                       class="rui_checkbox_text"
-                      >스포일러가 있습니다.</span
-                    >
+                      >스포일러가 있습니다.</span>
                   </div>
-                  <div class="write_button_wrapper">
-                    <button type="submit" class="preference-button">
-                      <span class="button-contents">
-                        <span class="review-submit-text"> 리뷰 남기기</span>
+                </div>
+                
+                <div class="review-Btn">
+                  <div class="review-like-btn-wrapper">
+                    <button type="button"  id="likeBtn" class="my-rui_button_white_25 like_button js_like_button">
+                      <span class="rui_button_contents">
+                        <span class="rui_button_icon"></span>
+                        <span class="rui_button_text">
+                          <span class="indent_hidden">👍</span>
+                          <span class="like_count js_like_count"><%= myReview.likeCount %></span>
+                        </span>
                       </span>
                     </button>
                   </div>
-                </form>
-                </div>
+                  <div class="edit-delete-btn-wrapper">
+                    <button class="editButton" id="editButton">수정</button>
+                    <button id="saveButton" class="saveButton" style="display:none;">저장</button>
+                    <button class="deleteButton" id="deleteButton">삭제</button>
+                  </div>
+               
               </div>
-            </div>
+              </div>
+                </div>
+            <!-- 작성한 리뷰 정보가 없다면 -->
+              <% }else{ %>
+                <div class="review-info-section">
+                <div class="review-input-right">
+                  <form class="mb-3" name="myform" id="myform" method="post" action="/books/<%- content.id %>">
+                    <fieldset>
+                      <input type="radio" name="rate" value="5" id="rate1" /><label
+                        for="rate1"
+                        >★</label
+                      >
+                      <input type="radio" name="rate" value="4" id="rate2" /><label
+                        for="rate2"
+                        >★</label
+                      >
+                      <input type="radio" name="rate" value="3" id="rate3" /><label
+                        for="rate3"
+                        >★</label
+                      >
+                      <input type="radio" name="rate" value="2" id="rate4" /><label
+                        for="rate4"
+                        >★</label
+                      >
+                      <input type="radio" name="rate" value="1" id="rate5" /><label
+                        for="rate5"
+                        >★</label
+                      >
+                    </fieldset>
+                 
+                  <div class="review-testarea-wrapper">
+                    <textarea
+                      class="review_input_textarea js_review_input_textarea"
+                      name="content"
+                      title="리뷰 입력"
+                      placeholder="리뷰 작성 시 광고 및 욕설, 비속어나 타인을 비방하는 문구를 사용하시면 비공개될 수 있습니다."
+                    ></textarea>
+                  </div>
+                  <div class="buttons_wrapper">
+                    <div class="spolier_and_wirte_button_wrapper">
+                      <div class="spoiler_input_wrapper">
+                        <input type="checkbox" name="isSpoiler" />
+                        <span
+                          for="spoiler_radio_input_write"
+                          class="rui_checkbox_text"
+                          >스포일러가 있습니다.</span
+                        >
+                      </div>
+                      <div class="write_button_wrapper">
+                        <button type="submit" class="preference-button">
+                          <span class="button-contents">
+                            <span class="review-submit-text"> 리뷰 남기기</span>
+                          </span>
+                        </button>
+                      </div>
+                    </form>
+                </div>
+                <% } %>
           </div>
+        </div>
           <div class="review-list-section">
             <div class="rui_tab_and_order">
               <ul class="rui_tab_2 js_review_list_filter_wrapper" id="review_tab">
                 <li class="tab_list">
-                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active">
+                  <a href="/books/<%- content.id %>?option=p" class="js_select_tab_option active pReview">
                     Platform</a>
                 </li>
                 <li class="tab_list">
@@ -208,7 +287,12 @@
                 </li>
               </ul>
               <ul class="rui_order js_review_list_order_wrapper">
-                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a></li><li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option" data-order="like">추천순</a></li></ul>
+                <li class="order_list">
+                  <a href="/books/<%- content.id %>?option=<%- option %>&order=recent" class="js_select_tab_option active" data-order="latest">최신순</a>
+                </li>
+                <li class="order_list"><a href="/books/<%- content.id %>?option=<%- option %>&order=star" class="js_select_tab_option starOrder" data-order="like">추천순</a>
+                </li>
+              </ul>
             </div>
             
                <ul class="review-list">
@@ -280,11 +364,6 @@
                       </div>
                       
                       <div class="review-Btn">
-                        <div class="edit-delete-btn-wrapper">
-                          <button class="editButton" id="editButton-<%= index %>">수정</button>
-                          <button id="saveButton-<%= index %>" class="saveButton" style="display:none;">저장</button>
-                          <button class="deleteButton" id="deleteButton-<%= index %>">삭제</button>
-                        </div>
                         <div class="review-like-btn-wrapper">
                         <button type="button"  id="likeBtn-<%= index %>" class="rui_button_white_25 like_button js_like_button">
                           <span class="rui_button_contents">
@@ -299,8 +378,6 @@
                     </div>
                     </div>
 
-
-                 
                       </div>
                     </li>
                   <% }) %>
@@ -316,7 +393,7 @@
                       </p>
                     </article>
                     <% }%>
-                    <div class="review-wrapper" id="review-wrapper-<%= index %>">
+                <div class="review-wrapper" id="review-wrapper-<%= index %>">
                   <div class="review-list-left-info">
                     <div class="left_contents">
                       <p>
@@ -416,8 +493,17 @@
           const selectedBtn = document.querySelector(`.tab_list a[href*="option=${option}"]`).parentElement; 
           selectedBtn.classList.add('selected');
         }else {
-          const pReviewBtn = document.querySelector('.active').parentElement;
+          const pReviewBtn = document.querySelector('.pReview').parentElement;
           pReviewBtn.classList.add('selected');
+        }
+
+        const order = urlParams.get('order');
+        if(order) {
+          const selectedBtn = document.querySelector(`.order_list a[href*="order=${order}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const starReviewBtn = document.querySelector('.starOrder').parentElement;
+          starReviewBtn.classList.add('selected');
         }
       }
     </script>
