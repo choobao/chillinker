@@ -62,6 +62,28 @@ export class WebContentController {
       req.user,
     );
 
+    const bestlikeWebnovels = await this.webContentService.getBestLikesContents(
+      '웹소설',
+      req.user,
+    );
+    const bestlikeWebtoons = await this.webContentService.getBestLikesContents(
+      '웹툰',
+      req.user,
+    );
+    const bestReviewedWebnovels =
+      await this.webContentService.getBestReviewCountContents(
+        '웹소설',
+        req.user,
+      );
+    const bestReviewedWebtoons =
+      await this.webContentService.getBestReviewCountContents('웹툰', req.user);
+    const bestCollectionedWebnovels =
+      await this.webContentService.getBestCollectionContents(
+        '웹소설',
+        req.user,
+      );
+    const bestCollectionedWebtoons =
+      await this.webContentService.getBestCollectionContents('웹툰', req.user);
     return {
       naverWebtoons,
       naverWebnovels,
@@ -72,6 +94,12 @@ export class WebContentController {
       kakaoWebtoons,
       kakaoWebnovels,
       userInfo: this.webContentService.isAdult(req.user),
+      bestlikeWebnovels,
+      bestlikeWebtoons,
+      bestReviewedWebnovels,
+      bestReviewedWebtoons,
+      bestCollectionedWebnovels,
+      bestCollectionedWebtoons,
     };
   }
 

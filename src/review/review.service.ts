@@ -65,8 +65,7 @@ export class ReviewService {
 
     if (
       content.isAdult &&
-      (user === false ||
-        _.isNil(user) ||
+      (_.isNil(user) ||
         _.isNil(user.birthDate) ||
         !this.isOver19(new Date(user.birthDate)))
     ) {
