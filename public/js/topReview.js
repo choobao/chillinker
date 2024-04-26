@@ -21,33 +21,29 @@ document.addEventListener('DOMContentLoaded', function () {
     dateElement.textContent = formattedDate;
   });
 
-  const likeButtons = document.querySelectorAll('.my-rui_button_white_25');
-  console.log(likeButtons);
-  likeButtons.forEach(function (likeButton) {
-    likeButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const reviewId = document
-        .getElementById(`reviewId-${index}`)
-        .getAttribute('val');
-      console.log(reviewId);
-      $.ajax({
-        type: 'Post',
-        url: `/reviews/${reviewId}/likes`,
-        contentType: 'application/json',
-        success: function (data) {
-          location.reload(true); // 성공 시 페이지 새로고침
-        },
-        error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-        },
-      });
-    });
-  });
+  //   const likeButtons = document.querySelectorAll('.my-rui_button_white_25');
+  //   console.log(likeButtons);
+  //   likeButtons.forEach(function (likeButton) {
+  //     likeButton.addEventListener('click', function () {
+  //       const index = this.id.split('-')[1];
+  //       const reviewId = document
+  //         .getElementById(`reviewId-${index}`)
+  //         .getAttribute('val');
+  //       console.log(reviewId);
+  //       $.ajax({
+  //         type: 'Post',
+  //         url: `/reviews/${reviewId}/likes`,
+  //         contentType: 'application/json',
+  //         success: function (data) {
+  //           location.reload(true); // 성공 시 페이지 새로고침
+  //         },
+  //         error: function (response) {
+  //           alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
+  //         },
+  //       });
+  //     });
+  //   });
 
-  //   background-color: #6a5acd;
-  //   color: #fff;
-  //   border-radius: 7px;
-  //   padding: 2px;
   const urlParams = new URLSearchParams(window.location.search);
   const order = urlParams.get('order');
 
