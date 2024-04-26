@@ -114,4 +114,11 @@ export class WebContentController {
       return { type, keyword, webnovels, userInfo };
     }
   }
+
+  @UseGuards(OptionalAuthGuard)
+  @Get('/cbest')
+  async getChillinkerBestWebContents(@Req() req) {
+    const blc = await this.webContentService.getBestLikesContents(req.user);
+    return blc;
+  }
 }

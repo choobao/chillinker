@@ -6,8 +6,6 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 import { Repository } from 'typeorm';
 import { ContentType } from '../web-content/webContent.type';
 import { Cron } from '@nestjs/schedule';
-import { bool } from 'joi';
-import { EventEmitter } from 'stream';
 
 @Injectable()
 export class ElasticSearchService {
@@ -44,7 +42,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('19 9 * * *')
+  @Cron('59 11 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
     const webtoons = webContents.filter(

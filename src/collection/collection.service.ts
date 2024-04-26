@@ -334,9 +334,8 @@ export class CollectionService {
     return birthDate <= date19YearsAgo;
   }
 
-  blindAdultImage(user, contents: WebContents[]) {
+  blindAdultImage(user: Users | null, contents: WebContents[]) {
     if (
-      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))
@@ -353,10 +352,9 @@ export class CollectionService {
     return contents;
   }
 
-  isAdult(user) {
+  isAdult(user: Users | null) {
     const userInfo = { isAdult: 1 };
     if (
-      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))

@@ -68,9 +68,8 @@ export class WebContentService {
     return birthDate <= date19YearsAgo;
   }
 
-  blindAdultImage(user, contents) {
+  blindAdultImage(user: Users | null, contents: any[]) {
     if (
-      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))
@@ -87,10 +86,9 @@ export class WebContentService {
     return contents;
   }
 
-  isAdult(user) {
+  isAdult(user: Users | null) {
     const userInfo = { isAdult: 1 };
     if (
-      user === false ||
       _.isNil(user) ||
       _.isNil(user.birthDate) ||
       !this.isOver19(new Date(user.birthDate))
@@ -173,5 +171,31 @@ export class WebContentService {
     }
 
     return content;
+  }
+
+  // 지난 24시간 이내 생성된 likeCount가 높은 순 상위 20개
+  async getBestLikesContents(user: Users | null) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const contents = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .leftJoinAndSelect('webContents.likes', 'likes')
+      .where('likes.createdAt > :yesterday', { yesterday })
+      .groupBy('webContents.id')
+      .orderBy('COUNT(likes.id)', 'DESC')
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.image',
+        'webContents.category',
+        'webContents.isAdult',
+        'webContents.author',
+      ])
+      .addSelect('COUNT(likes.id)', 'likeCount')
+      .limit(20)
+      .getMany();
+
+    return contents;
   }
 }
