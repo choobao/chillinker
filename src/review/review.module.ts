@@ -22,6 +22,6 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
   ],
   controllers: [ReviewController],
   exports: [ReviewService],
-  providers: [ReviewService, SseService, OptionalAuthGuard],
+  providers: [ReviewService, OptionalAuthGuard],
 })
 export class ReviewModule {}
