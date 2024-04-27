@@ -721,3 +721,8 @@ textarea#intro {
   font-size: 15px;
   margin-left: 10px;
 }
+
+.selected-nav {
+  text-decoration: underline #fff;
+  font-weight: bolder;
+}
