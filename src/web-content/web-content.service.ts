@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, Like, Repository } from 'typeorm';
 import { WebContents } from './entities/webContents.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentType } from './webContent.type';
@@ -308,5 +308,206 @@ export class WebContentService {
           );
 
     return contents;
+  }
+
+  async getContentCategory(
+    user: Users,
+    type: string,
+    query: string,
+    orderBy: string,
+    page: number,
+  ) {
+    page = page ? page : 1;
+    let contentType =
+      type === 'webtoon' ? ContentType.WEBTOON : ContentType.WEBNOVEL;
+
+    const take = 30;
+    const skip = (page - 1) * take;
+
+    if (query === '일반') {
+      const totalContents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
+              .orWhere('webContents.category LIKE :drama', {
+                drama: `%드라마%`,
+              })
+              .orWhere('webContents.category LIKE :mystery', {
+                mystery: `%추리%`,
+              })
+              .orWhere('webContents.category LIKE :action', {
+                action: `%액션%`,
+              });
+          }),
+        )
+        .getMany();
+      const totalCount = totalContents.length;
+      const maxPage = Math.ceil(totalCount / take);
+
+      const contents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
+              .orWhere('webContents.category LIKE :drama', {
+                drama: `%드라마%`,
+              })
+              .orWhere('webContents.category LIKE :mystery', {
+                mystery: `%추리%`,
+              })
+              .orWhere('webContents.category LIKE :action', {
+                action: `%액션%`,
+              });
+          }),
+        )
+        .take(take)
+        .skip(skip)
+        .orderBy(
+          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
+          'DESC',
+        )
+        .getMany();
+
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    } else if (query === '로맨스') {
+      const totalContents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :romance', {
+              romance: `%로맨스%`,
+            }).orWhere('webContents.category LIKE :roco', {
+              roco: `%순정%`,
+            });
+          }),
+        )
+        .getMany();
+      const totalCount = totalContents.length;
+      const maxPage = Math.ceil(totalCount / take);
+
+      const contents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :romance', {
+              romance: `%로맨스%`,
+            }).orWhere('webContents.category LIKE :roco', {
+              roco: `%순정%`,
+            });
+          }),
+        )
+        .take(take)
+        .skip(skip)
+        .orderBy(
+          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
+          'DESC',
+        )
+        .getMany();
+
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    } else if (query === 'BL/GL') {
+      const totalContents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :BL', {
+              BL: `%BL%`,
+            }).orWhere('webContents.category LIKE :GL', {
+              GL: `%GL%`,
+            });
+          }),
+        )
+        .getMany();
+      const totalCount = totalContents.length;
+      const maxPage = Math.ceil(totalCount / take);
+
+      const contents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :BL', {
+              BL: `%BL%`,
+            }).orWhere('webContents.category LIKE :GL', {
+              GL: `%GL%`,
+            });
+          }),
+        )
+        .take(take)
+        .skip(skip)
+        .orderBy(
+          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
+          'DESC',
+        )
+        .getMany();
+
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    } else {
+      const totalCount = await this.webContentRepository.count({
+        where: {
+          contentType,
+          category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+        },
+      });
+      const maxPage = Math.ceil(totalCount / take);
+
+      let contents = await this.webContentRepository.find({
+        where: {
+          contentType,
+          category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+        },
+        take: take,
+        skip: skip,
+        order:
+          orderBy === 'recent' ? { pubDate: 'DESC' } : { starRate: 'DESC' },
+      });
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    }
   }
 }

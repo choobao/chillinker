@@ -6,6 +6,7 @@
     <title>Chillinker</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="/css/frame.css" />
+    <link rel="stylesheet" href="/css/category.css"/>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -41,28 +42,43 @@
           <span>|</span>
           <li class="category-nav"><a href="/category?query=무협">무협</a></li>
           <span>|</span>
-          <li class="category-nav"><a href="/category?query=BL">BL</a></li>
+          <li class="category-nav"><a href="/category?query=BL/GL">BL/GL</a></li>
           <span>|</span>
-          <li class="category-nav-normal"><a href="/category?query=소년%20드라마%20추리">일반</a></li>
+          <li class="category-nav-normal"><a href="/category?query=일반">일반</a></li>
         </ul>
       </nav>
   
       </div>
     <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
-        <div class="result_section">
+      <div class="rui_tab_and_order">
+        <ul class="rui_tab" id="category_type_tab">
+          <li class="tab_list">
+            <a href="/category?query=<%-query%>&type=webnovel" class="js_select_tab_option active webnovel">
+              웹소설</a>
+          </li>
+          <li class="tab_list">
+            <a href="/category?query=<%-query%>&type=webtoon" class="js_select_tab_option" data-filter="all">
+              웹툰</a>
+          </li>
+        </ul>
+        <ul class="rui_order">
+          <li class="order_list">
+            <a href="/category?query=<%-query%>&type=<%-type%>&orderBy=recent" class="js_select_tab_option active" data-order="recent">최신순</a>
+          </li>
+          <li class="order_list">
+            <a href="/category?query=<%-query%>&type=<%-type%>&orderBy=star" class="js_select_tab_option starOrder" data-order="star">평점순</a>
+          </li>
+        </ul>
+      </div>
+      <div class="result_section">
           <ul class="result_section_list">
-           
-            <% if (!keyword) { %>
-            <div class="empty_search">
-              <p>검색어를 입력하세요.</p>
-            </div>
-            <% } %>
-            <% if (type == 'webtoons') { %>
+            <% if(content.length === 0) { %>
+              <div class="total-contents-number">총 <strong>0</strong> 작품</div>
+              <div class="no-result">아직 카테고리의 작품이 없습니다</div>
+            <% } else { %>
+              <div class="total-contents-number">총 <strong><%= totalCount || 0%></strong> 작품</div>
               <div class="result_list">
-                <% if(webtoons.length === 0) { %>
-                  <div class="no-result">검색 결과가 없습니다</div>
-                <% } else { %>
-                <% webtoons.forEach((item) => { %>
+                <% content.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href = "javascript:void(0);">
                       <div class="searched-card-image">
@@ -103,209 +119,18 @@
                 <% }); %>
               <% } %>
               </div>
-            <% } else if (type == 'authors') { %>
-              <div class="result_list">
-                <% if(authors.length === 0) { %>
-                  <div class="no-result">검색 결과가 없습니다</div>
-                <% } else { %>
-                <% authors.forEach((item) => { %>
-                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
-                    <a href="javascript:void(0);"> 
-                      <div class="searched-card-image">
-                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
-                      </div>
-                      <div class="searched-card-info">
-                        <div class="card-info-title">
-                          <% if (item.title.length > 14) { %>
-                            <%= item.title.slice(0, 14) + '...' %>
-                          <% } else { %>
-                            <%= item.title %>
-                          <% } %>
-                        </div>
-                        <div class="card-info-card_author">
-                            <% const arr = item.author.split(',') %>
-                            <% let role = arr[0].split('/')[0] %>
-                            <% const name = arr[0].split('/')[1] %>
-                            <% if(role == 'author' ){ %>
-                              <% role = '글' %>
-                              <% }else if(role =='illustrator'){ %>
-                                <% role = '그림' %>
-                                <% }else if(role =='original_author'){ %>
-                                  <% role = '원작' %>
-                                  <% }else if(role =='Author'){ %>
-                                    <% role = '글/그림' %>
-                                    <% }else{ %>
-                                      <% role = '작가' %>
-                                      <% }%>
-                            <%= %>
-                            <span class="metadata-item- author-item-wrapper">
-                              <span class="author-detail"><%= name %></span> <%= role %>
-                             </span>
-                        </div>
-                        <div class="card-info-star">별점:<%= item.starRate %></div>
-                      </div>
-                    </a>
-                  </li>
-                  <% }); %>
-                  <% } %>
-                </div>
-              <% } else if (type == 'users') { %> 
-                <ul class="result_list">
-                  <% if(users.length === 0) { %>
-                    <div class="no-result">검색 결과가 없습니다</div>
-                  <% } else { %>
-                  <% users.forEach((item) => { %>
-                  <li class="search-card">
-                    <a href="/users/<%= item.users_id %>">
-                    <img
-                    src="<%= item.users_profile_image %>"
-                    alt="프로필사진"
-                    onerror="this.src='/logo_image/chillinker_logo(1).png'"
-                    class="profile-img" />
-                    <div class="card-info">
-                      <div class="card-info-title" style="font-weight: 600;"><%= item.users_nickname %></div>
-                      <h4 class="card_author">
-                        <% if (item.users_intro.length > 14) { %>
-                          <%= item.users_intro.slice(0, 14) + '...' %>
-                        <% } else if (item.users_intro) { %>
-                          <%= item.users_intro %>
-                        <% } else { %>
-                        소개가 없습니다.
-                        <% } %>
-                      </h4>
-                    </div>
-                    </a>
-                  </li>
-                  <% });  %>
-                  <% } %>
-                </ul>
-              <% } else if (type == 'collections') { %>
-                <div class="result_list">
-                  <% if(collections.length === 0) { %>
-                    <div class="no-result">검색 결과가 없습니다</div>
-                  <% } else { %>
-                  <% collections.forEach((item) => { %>
-                  <div class="search-card">
-                    <a href="/collections/info/<%= item.collections_id %>" class="card">
-                    <img src="<%= item.collections_cover_image %>" alt="<%= item.title %>" 
-                    class="card-thumbnail-image"
-                    onerror="this.src='/images/readCollection.png'" >
-                    <div class="card-info">
-                      <h3 class="card-info-title" style="font-weight: 600;"><%= item.collections_title %></h3>
-                      <h4 class="card_author">
-                         <% if (item.collections_desc.length > 10) { %>
-                          <%= item.collections_desc.slice(0, 10) + '...' %>
-                          <% } else { %>
-                            <%= item.collections_desc %>
-                          <% } %>
-                      </h4>
-                    </div>
-                    </a>
-                  </div>
-                  <% }); %>
-                  <% } %>
-                </div>
-                <% } else if (type == 'ck') { %>
-                  <div class="result_list">
-                    <% if(ck.length === 0) { %>
-                      <div class="no-result">검색 결과가 없습니다</div>
-                    <% } else { %>
-                    <% ck.forEach((item) => { %>
-                      <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
-                        <a href="javascript:void(0);"> 
-                          <div class="searched-card-image">
-                            <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
-                          </div>
-                          <div class="searched-card-info">
-                            <div class="card-info-title">
-                              <% if (item.title.length > 14) { %>
-                                <%= item.title.slice(0, 14) + '...' %>
-                              <% } else { %>
-                                <%= item.title %>
-                              <% } %>
-                            </div>
-                            <div class="card-info-card_author">
-                                <% const arr = item.author.split(',') %>
-                                <% let role = arr[0].split('/')[0] %>
-                                <% const name = arr[0].split('/')[1] %>
-                                <% if(role == 'author' ){ %>
-                                  <% role = '글' %>
-                                  <% }else if(role =='illustrator'){ %>
-                                    <% role = '그림' %>
-                                    <% }else if(role =='original_author'){ %>
-                                      <% role = '원작' %>
-                                      <% }else if(role =='Author'){ %>
-                                        <% role = '글/그림' %>
-                                        <% }else{ %>
-                                          <% role = '작가' %>
-                                          <% }%>
-                                <%= %>
-                                <span class="metadata-item- author-item-wrapper">
-                                  <span class="author-detail"><%= name %></span> <%= role %>
-                                 </span>
-                            </div>
-                            <div class="card-info-star">별점:<%= item.starRate %></div>
-                          </div>
-                        </a>
-                      </li>
-                      <% }); %>
-                      <% } %>
-                    </div>
-              <% } else { %>
-                <div class="result_list">
-                  <% if(webnovels.length === 0) { %>
-                    <div class="no-result">검색 결과가 없습니다</div>
-                  <% } else { %>
-                  <% webnovels.forEach((item) => { %>
-                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
-                    <a title = <%= item.title %> href="javascript:void(0);">
-                      <div class="searched-card-image">
-                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
-                      </div>
-                      <div class="searched-card-info">
-                        <div class="card-info-title">
-                          <% if (item.title.length > 14) { %>
-                            <%= item.title.slice(0, 14) + '...' %>
-                          <% } else { %>
-                            <%= item.title %>
-                          <% } %>
-                        </div>
-                        <div class="card-info-card_author">
-                          <% const arr = item.author.split(',') %>
-                          <% let role = arr[0].split('/')[0] %>
-                          <% const name = arr[0].split('/')[1] %>
-                          <% if(role == 'author' ){ %>
-                            <% role = '글' %>
-                            <% }else if(role =='illustrator'){ %>
-                              <% role = '그림' %>
-                              <% }else if(role =='original_author'){ %>
-                                <% role = '원작' %>
-                                <% }else if(role =='Author'){ %>
-                                  <% role = '글/그림' %>
-                                  <% }else{ %>
-                                    <% role = '작가' %>
-                                    <% }%>
-                          <span class="metadata-item- author-item-wrapper">
-                            <span class="author-detail"><%= name %></span> <%= role %>
-                           </span>
-                        </div>
-                        <div class="card-info-star">별점:<%= item.starRate %></div>
-                      </div>
-                    </a>
-                  </li>
-                  <% }); %>
-                  <% } %>
-                </div>
-              <% } %>
           </ul>
         </div>
         <nav aria-label="Page navigation example" class="paginnation-wrapper">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
-                <span class="page-item-num"></span>
-              <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li>
-            </ul>
-          </nav>
+          <ul class="pagination">
+            <!-- <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
+            <span class="page-item-num"></span>
+            <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li> -->
+            <% for(let i = 1; i <= maxPage; i++) { %>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a>&nbsp;&nbsp;&nbsp;</li>
+            <% } %>
+          </ul>
+        </nav>
     </main>
     <footer>
       <ul>
@@ -324,34 +149,48 @@
      window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get('query');
-        const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+        const type = urlParams.get('type');
+        const orderBy = urlParams.get('orderBy'); 
+        // const currPage = parseInt(urlParams.get('page'), 10) || 1; 
 
         if (query) {
-            let selectedBtn;
-            if(query === '소년 드라마 추리') {
-                selectedBtn = document.querySelector('.category-nav-normal a').parentElement;
-            } else {
-                selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`)?.parentElement;
-            }
+            let selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`)?.parentElement;
 
             if (selectedBtn) { 
                 selectedBtn.classList.add('selected-nav');
             }
         }
-        if (currPage && currPage > 1) { 
-            const pageLinkBack = document.querySelector('.page-link-back');
-            if (pageLinkBack) { 
-                pageLinkBack.setAttribute('href', `/category?query=${query}&page=${currPage-1}`);
-            }
+
+        if (type) {
+          const selectedBtn = document.querySelector(`.tab_list a[href*="type=${type}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const webNovelBtn = document.querySelector('.webnovel').parentElement;
+          webNovelBtn.classList.add('selected');
         }
-        if (currPage) { // && currPage < maxPages
-            const pageLinkForward = document.querySelector('.page-link-forward'); 
-            if (pageLinkForward) { 
-                pageLinkForward.setAttribute('href', `/category?query=${query}&page=${currPage+1}`);
-            }
+
+        if(orderBy) {
+          const selectedBtn = document.querySelector(`.order_list a[href*="orderBy=${orderBy}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const starContentBtn = document.querySelector('.starOrder').parentElement;
+          starContentBtn.classList.add('selected');
         }
+
+        // if (currPage && currPage > 1) { 
+        //     const pageLinkBack = document.querySelector('.page-link-back');
+        //     if (pageLinkBack) { 
+        //         pageLinkBack.setAttribute('href', `/category?query=${query}&page=${currPage-1}`);
+        //     }
+        // }
+        // if (currPage) { // && currPage < maxPages
+        //     const pageLinkForward = document.querySelector('.page-link-forward'); 
+        //     if (pageLinkForward) { 
+        //         pageLinkForward.setAttribute('href', `/category?query=${query}&page=${currPage+1}`);
+        //     }
+        // }
         
-        document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;&nbsp;&nbsp;&nbsp;`;
+        // document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;&nbsp;&nbsp;&nbsp;`;
     }
 
       $(document).ready(function () {
