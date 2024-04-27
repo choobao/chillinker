@@ -100,59 +100,87 @@ export class WebContentService {
     return userInfo;
   }
 
-  async searchFromUsers(keyword: string) {
+  async searchFromUsers(keyword: string, page: number, take: number) {
+    page = page ? page : 1;
+    let skip = (page - 1) * take;
+
     const users = await this.userRepository
       .createQueryBuilder('users')
       .where('users.nickname LIKE :keyword', { keyword: `%${keyword}%` })
       .orWhere('users.intro LIKE :keyword', { keyword: `%${keyword}%` })
+      .offset(skip) // 페이지에 따라 스킵하는 수 계산
+      .limit(take) // 페이지당 아이템 수 설정
       .getRawMany();
 
     return users;
   }
 
-  async searchFromCollections(keyword: string) {
+  async searchFromCollections(keyword: string, page: number, take: number) {
+    page = page ? page : 1;
+    let skip = (page - 1) * take;
+
     const collections = await this.collectionRepository
       .createQueryBuilder('collections')
       .where('collections.title LIKE :keyword', { keyword: `%${keyword}%` })
       .orWhere('collections.desc LIKE :keyword', { keyword: `%${keyword}%` })
+      .offset(skip) // 페이지에 따라 스킵하는 수 계산
+      .limit(take) // 페이지당 아이템 수 설정
       .getRawMany();
 
     return collections;
   }
 
-  async searchFromAuthors(keyword: string, user) {
+  async searchFromAuthors(keyword: string, user, page: number, take: number) {
     let authors = await this.elasticSearchService.search(
       'web*',
       keyword,
       'author',
+      page,
+      take,
     );
     authors = this.blindAdultImage(user, authors);
     return authors;
   }
 
-  async searchFromKeywordCategory(keyword: string, user) {
+  async searchFromKeywordCategory(
+    keyword: string,
+    user,
+    page: number,
+    take: number,
+  ) {
     let ck = await this.elasticSearchService.searchMultipleField(
       'web*',
       keyword,
       'category',
       'keyword',
+      page,
+      take,
     );
     ck = this.blindAdultImage(user, ck);
 
     return ck;
   }
 
-  async searchFromWebContents(keyword: string, user) {
+  async searchFromWebContents(
+    keyword: string,
+    user,
+    page: number,
+    take: number,
+  ) {
     const webnovels = await this.elasticSearchService.search(
       'webnovels',
       keyword,
       'title',
+      page,
+      take,
     );
     console.log('웹소설:', webnovels);
     const webtoons = await this.elasticSearchService.search(
       'webtoons',
       keyword,
       'title',
+      page,
+      take,
     );
     console.log('웹툰:', webtoons);
 

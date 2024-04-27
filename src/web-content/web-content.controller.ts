@@ -1,6 +1,8 @@
 import {
   Controller,
+  DefaultValuePipe,
   Get,
+  ParseIntPipe,
   Query,
   Render,
   Req,
@@ -118,12 +120,18 @@ export class WebContentController {
     @Req() req,
     @Query('query') query: string,
     @Query('type') type: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
   ) {
+    const take = 30;
     const keyword = query.trim() === '' ? 'chillinker' : query.trim();
 
     const { webtoons, webnovels, userInfo } =
-      (await this.webContentService.searchFromWebContents(keyword, req.user)) ??
-      {};
+      (await this.webContentService.searchFromWebContents(
+        keyword,
+        req.user,
+        +page,
+        take,
+      )) ?? {};
 
     if (type == 'webtoons') {
       return { type, keyword, webtoons, userInfo };
@@ -131,19 +139,30 @@ export class WebContentController {
       const authors = await this.webContentService.searchFromAuthors(
         keyword,
         req.user,
+        +page,
+        take,
       );
       return { type, keyword, authors, userInfo };
     } else if (type == 'users') {
-      const users = await this.webContentService.searchFromUsers(keyword);
+      const users = await this.webContentService.searchFromUsers(
+        keyword,
+        +page,
+        take,
+      );
       return { type, keyword, users };
     } else if (type == 'collections') {
-      const collections =
-        await this.webContentService.searchFromCollections(keyword);
+      const collections = await this.webContentService.searchFromCollections(
+        keyword,
+        +page,
+        take,
+      );
       return { type, keyword, collections };
     } else if (type == 'ck') {
       const ck = await this.webContentService.searchFromKeywordCategory(
         keyword,
         req.user,
+        +page,
+        take,
       );
       return { type, keyword, ck, userInfo };
     } else {
