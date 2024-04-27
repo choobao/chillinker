@@ -336,6 +336,9 @@ export class WebContentService {
               })
               .orWhere('webContents.category LIKE :mystery', {
                 mystery: `%추리%`,
+              })
+              .orWhere('webContents.category LIKE :action', {
+                action: `%액션%`,
               });
           }),
         )
@@ -354,6 +357,9 @@ export class WebContentService {
               })
               .orWhere('webContents.category LIKE :mystery', {
                 mystery: `%추리%`,
+              })
+              .orWhere('webContents.category LIKE :action', {
+                action: `%액션%`,
               });
           }),
         )
@@ -373,6 +379,103 @@ export class WebContentService {
         orderBy,
         type,
         query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    } else if (query === '로맨스') {
+      const totalContents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :romance', {
+              romance: `%로맨스%`,
+            }).orWhere('webContents.category LIKE :roco', {
+              roco: `%순정%`,
+            });
+          }),
+        )
+        .getMany();
+      const totalCount = totalContents.length;
+      const maxPage = Math.ceil(totalCount / take);
+
+      const contents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :romance', {
+              romance: `%로맨스%`,
+            }).orWhere('webContents.category LIKE :roco', {
+              roco: `%순정%`,
+            });
+          }),
+        )
+        .take(take)
+        .skip(skip)
+        .orderBy(
+          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
+          'DESC',
+        )
+        .getMany();
+
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
+        userInfo: this.isAdult(user),
+      };
+    } else if (query === 'BL/GL') {
+      const totalContents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :BL', {
+              BL: `%BL%`,
+            }).orWhere('webContents.category LIKE :GL', {
+              GL: `%GL%`,
+            });
+          }),
+        )
+        .getMany();
+      const totalCount = totalContents.length;
+      const maxPage = Math.ceil(totalCount / take);
+
+      const contents = await this.webContentRepository
+        .createQueryBuilder('webContents')
+        .where('webContents.contentType = :contentType', { contentType })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('webContents.category LIKE :BL', {
+              BL: `%BL%`,
+            }).orWhere('webContents.category LIKE :GL', {
+              GL: `%GL%`,
+            });
+          }),
+        )
+        .take(take)
+        .skip(skip)
+        .orderBy(
+          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
+          'DESC',
+        )
+        .getMany();
+
+      const result = this.blindAdultImage(user, contents);
+      return {
+        content: result,
+        maxPage,
+        page,
+        orderBy,
+        type,
+        query,
+        totalCount,
         userInfo: this.isAdult(user),
       };
     } else {
@@ -402,6 +505,7 @@ export class WebContentService {
         orderBy,
         type,
         query,
+        totalCount,
         userInfo: this.isAdult(user),
       };
     }

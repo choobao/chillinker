@@ -42,7 +42,7 @@
           <span>|</span>
           <li class="category-nav"><a href="/category?query=무협">무협</a></li>
           <span>|</span>
-          <li class="category-nav"><a href="/category?query=BL">BL</a></li>
+          <li class="category-nav"><a href="/category?query=BL/GL">BL/GL</a></li>
           <span>|</span>
           <li class="category-nav-normal"><a href="/category?query=일반">일반</a></li>
         </ul>
@@ -72,10 +72,12 @@
       </div>
       <div class="result_section">
           <ul class="result_section_list">
+            <% if(content.length === 0) { %>
+              <div class="total-contents-number">총 <strong>0</strong> 작품</div>
+              <div class="no-result">아직 카테고리의 작품이 없습니다</div>
+            <% } else { %>
+              <div class="total-contents-number">총 <strong><%= totalCount || 0%></strong> 작품</div>
               <div class="result_list">
-                <% if(content.length === 0) { %>
-                  <div class="no-result">아직 카테고리의 작품이 없습니다</div>
-                <% } else { %>
                 <% content.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href = "javascript:void(0);">
