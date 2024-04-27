@@ -175,10 +175,22 @@ export class WebContentController {
   async getCategoryPage(
     @Req() req,
     @Query('query') query: string,
+    @Query('orderBy') orderBy?: string,
+    @Query('type') type?: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
   ) {
-    const result = await this.search(req, query, 'ck', page);
+    // const result = await this.search(req, query, 'ck', page);
 
-    return { ...result, query };
+    // return { ...result, query };
+
+    const contents = await this.webContentService.getContentCategory(
+      req.user,
+      type,
+      query,
+      orderBy,
+      page,
+    );
+    console.log(contents.userInfo);
+    return contents;
   }
 }
