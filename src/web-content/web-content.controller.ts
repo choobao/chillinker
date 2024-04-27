@@ -170,6 +170,7 @@ export class WebContentController {
     }
   }
 
+  @UseGuards(OptionalAuthGuard)
   @Get('/category')
   @Render('category')
   async getCategoryPage(
@@ -182,7 +183,6 @@ export class WebContentController {
     // const result = await this.search(req, query, 'ck', page);
 
     // return { ...result, query };
-
     const contents = await this.webContentService.getContentCategory(
       req.user,
       type,
@@ -190,7 +190,6 @@ export class WebContentController {
       orderBy,
       page,
     );
-    console.log(contents.userInfo);
     return contents;
   }
 }
