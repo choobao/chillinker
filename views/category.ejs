@@ -43,7 +43,7 @@
           <span>|</span>
           <li class="category-nav"><a href="/category?query=BL">BL</a></li>
           <span>|</span>
-          <li class="category-nav"><a href="/category?query=소년%20드라마%20추리">일반</a></li>
+          <li class="category-nav-normal"><a href="/category?query=소년%20드라마%20추리">일반</a></li>
         </ul>
       </nav>
   
@@ -327,9 +327,15 @@
         const currPage = parseInt(urlParams.get('page'), 10) || 1; 
 
         if (query) {
-            const selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`).parentElement; 
-        if (selectedBtn) { 
-            selectedBtn.classList.add('selected-nav');
+            let selectedBtn;
+            if(query === '소년 드라마 추리') {
+                selectedBtn = document.querySelector('.category-nav-normal a').parentElement;
+            } else {
+                selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`)?.parentElement;
+            }
+
+            if (selectedBtn) { 
+                selectedBtn.classList.add('selected-nav');
             }
         }
         if (currPage && currPage > 1) { 
