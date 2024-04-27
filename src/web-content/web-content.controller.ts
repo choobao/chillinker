@@ -169,4 +169,16 @@ export class WebContentController {
       return { type, keyword, webnovels, userInfo };
     }
   }
+
+  @Get('/category')
+  @Render('category')
+  async getCategoryPage(
+    @Req() req,
+    @Query('query') query: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
+  ) {
+    const result = await this.search(req, query, 'ck', page);
+
+    return { ...result, query };
+  }
 }

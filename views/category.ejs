@@ -29,37 +29,29 @@
         class="search_input_bar"
         style="height: 50px; background-color: #f5f5fa; padding: 15px"
       >
-      <div class="search-wrapper" style="width: 1200px;  margin: auto;">
-        <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
-      </div>
+      <nav class="main-nav" style="background-color: #a791ff;" >
+        <ul>
+          <li class="category-nav"><a href="/category?query=로맨스">로맨스</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=로판">로판</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=판타지">판타지</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=현판">현판</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=무협">무협</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=BL">BL</a></li>
+          <span>|</span>
+          <li class="category-nav"><a href="/category?query=소년%20드라마%20추리">일반</a></li>
+        </ul>
+      </nav>
+  
       </div>
     <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
-        <div class="search_btn_bar">
-          <ul class="search_bar_list" style="display: flex; padding: 15px">
-            <li class="search_btn1" style="margin-right: 10px;">
-              <a href="/search?type=webnovels&query=<%= keyword %>">웹소설</a>
-            </li>
-            <li class="search_btn2"  style="margin-right: 10px;">
-              <a href="/search?type=webtoons&query=<%= keyword %>">웹툰</a>
-            </li>
-            <li class="search_btn3"  style="margin-right: 10px;">
-              <a href="/search?type=authors&query=<%= keyword %>">작가</a>
-            </li>
-            <li class="search_btn4"  style="margin-right: 10px;">
-              <a href="/search?type=users&query=<%= keyword %>">유저</a>
-            </li>
-            <li class="search_btn5" style="margin-right: 10px;">
-              <a href="/search?type=collections&query=<%= keyword %>">컬렉션</a>
-            </li>
-            <li class="search_btn6" style="margin-right: 10px;">
-              <a href="/search?type=ck&query=<%= keyword %>">키워드</a>
-            </li>
-          </ul>
-        </div>
-        <div class="search-dk-block-title">
-        </div>
         <div class="result_section">
           <ul class="result_section_list">
+           
             <% if (!keyword) { %>
             <div class="empty_search">
               <p>검색어를 입력하세요.</p>
@@ -307,7 +299,13 @@
               <% } %>
           </ul>
         </div>
-       
+        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
+                <span class="page-item-num"></span>
+              <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li>
+            </ul>
+          </nav>
     </main>
     <footer>
       <ul>
@@ -323,19 +321,33 @@
     <button class="top_btn" id="top-btn">↑</button>
     <script src="/js/adult_blind.js"></script>
     <script>
-      window.onload = function() {
+     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type');
+        const query = urlParams.get('query');
+        const currPage = parseInt(urlParams.get('page'), 10) || 1; 
 
-        if (type) {
-          const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
-          selectedBtn.classList.add('selected');
+        if (query) {
+            const selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`).parentElement; 
+        if (selectedBtn) { 
+            selectedBtn.classList.add('selected-nav');
+            }
+        }
+        if (currPage && currPage > 1) { 
+            const pageLinkBack = document.querySelector('.page-link-back');
+            if (pageLinkBack) { 
+                pageLinkBack.setAttribute('href', `/category?query=${query}&page=${currPage-1}`);
+            }
+        }
+        if (currPage) { // && currPage < maxPages
+            const pageLinkForward = document.querySelector('.page-link-forward'); 
+            if (pageLinkForward) { 
+                pageLinkForward.setAttribute('href', `/category?query=${query}&page=${currPage+1}`);
+            }
+        }
         
-        }else {
-          const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
-          webnovelBtn.classList.add('selected');
-        }  
-      }
+        document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;&nbsp;&nbsp;&nbsp;`;
+    }
+
       $(document).ready(function () {
         // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
         $(window).scroll(function () {
