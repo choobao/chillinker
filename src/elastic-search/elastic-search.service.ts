@@ -65,8 +65,16 @@ export class ElasticSearchService {
     }
   }
 
-  async search(indexName: string, keyword: string, fieldName: string) {
+  async search(
+    indexName: string,
+    keyword: string,
+    fieldName: string,
+    page: number,
+    take: number,
+  ) {
     try {
+      const from = (page - 1) * take;
+
       const query = {
         query: {
           match: {
@@ -77,10 +85,13 @@ export class ElasticSearchService {
         },
       };
       const result = await this.client.search({
+        track_total_hits: true,
         index: indexName,
         body: query,
-        size: 180,
+        size: take,
+        from: from,
       });
+
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
@@ -95,10 +106,16 @@ export class ElasticSearchService {
     keyword: string,
     fieldName1: string,
     fieldName2: string,
+    page: number,
+    take: number,
   ) {
     try {
+      const from = (page - 1) * take;
+
       const result = await this.client.search({
         index: indexName,
+        size: take,
+        from: from,
         body: {
           query: {
             bool: {
@@ -118,8 +135,8 @@ export class ElasticSearchService {
             },
           },
         },
-        size: 180,
       });
+
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
