@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -11,6 +12,7 @@ import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import _ from 'lodash';
 import { ElasticSearchService } from '../elastic-search/elastic-search.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class WebContentService {
@@ -22,35 +24,51 @@ export class WebContentService {
     @InjectRepository(Collections)
     private readonly collectionRepository: Repository<Collections>,
     private readonly elasticSearchService: ElasticSearchService,
+    private readonly redisService: RedisService,
   ) {}
 
   async findBestWebContents(platform: string, type: ContentType, user) {
     try {
-      const bestWebContents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .leftJoinAndSelect('webContents.cReviews', 'cReview')
-        .leftJoinAndSelect('webContents.pReviews', 'pReview')
-        .where(
-          `JSON_EXTRACT(webContents.platform, '$.${platform}') IS NOT NULL`,
-        )
-        .andWhere('webContents.contentType = :type', { type })
-        .andWhere('JSON_EXTRACT(webContents.rank, :platform) IS NOT NULL', {
-          platform: `$.${platform}`,
-        })
-        .groupBy('webContents.id')
-        .select([
-          'webContents.id AS id',
-          'webContents.category AS category',
-          'webContents.title AS title',
-          'webContents.image AS image',
-          'webContents.author AS author',
-          'webContents.isAdult AS isAdult',
-        ])
-        .addSelect('COUNT(pReview.id)', 'pReviewCount')
-        .addSelect('COUNT(cReview.id)', 'cReviewCount')
-        .addSelect(`JSON_EXTRACT(webContents.rank, '$.${platform}')`, 'ranking') // 플랫폼 별 랭킹
-        .orderBy('ranking', 'ASC') // ranking에 따라 정렬
-        .getRawMany();
+      let bestWebContents = await this.redisService.getCachedData(
+        `bestWebContents_${platform}_${type}`,
+      );
+
+      if (_.isNil(bestWebContents)) {
+        bestWebContents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .leftJoinAndSelect('webContents.cReviews', 'cReview')
+          .leftJoinAndSelect('webContents.pReviews', 'pReview')
+          .where(
+            `JSON_EXTRACT(webContents.platform, '$.${platform}') IS NOT NULL`,
+          )
+          .andWhere('webContents.contentType = :type', { type })
+          .andWhere('JSON_EXTRACT(webContents.rank, :platform) IS NOT NULL', {
+            platform: `$.${platform}`,
+          })
+          .groupBy('webContents.id')
+          .select([
+            'webContents.id AS id',
+            'webContents.category AS category',
+            'webContents.title AS title',
+            'webContents.image AS image',
+            'webContents.author AS author',
+            'webContents.isAdult AS isAdult',
+          ])
+          .addSelect('COUNT(pReview.id)', 'pReviewCount')
+          .addSelect('COUNT(cReview.id)', 'cReviewCount')
+          .addSelect(
+            `JSON_EXTRACT(webContents.rank, '$.${platform}')`,
+            'ranking',
+          ) // 플랫폼 별 랭킹
+          .orderBy('ranking', 'ASC') // ranking에 따라 정렬
+          .getRawMany();
+
+        await this.redisService.cacheData(
+          `bestWebContents_${platform}_${type}`,
+          bestWebContents,
+          3600,
+        );
+      }
 
       return this.blindAdultImage(user, bestWebContents);
     } catch (err) {
@@ -322,52 +340,80 @@ export class WebContentService {
     const take = 30;
     const skip = (page - 1) * take;
 
+    const orderType =
+      !_.isNil(orderBy) && orderBy.trim() !== '' ? orderBy : 'star';
+
+    let totalCount = +(await this.redisService.getValue(
+      `totalCount_${query}_${contentType}`,
+    ));
+
+    let contents = await this.redisService.getCachedData(
+      `contents_${query}_${contentType}_${page}_${orderType}`,
+    );
+
     if (query === '일반') {
-      const totalContents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
-              .orWhere('webContents.category LIKE :drama', {
-                drama: `%드라마%`,
-              })
-              .orWhere('webContents.category LIKE :mystery', {
-                mystery: `%추리%`,
-              })
-              .orWhere('webContents.category LIKE :action', {
-                action: `%액션%`,
-              });
-          }),
-        )
-        .getMany();
-      const totalCount = totalContents.length;
+      if (totalCount === 0) {
+        totalCount = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
+                .orWhere('webContents.category LIKE :drama', {
+                  drama: `%드라마%`,
+                })
+                .orWhere('webContents.category LIKE :mystery', {
+                  mystery: `%추리%`,
+                })
+                .orWhere('webContents.category LIKE :action', {
+                  action: `%액션%`,
+                });
+            }),
+          )
+          .getCount();
+
+        await this.redisService.save(
+          `totalCount_${query}_${contentType}`,
+          totalCount,
+        );
+      }
+
       const maxPage = Math.ceil(totalCount / take);
 
-      const contents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
-              .orWhere('webContents.category LIKE :drama', {
-                drama: `%드라마%`,
-              })
-              .orWhere('webContents.category LIKE :mystery', {
-                mystery: `%추리%`,
-              })
-              .orWhere('webContents.category LIKE :action', {
-                action: `%액션%`,
-              });
-          }),
-        )
-        .take(take)
-        .skip(skip)
-        .orderBy(
-          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
-          'DESC',
-        )
-        .getMany();
+      if (_.isNil(contents)) {
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :boy', { boy: `%소년%` })
+                .orWhere('webContents.category LIKE :drama', {
+                  drama: `%드라마%`,
+                })
+                .orWhere('webContents.category LIKE :mystery', {
+                  mystery: `%추리%`,
+                })
+                .orWhere('webContents.category LIKE :action', {
+                  action: `%액션%`,
+                });
+            }),
+          )
+          .take(take)
+          .skip(skip)
+          .orderBy(
+            orderBy === 'recent'
+              ? 'webContents.pubDate'
+              : 'webContents.starRate',
+            'DESC',
+          )
+          .getMany();
+
+        await this.redisService.cacheData(
+          `contents_${query}_${contentType}_${page}_${orderType}`,
+          contents,
+          24 * 3600,
+        );
+      }
 
       const result = this.blindAdultImage(user, contents);
       return {
@@ -381,42 +427,57 @@ export class WebContentService {
         userInfo: this.isAdult(user),
       };
     } else if (query === '로맨스') {
-      const totalContents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :romance', {
-              romance: `%로맨스%`,
-            }).orWhere('webContents.category LIKE :roco', {
-              roco: `%순정%`,
-            });
-          }),
-        )
-        .getMany();
-      const totalCount = totalContents.length;
+      if (totalCount === 0) {
+        totalCount = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :romance', {
+                romance: `%로맨스%`,
+              }).orWhere('webContents.category LIKE :roco', {
+                roco: `%순정%`,
+              });
+            }),
+          )
+          .getCount();
+
+        await this.redisService.save(
+          `totalCount_${query}_${contentType}`,
+          totalCount,
+        );
+      }
       const maxPage = Math.ceil(totalCount / take);
 
-      const contents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :romance', {
-              romance: `%로맨스%`,
-            }).orWhere('webContents.category LIKE :roco', {
-              roco: `%순정%`,
-            });
-          }),
-        )
-        .take(take)
-        .skip(skip)
-        .orderBy(
-          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
-          'DESC',
-        )
-        .getMany();
+      if (_.isNil(contents)) {
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :romance', {
+                romance: `%로맨스%`,
+              }).orWhere('webContents.category LIKE :roco', {
+                roco: `%순정%`,
+              });
+            }),
+          )
+          .take(take)
+          .skip(skip)
+          .orderBy(
+            orderBy === 'recent'
+              ? 'webContents.pubDate'
+              : 'webContents.starRate',
+            'DESC',
+          )
+          .getMany();
 
+        await this.redisService.cacheData(
+          `contents_${query}_${contentType}_${page}_${orderType}`,
+          contents,
+          24 * 3600,
+        );
+      }
       const result = this.blindAdultImage(user, contents);
       return {
         content: result,
@@ -429,42 +490,57 @@ export class WebContentService {
         userInfo: this.isAdult(user),
       };
     } else if (query === 'BL/GL') {
-      const totalContents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :BL', {
-              BL: `%BL%`,
-            }).orWhere('webContents.category LIKE :GL', {
-              GL: `%GL%`,
-            });
-          }),
-        )
-        .getMany();
-      const totalCount = totalContents.length;
+      if (totalCount === 0) {
+        totalCount = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :BL', {
+                BL: `%BL%`,
+              }).orWhere('webContents.category LIKE :GL', {
+                GL: `%GL%`,
+              });
+            }),
+          )
+          .getCount();
+
+        await this.redisService.save(
+          `totalCount_${query}_${contentType}`,
+          totalCount,
+        );
+      }
       const maxPage = Math.ceil(totalCount / take);
 
-      const contents = await this.webContentRepository
-        .createQueryBuilder('webContents')
-        .where('webContents.contentType = :contentType', { contentType })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('webContents.category LIKE :BL', {
-              BL: `%BL%`,
-            }).orWhere('webContents.category LIKE :GL', {
-              GL: `%GL%`,
-            });
-          }),
-        )
-        .take(take)
-        .skip(skip)
-        .orderBy(
-          orderBy === 'recent' ? 'webContents.pubDate' : 'webContents.starRate',
-          'DESC',
-        )
-        .getMany();
+      if (_.isNil(contents)) {
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .where('webContents.contentType = :contentType', { contentType })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where('webContents.category LIKE :BL', {
+                BL: `%BL%`,
+              }).orWhere('webContents.category LIKE :GL', {
+                GL: `%GL%`,
+              });
+            }),
+          )
+          .take(take)
+          .skip(skip)
+          .orderBy(
+            orderBy === 'recent'
+              ? 'webContents.pubDate'
+              : 'webContents.starRate',
+            'DESC',
+          )
+          .getMany();
 
+        await this.redisService.cacheData(
+          `contents_${query}_${contentType}_${page}_${orderType}`,
+          contents,
+          24 * 3600,
+        );
+      }
       const result = this.blindAdultImage(user, contents);
       return {
         content: result,
@@ -477,24 +553,37 @@ export class WebContentService {
         userInfo: this.isAdult(user),
       };
     } else {
-      const totalCount = await this.webContentRepository.count({
-        where: {
-          contentType,
-          category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
-        },
-      });
+      if (totalCount === 0) {
+        totalCount = await this.webContentRepository.count({
+          where: {
+            contentType,
+            category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+          },
+        });
+        await this.redisService.save(
+          `totalCount_${query}_${contentType}`,
+          totalCount,
+        );
+      }
       const maxPage = Math.ceil(totalCount / take);
+      if (_.isNil(contents)) {
+        contents = await this.webContentRepository.find({
+          where: {
+            contentType,
+            category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+          },
+          take: take,
+          skip: skip,
+          order:
+            orderBy === 'recent' ? { pubDate: 'DESC' } : { starRate: 'DESC' },
+        });
 
-      let contents = await this.webContentRepository.find({
-        where: {
-          contentType,
-          category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
-        },
-        take: take,
-        skip: skip,
-        order:
-          orderBy === 'recent' ? { pubDate: 'DESC' } : { starRate: 'DESC' },
-      });
+        await this.redisService.cacheData(
+          `contents_${query}_${contentType}_${page}_${orderType}`,
+          contents,
+          24 * 3600,
+        );
+      }
       const result = this.blindAdultImage(user, contents);
       return {
         content: result,

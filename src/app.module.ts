@@ -53,7 +53,6 @@ const typeOrmModuleOptions = {
       // }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-
     AuthModule,
     UserModule,
     FollowModule,

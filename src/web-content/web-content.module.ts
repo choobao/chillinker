@@ -8,10 +8,11 @@ import { Collections } from '../collection/entities/collections.entity';
 import { Likes } from '../like/entities/likes.entity';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ElasticSearchService } from '../elastic-search/elastic-search.service';
-import { ReviewService } from 'src/review/review.service';
-import { CReviews } from 'src/review/entities/chillinker.reviews.entity';
-import { PReviews } from 'src/review/entities/platform.reviews.entity';
-import { ReviewLikes } from 'src/review/entities/review.likes.entity';
+import { ReviewService } from '../review/review.service';
+import { CReviews } from '../review/entities/chillinker.reviews.entity';
+import { PReviews } from '../review/entities/platform.reviews.entity';
+import { ReviewLikes } from '../review/entities/review.likes.entity';
+import { RedisService } from '../redis/redis.service';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ReviewLikes } from 'src/review/entities/review.likes.entity';
     OptionalAuthGuard,
     ElasticSearchService,
     ReviewService,
+    RedisService,
   ],
   controllers: [WebContentController],
   exports: [WebContentService],
