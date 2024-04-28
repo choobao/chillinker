@@ -307,7 +307,13 @@
               <% } %>
           </ul>
         </div>
-       
+        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
+            <span class="page-item-num"></span>
+            <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li>
+          </ul>
+        </nav>
     </main>
     <footer>
       <ul>
@@ -335,6 +341,29 @@
           const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
           webnovelBtn.classList.add('selected');
         }  
+        const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+
+        
+
+        if (currPage && currPage > 1) { 
+    const pageLinkBack = document.querySelector('.page-link-back');
+    if (pageLinkBack) { 
+        pageLinkBack.setAttribute('href', `/search?query=${query}&page=${currPage-1}`);
+    }
+}
+if (currPage) { 
+    const pageLinkForward = document.querySelector('.page-link-forward'); 
+    if (pageLinkForward) { 
+        pageLinkForward.setAttribute('href', `/search?query=${query}&page=${currPage+1}`);
+    }
+}
+
+const pageItemNum = document.querySelector('.page-item-num');
+if (pageItemNum) { 
+    pageItemNum.textContent = currPage; // 현재 페이지 번호 업데이트
+}
+         
+
       }
       $(document).ready(function () {
         // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
@@ -351,7 +380,7 @@
           $('html, body').animate({ scrollTop: 0 }, 800);
           return false;
         });
-      });
+      })
     </script>
   </body>
 </html>
