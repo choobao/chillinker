@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Render,
   Req,
   UploadedFile,
@@ -31,22 +32,34 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
+  @ApiOperation({ summary: '인기 컬렉션 조회' })
+  @Get('/popular')
+  async getPopularCols(
+    @Query('page') page?: string,
+    @Query('order') order?: string,
+  ) {
+    const pageNumber = parseInt(page, 10) || 1;
+
+    // getTopCollections 함수에 변환된 pageNumber와 order를 전달
+    return this.collectionService.getPopularCollections(pageNumber, order);
+  }
+
   @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
-  @Get('/')
+  @Get('/collections')
   @Render('collection/my_collection_list')
   async myCollections(@UserInfo() user: Users) {
     const myColList = await this.collectionService.getMyColList(user.id);
     return { collection: myColList, users: user };
   }
 
-  @Post('/info/:collectionId')
+  @Post('/collections/info/:collectionId')
   async getTitles(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getTitles(collectionId);
     return myCol;
   }
 
-  @Get('/col-list/info/:collectionId')
+  @Get('/collections/col-list/info/:collectionId')
   async Collection(@Param('collectionId') collectionId: number) {
     const myCol = await this.collectionService.getMyCol(collectionId);
     return myCol;
@@ -54,7 +67,7 @@ export class CollectionController {
 
   @UseGuards(OptionalAuthGuard)
   @ApiOperation({ summary: '컬렉션 상세 조회' })
-  @Get('/info/:collectionId')
+  @Get('/collections/info/:collectionId')
   @Render('collection/collection_detail')
   async myCollection(@Param('collectionId') collectionId: number, @Req() req) {
     return await this.collectionService.getMyColBlind(collectionId, req.user);
@@ -62,7 +75,7 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/:collectionId/content/:webContentId')
+  @Delete('/collections/:collectionId/content/:webContentId')
   async removeContentFromCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
@@ -77,7 +90,7 @@ export class CollectionController {
   }
 
   @ApiOperation({ summary: '타 유저 컬렉션 목록 조회' })
-  @Get('/:userId')
+  @Get('/collections/:userId')
   @Render('collection/user_collection_list')
   async userCollections(@Param('userId') userId: number) {
     const collections = await this.collectionService.getUserColList(userId);
@@ -87,7 +100,7 @@ export class CollectionController {
   @ApiOperation({ summary: '컬렉션 생성' })
   @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
-  @Post('/')
+  @Post('/collections')
   async addCollection(
     @UploadedFile() file: Express.Multer.File,
     @Body() createColDto: CreateColDto,
@@ -105,7 +118,7 @@ export class CollectionController {
   @ApiOperation({ summary: '컬렉션 수정' })
   @UseInterceptors(FileInterceptor('coverImage'))
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/:collectionId')
+  @Patch('/collections/:collectionId')
   async updateCollection(
     @UploadedFile() file: Express.Multer.File,
     @UserInfo() user: Users,
@@ -122,7 +135,7 @@ export class CollectionController {
   @ApiOperation({ summary: '컬렉션 삭제' })
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(204)
-  @Delete('/:collectionId')
+  @Delete('/collections/:collectionId')
   async deleteCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
@@ -133,7 +146,7 @@ export class CollectionController {
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 추가' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/:collectionId/content/:webContentId')
+  @Post('/collections/:collectionId/content/:webContentId')
   async addContentToCollection(
     @UserInfo() user: Users,
     @Param('collectionId') collectionId: number,
@@ -159,7 +172,7 @@ export class CollectionController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/title/:userId')
+  @Get('/collections/title/:userId')
   async getMyColsTitle(@UserInfo() user: Users) {
     const userId = user.id;
     return await this.collectionService.getMyColsTitle(userId);

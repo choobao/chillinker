@@ -1,6 +1,8 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -14,6 +16,10 @@ import { Users } from '../../user/entities/user.entity';
 export class CollectionBookmark {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
+
+  @Index('idx_created_at', ['createdAt'])
+  @CreateDateColumn()
+  createdAt: Date;
 
   // 컬렉션 북마크 - 컬렉션
   @ManyToOne(() => Collections, (collection) => collection.collectionBookmarks)
