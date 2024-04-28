@@ -17,11 +17,11 @@ export class RedisService {
     return this.client;
   }
 
-  async save(key: string, value: any, expiresInSec?: number) {
-    if (expiresInSec) {
-      await this.client.setex(key, expiresInSec, value);
+  async save(key: string, value: any, ttl?: number) {
+    if (ttl) {
+      await this.client.set(key, value, 'EX', ttl);
     } else {
-      await this.client.setex(key, 25 * 3600, value); // 25h expire
+      await this.client.set(key, value, 'EX', 25 * 3600); // 25h expire
     }
   }
 
@@ -36,5 +36,16 @@ export class RedisService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async cacheData(key: string, value: any, ttl: number): Promise<void> {
+    await this.client.set(key, JSON.stringify(value), 'EX', ttl);
+    console.log('success caching ', key);
+  }
+
+  async getCachedData(key: string): Promise<any> {
+    const data = await this.client.get(key);
+    console.log('cache hit!');
+    return data ? JSON.parse(data) : null;
   }
 }
