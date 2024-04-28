@@ -309,9 +309,9 @@
         </div>
         <nav aria-label="Page navigation example" class="paginnation-wrapper">
           <ul class="pagination">
-            <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
+            <li class="page-item"><a class="page-link-back" href="#"><</a>&nbsp;&nbsp;&nbsp;</li>
             <span class="page-item-num"></span>
-            <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li>
+            <li class="page-item"><a class="page-link-forward" href="#">></a>&nbsp;&nbsp;&nbsp;</li>
           </ul>
         </nav>
     </main>
@@ -341,20 +341,24 @@
           const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
           webnovelBtn.classList.add('selected');
         }  
-        const currPage = parseInt(urlParams.get('page'), 10) || 1; 
 
+        const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+        const query = urlParams.get('query')
+  
+
+        console.log(currPage)
         
 
         if (currPage && currPage > 1) { 
-    const pageLinkBack = document.querySelector('.page-link-back');
-    if (pageLinkBack) { 
-        pageLinkBack.setAttribute('href', `/search?query=${query}&page=${currPage-1}`);
-    }
+         const pageLinkBack = document.querySelector('.page-link-back');
+        if (pageLinkBack) { 
+        pageLinkBack.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage-1}`)
+      }
 }
 if (currPage) { 
     const pageLinkForward = document.querySelector('.page-link-forward'); 
     if (pageLinkForward) { 
-        pageLinkForward.setAttribute('href', `/search?query=${query}&page=${currPage+1}`);
+        pageLinkForward.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage+1}`);
     }
 }
 
