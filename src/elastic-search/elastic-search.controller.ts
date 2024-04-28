@@ -12,7 +12,7 @@ export class ElasticSearchController {
 
   @Get('/search')
   async search(
-    indexName: string = 'web*',
+    indexName: string = 'webcontents',
     keyword: string = '로맨스',
     fieldName1: string = 'keyword',
     fieldName2: string = 'category',
