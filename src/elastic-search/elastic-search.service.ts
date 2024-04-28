@@ -42,22 +42,16 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('0 0 * * *')
+  @Cron('34 11 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
-    const webtoons = webContents.filter(
-      (content) => content.contentType === ContentType.WEBTOON,
-    );
-    const webnovels = webContents.filter(
-      (content) => content.contentType === ContentType.WEBNOVEL,
-    );
 
     try {
       const startTime = new Date().getTime();
       console.log('시작!');
 
-      await this.indexContents(webtoons, 'webtoons');
-      await this.indexContents(webnovels, 'webnovels');
+      await this.indexContents(webContents, 'webcontents');
+
       console.log(new Date().getTime() - startTime, ' ms');
     } catch (err) {
       console.error('인덱싱 중 오류 발생: ', err);
@@ -66,7 +60,7 @@ export class ElasticSearchService {
   }
 
   async search(
-    indexName: string,
+    indexName: string = 'webcontents',
     keyword: string,
     fieldName: string,
     page: number,

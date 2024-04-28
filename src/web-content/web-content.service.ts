@@ -132,7 +132,7 @@ export class WebContentService {
 
   async searchFromAuthors(keyword: string, user, page: number, take: number) {
     let authors = await this.elasticSearchService.search(
-      'web*',
+      'webContents',
       keyword,
       'author',
       page,
@@ -167,23 +167,21 @@ export class WebContentService {
     page: number,
     take: number,
   ) {
-    const webnovels = await this.elasticSearchService.search(
-      'webnovels',
+    const webcontents = (await this.elasticSearchService.search(
+      'webcontents',
       keyword,
       'title',
       page,
       take,
-    );
-    console.log('웹소설:', webnovels);
-    const webtoons = await this.elasticSearchService.search(
-      'webtoons',
-      keyword,
-      'title',
-      page,
-      take,
-    );
-    console.log('웹툰:', webtoons);
+    )) as WebContents[];
 
+    const webnovels = webcontents.filter(
+      (webContent) => webContent.contentType === '웹소설',
+    );
+
+    const webtoons = webcontents.filter(
+      (webContent) => webContent.contentType === '웹툰',
+    );
     return {
       webnovels: this.blindAdultImage(user, webnovels),
       webtoons: this.blindAdultImage(user, webtoons),
