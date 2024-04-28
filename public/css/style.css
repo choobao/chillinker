@@ -726,3 +726,11 @@ textarea#intro {
   text-decoration: underline #fff;
   font-weight: bolder;
 }
+
+.page-link-forward {
+  float: right;
+}
+
+.paginnation-wrapper {
+  margin-bottom: 30px;
+}
