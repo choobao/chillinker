@@ -118,13 +118,41 @@
               </div>
           </ul>
         </div>
-        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+        <!-- <nav aria-label="Page navigation example" class="paginnation-wrapper">
           <ul class="pagination">
-            <!-- <li class="page-item"><a class="page-link-back" href="#"> < </a>&nbsp;&nbsp;&nbsp;</li>
-            <span class="page-item-num"></span>
-            <li class="page-item"><a class="page-link-forward" href="#"> > </a>&nbsp;&nbsp;&nbsp;</li> -->
             <% for(let i = 1; i <= maxPage; i++) { %>
-              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a>&nbsp;&nbsp;&nbsp;</li>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a></li>
+            <% } %>
+          </ul>
+        </nav> -->
+        <nav aria-label="Page navigation example" class="pagination-wrapper">
+          <ul class="pagination">
+            <% 
+            let limit = 5; // 한 번에 보여줄 페이지 수
+            let start = Math.floor((page - 1) / limit) * limit + 1;
+            let end = start + limit - 1;
+            end = end > maxPage ? maxPage : end;
+            %>
+            <!-- "처음" 버튼 -->
+            <% if(page > 5) { %>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=1">‹‹</a></li>
+            <% } %>
+            <% if(start > 1) { %>
+              <!-- "이전" 버튼 -->
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= start - 1 %>">‹</a></li>
+            <% } %>
+            <% for(let i = start; i <= end; i++) { %>
+              <li class="page-item <%= i === page ? 'active' : '' %>">
+                <a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+            <% if(end < maxPage) { %>
+              <!-- "다음" 버튼 -->
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= end + 1 %>">›</a></li>
+            <% } %>
+            <!-- "마지막" 버튼 -->
+            <% if(end < maxPage) { %>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= maxPage %>">››</a></li>
             <% } %>
           </ul>
         </nav>
@@ -187,7 +215,7 @@
         //     }
         // }
         
-        // document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;&nbsp;&nbsp;&nbsp;`;
+        // document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;`;
     }
 
       $(document).ready(function () {
