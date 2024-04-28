@@ -246,25 +246,6 @@ document.addEventListener('DOMContentLoaded', function () {
       reviewWrapper.style.display = 'none';
     }
   });
-
-  likeButtons.forEach(function (likeButton) {
-    likeButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      $.ajax({
-        type: 'Post',
-        url: `${idUrl}/${reviewId}/likes`,
-        contentType: 'application/json',
-        success: function (data) {
-          location.reload(true); // 성공 시 페이지 새로고침
-        },
-        error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-        },
-      });
-    });
-  });
 });
 
 $(document).ready(function () {
