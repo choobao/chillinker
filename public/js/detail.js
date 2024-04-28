@@ -29,11 +29,13 @@ window.addEventListener('load', function () {
   spoilerBtns.forEach(function (spoilerBtn) {
     const index = spoilerBtn.id.split('-')[1];
     const spoilerBlind = document.getElementById(`alert_article-${index}`);
+    const content = document.getElementById(`item-content-${index}`);
 
     // 스포일러 버튼이 존재하는 경우
     if (spoilerBlind && !myReview) {
       // 스포일러 버튼의 스타일에 position을 absolute로 설정합니다.
       spoilerBlind.style.position = 'absolute';
+      content.style.display = 'none';
     }
   });
 });
@@ -136,8 +138,11 @@ spoilerBtns.forEach(function (spoilerBtn) {
     const spoilerBlind = document.getElementById(`alert_article-${index}`);
     const reviewWrap = document.getElementById(`review-wrapper-${index}`);
 
+    const content = document.getElementById(`item-content-${index}`);
+
     spoilerBlind.style.display = 'none';
     reviewWrap.style.display = 'block';
+    content.style.display = 'block';
   });
 });
 
@@ -157,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       $.ajax({
         type: 'Post',
-        url: `${idUrl}/${reviewId}/likes`,
+        url: `/reviews/${reviewId}/likes`,
         contentType: 'application/json',
         success: function (data) {
           location.reload(true); // 성공 시 페이지 새로고침
@@ -235,29 +240,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var index = reviewItem.id.split('-')[1]; // 현재 요소의 id를 가져옵니다.
     var spiolerBlinds = document.getElementById(`alert_article-${index}`);
     var reviewWrapper = document.getElementById(`review-wrapper-${index}`);
+    const content = document.getElementById(`item-content-${index}`);
 
     if (spiolerBlinds) {
       reviewWrapper.style.display = 'none';
     }
-  });
-
-  likeButtons.forEach(function (likeButton) {
-    likeButton.addEventListener('click', function () {
-      const index = this.id.split('-')[1];
-      const reviewId = document.getElementById(`reviewId-${index}`).textContent;
-
-      $.ajax({
-        type: 'Post',
-        url: `${idUrl}/${reviewId}/likes`,
-        contentType: 'application/json',
-        success: function (data) {
-          location.reload(true); // 성공 시 페이지 새로고침
-        },
-        error: function (response) {
-          alert(response.responseJSON.message); // 오류 발생 시 메시지 표시
-        },
-      });
-    });
   });
 });
 

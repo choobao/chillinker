@@ -262,3 +262,34 @@ footer p {
 button {
   cursor: pointer;
 }
+
+/* 네비게이션 바 */
+.main-nav {
+  width: 100%;
+  background-color: #a791ff;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav > ul {
+  width: max-content;
+  margin: auto;
+  display: flex;
+}
+
+.main-nav > ul > span {
+  color: white;
+  margin: auto 0;
+}
+
+.main-nav > ul > li {
+  padding: 8px 20px 8px 20px;
+  margin: auto 0;
+  cursor: pointer;
+  text-align: center;
+}
+
+.main-nav > ul > li > a {
+  text-align: center;
+  color: white;
+}

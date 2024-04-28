@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -28,4 +29,7 @@ export class ContentCollection {
 
   @Column('int', { name: 'webContent_id', nullable: false })
   webContentId: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

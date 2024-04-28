@@ -12,16 +12,20 @@ export class ElasticSearchController {
 
   @Get('/search')
   async search(
-    indexName: string = 'web*',
-    keyword: string='로맨스',
+    indexName: string = 'webcontents',
+    keyword: string = '로맨스',
     fieldName1: string = 'keyword',
     fieldName2: string = 'category',
+    page: number,
+    take: number,
   ) {
     return await this.elasticService.searchMultipleField(
       indexName,
       keyword,
       fieldName1,
       fieldName2,
+      page,
+      take,
     );
   }
 }

@@ -307,6 +307,13 @@
               <% } %>
           </ul>
         </div>
+        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link-back" href="#"><</a>&nbsp;&nbsp;&nbsp;</li>
+            <span class="page-item-num"></span>
+            <li class="page-item"><a class="page-link-forward" href="#">></a>&nbsp;&nbsp;&nbsp;</li>
+          </ul>
+        </nav>
     </main>
     <footer>
       <ul>
@@ -322,19 +329,60 @@
     <button class="top_btn" id="top-btn">↑</button>
     <script src="/js/adult_blind.js"></script>
     <script>
-      window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type');
+ window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
 
-        if (type) {
-          const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
-          selectedBtn.classList.add('selected');
+    if (type) {
+        const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
+        selectedBtn.classList.add('selected');
         
-        }else {
-          const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
-          webnovelBtn.classList.add('selected');
-        }  
-      }
+    } else {
+        const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
+        webnovelBtn.classList.add('selected');
+    }  
+
+    const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+    const query = urlParams.get('query');
+    
+    var listItems = document.querySelectorAll('.searched-card');
+
+    if (currPage && currPage > 1) { 
+        const pageLinkBack = document.querySelector('.page-link-back');
+        if (pageLinkBack) { 
+            pageLinkBack.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage-1}`);
+        }
+    }
+
+    if (currPage && currPage < 2) { // 현재 페이지가 1페이지인 경우
+        const prevPageButton = document.querySelector('.page-link-back');
+        if (prevPageButton) {
+            prevPageButton.removeAttribute('href'); // 이전 버튼의 링크 제거하여 비활성화
+            prevPageButton.style.pointerEvents = 'none'; // 이전 버튼의 클릭 이벤트 비활성화
+            prevPageButton.style.opacity = '0.5'; // 이전 버튼 회색으로 표시하여 비활성화 효과 부여
+        }
+    }
+
+    if (currPage) { 
+        const pageLinkForward = document.querySelector('.page-link-forward'); 
+        if (pageLinkForward) { 
+            pageLinkForward.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage+1}`);
+        }
+    }
+
+    const pageItemNum = document.querySelector('.page-item-num');
+    if (pageItemNum) { 
+        pageItemNum.textContent = currPage; // 현재 페이지 번호 업데이트
+    }
+
+    // 만약 listItems.length가 30보다 작으면 다음 버튼을 비활성화
+    const nextPageButton = document.querySelector('.page-link-forward');
+    if (listItems.length < 30 && nextPageButton) {
+        nextPageButton.removeAttribute('href'); // 다음 버튼의 링크를 제거하여 비활성화
+        nextPageButton.style.pointerEvents = 'none'; // 다음 버튼의 클릭 이벤트를 비활성화
+        nextPageButton.style.opacity = '0.5'; // 다음 버튼을 회색으로 표시하여 비활성화 효과 부여
+    }
+}
       $(document).ready(function () {
         // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
         $(window).scroll(function () {
@@ -350,7 +398,7 @@
           $('html, body').animate({ scrollTop: 0 }, 800);
           return false;
         });
-      });
+      })
     </script>
   </body>
 </html>

@@ -8,6 +8,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.top-review-rank-container {
+  display: flex;
+  width: 1200px;
+  /* justify-content: flex-start; */
+  margin: 30px auto;
+}
+
 .prev-button {
   background-color: #ccbeff;
   margin: auto 10px auto 10px;
@@ -492,9 +499,9 @@ textarea#intro {
   display: inline-block;
   height: 30px;
   line-height: 30px;
-  border-radius: 3px;
-  padding: 0 10px;
-  background: #f3f4f5;
+  border-radius: 10px;
+  background: #ded8ff;
+  margin: 5px;
 }
 
 .keyword {
@@ -713,4 +720,17 @@ textarea#intro {
 .no-result {
   font-size: 15px;
   margin-left: 10px;
+}
+
+.selected-nav {
+  text-decoration: underline #fff;
+  font-weight: bolder;
+}
+
+.page-link-forward {
+  float: right;
+}
+
+.paginnation-wrapper {
+  margin-bottom: 30px;
 }

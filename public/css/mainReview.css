@@ -1,0 +1,148 @@
+.top-review-list-container {
+  margin: 0 auto;
+  width: 1200px;
+}
+
+.my-rui_button_white_25 {
+  pointer-events: none;
+}
+
+.profile-img {
+  float: left;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.paginnation-wrapper {
+  margin-bottom: 70px;
+}
+
+.slider {
+  display: flex;
+  scroll-behavior: smooth; /* 부드러운 스크롤 효과를 추가합니다. */
+}
+
+.slider ul {
+  display: flex;
+  transition: transform 0.5s ease; /* transform 속성에 트랜지션 효과를 추가합니다. */
+}
+
+.reviewer-id-and-rate {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 10px;
+}
+
+.review-content-web-info-container {
+  padding: 12px 0px 16px;
+  display: flex;
+}
+
+.webContent-info-container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  width: 468px;
+  padding-left: 10px;
+}
+
+.css-line {
+  background: rgb(237, 237, 237);
+  height: 1px;
+  border: none;
+  margin: 10px 0px;
+}
+
+.webContent-title-info {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0px;
+  line-height: 22px;
+  color: rgb(20, 20, 20);
+  margin: 0px 0px 4px;
+}
+
+.webContent-img {
+  float: left;
+  width: 70px;
+  margin: 10px;
+}
+
+.review-card {
+  background: rgb(255, 255, 255);
+  box-sizing: border-box;
+  width: 500px;
+  padding: 15px 15px 9px;
+  border: 1px solid rgb(224, 224, 224);
+  border-radius: 8px;
+  margin: 18px;
+}
+
+.top-review-section {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.review-more {
+  color: rgb(116, 116, 123);
+  font-size: 15px;
+  font-weight: normal;
+  letter-spacing: -0.14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.head-title {
+  background: rgb(255, 255, 255);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0px;
+  line-height: 30px;
+  color: rgb(41, 42, 50);
+  /* padding: 12px 0px 14px; */
+  display: flex;
+  margin: 0 auto;
+  width: 1000px;
+  margin-top: 30px;
+  justify-content: space-between;
+}
+
+.search_btn_bar {
+  display: flex;
+  margin: 0 auto;
+  width: 700px;
+  margin-bottom: 20px;
+}
+
+.search_btn1 {
+  background-color: transparent;
+  color: #000;
+  border-radius: 7px;
+  padding: 2px;
+}
+
+.search_btn2 {
+  background-color: transparent;
+  color: #000;
+  border-radius: 7px;
+  padding: 2px;
+}
+
+.search_btn1.active,
+.search_btn1:hover {
+  background-color: #6a5acd;
+  color: #fff;
+}
+
+.search_btn2.active,
+.search_btn2:hover {
+  background-color: #6a5acd;
+  color: #fff;
+}

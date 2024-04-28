@@ -45,24 +45,19 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
     @Res() res,
   ) {
-    try {
-      const { password, confirmPassword } = createUserDto;
-      if (password !== confirmPassword) {
-        throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
-      }
-
-      await this.userService.register(file, createUserDto);
-
-      const loginDto = new LoginDto();
-      loginDto.email = createUserDto.email;
-      loginDto.password = createUserDto.password;
-
-      await this.login(loginDto, res);
-      res.render('main.ejs');
-    } catch (error) {
-      const err = { message: error.message, code: error.getStatus() };
-      res.render('error.ejs', { err });
+    const { password, confirmPassword } = createUserDto;
+    if (password !== confirmPassword) {
+      throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
     }
+
+    await this.userService.register(file, createUserDto);
+
+    const loginDto = new LoginDto();
+    loginDto.email = createUserDto.email;
+    loginDto.password = createUserDto.password;
+
+    await this.login(loginDto, res);
+    res.render('main.ejs');
   }
 
   @Render('login')

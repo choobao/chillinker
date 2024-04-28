@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: 'DELETE',
         success: function () {
           alert('컬렉션이 삭제되었습니다.');
-          window.location.href = '/collections'; // 이전 페이지(컬렉션)로 리다이렉트
+          location.reload(true); // 이전 페이지(컬렉션)로 리다이렉트
         },
         error: function (response) {
           alert(response.responseJSON.message);
@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //모달창 닫는 부분
   $('.close').click(function () {
+    addContentModal.style.display = 'none';
     removeContentModal.style.display = 'none';
     modifyContentModal.style.display = 'none';
-    addContentModal.style.display = 'none';
   });
 
   //컨텐츠 삭제 창에 컨텐츠 목록 표시 + 컨텐츠 삭제 작업
@@ -77,24 +77,10 @@ document.addEventListener('DOMContentLoaded', function () {
         },
       });
       removeContentModal.style.display = 'block'; //모달창 열어줌.
-
-      //   const selectedCollection = collection.find(
-      //     (col) => col.id == collectionId,
-      //   );
-
-      //   if (selectedCollection) {
-      //     let titles = '';
-      //     selectedCollection.webContents.forEach((content) => {
-      //       titles += `<p>${content.webContentTitle}</p>`;
-      //     });
-
-      //     document.getElementById('remove-content-modal_title').innerHTML =
-      //       titles;
-      //   }
     });
   });
 
-  //컨텐츠 수정 버튼 -> 모달 ------> 문제: formdata에 정보가 안담기는 듯. 컬렉션 제목과 컬렉션 설명을 입력해달라는 에러가 alert창에 뜸.
+  //컬렉션 수정
   collectionModifyBtn.forEach(function (collectionModifyBtn) {
     collectionModifyBtn.addEventListener('click', function () {
       const index = this.id.split('-')[1];
@@ -133,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault(); // 기본 제출 동작을 방지
 
         var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-        console.log(formData);
         $.ajax({
           url: `/collections/${collectionId}`, // 데이터를 전송할 서버의 URL
           type: 'PATCH',
@@ -157,12 +142,11 @@ document.addEventListener('DOMContentLoaded', function () {
     addContentModal.style.display = 'block';
   });
 
-  // 폼 제출 이벤트 - 컬렉션 생성 ------> 문제: 이미지파일을 넣으니까 unexpected field라는 에러가 alert창에 뜸.
+  // 폼 제출 이벤트 - 컬렉션 생성
   $('#addCollectionForm').submit(function (e) {
     e.preventDefault(); // 기본 제출 동작을 방지
 
     var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-    console.log(formData);
     $.ajax({
       url: '/collections', // 데이터를 전송할 서버의 URL
       type: 'POST',

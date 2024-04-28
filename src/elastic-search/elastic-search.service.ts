@@ -6,8 +6,6 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 import { Repository } from 'typeorm';
 import { ContentType } from '../web-content/webContent.type';
 import { Cron } from '@nestjs/schedule';
-import { bool } from 'joi';
-import { EventEmitter } from 'stream';
 
 @Injectable()
 export class ElasticSearchService {
@@ -44,22 +42,16 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('19 9 * * *')
+  @Cron('34 11 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
-    const webtoons = webContents.filter(
-      (content) => content.contentType === ContentType.WEBTOON,
-    );
-    const webnovels = webContents.filter(
-      (content) => content.contentType === ContentType.WEBNOVEL,
-    );
 
     try {
       const startTime = new Date().getTime();
       console.log('시작!');
 
-      await this.indexContents(webtoons, 'webtoons');
-      await this.indexContents(webnovels, 'webnovels');
+      await this.indexContents(webContents, 'webcontents');
+
       console.log(new Date().getTime() - startTime, ' ms');
     } catch (err) {
       console.error('인덱싱 중 오류 발생: ', err);
@@ -67,8 +59,16 @@ export class ElasticSearchService {
     }
   }
 
-  async search(indexName: string, keyword: string, fieldName: string) {
+  async search(
+    indexName: string = 'webcontents',
+    keyword: string,
+    fieldName: string,
+    page: number,
+    take: number,
+  ) {
     try {
+      const from = (page - 1) * take;
+
       const query = {
         query: {
           match: {
@@ -79,10 +79,13 @@ export class ElasticSearchService {
         },
       };
       const result = await this.client.search({
+        track_total_hits: true,
         index: indexName,
         body: query,
-        size: 180,
+        size: take,
+        from: from,
       });
+
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
@@ -97,10 +100,16 @@ export class ElasticSearchService {
     keyword: string,
     fieldName1: string,
     fieldName2: string,
+    page: number,
+    take: number,
   ) {
     try {
+      const from = (page - 1) * take;
+
       const result = await this.client.search({
         index: indexName,
+        size: take,
+        from: from,
         body: {
           query: {
             bool: {
@@ -120,8 +129,8 @@ export class ElasticSearchService {
             },
           },
         },
-        size: 180,
       });
+
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
