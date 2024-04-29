@@ -291,16 +291,16 @@ export class WebContentService {
   }
 
   // 컬렉션에 많이 들어간 작품
-  async getBestCollectionContents(type: string, user) {
+  async getBestCollectionContents(type: string, user: Users | boolean | null) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
-      .leftJoinAndSelect('webContents.contentCollections', 'cols')
-      .where('cols.createdAt > :yesterday', { yesterday })
+      .leftJoinAndSelect('webContents.contentCollections', 'contentCollections')
+      .where('contentCollections.createdAt > :yesterday', { yesterday })
       .andWhere('webContents.contentType = :type', { type })
       .groupBy('webContents.id')
-      .orderBy('COUNT(cols.id)', 'DESC')
+      .orderBy('COUNT(contentCollections.id)', 'DESC')
       .select([
         'webContents.id AS id',
         'webContents.title AS title',
@@ -309,7 +309,7 @@ export class WebContentService {
         'webContents.isAdult AS isAdult',
         'webContents.author AS author',
       ])
-      .addSelect('COUNT(cols.id)', 'colCount')
+      .addSelect('COUNT(contentCollections.id)', 'colCount')
       .limit(20)
       .getRawMany();
 

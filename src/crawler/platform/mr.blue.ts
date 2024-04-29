@@ -298,7 +298,7 @@ export default class MrbluePuppeteer {
       const mbPassword = this.configService.get<string>('MRBLUE_PASSWORD');
       await page.goto(mrblue_login_page_url, {
         waitUntil: 'networkidle2',
-        timeout: 50000,
+        timeout: 100000,
       }); //mrblue로그인 페이지로 이동
 
       await page.type('#pu-page-id', mbEmail); //이메일 입력창에 이메일 입력
