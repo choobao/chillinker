@@ -145,6 +145,7 @@ header {
   overflow: hidden;
   display: flex;
   align-items: center;
+  background-color: #fff;
 }
 .inner_header .logo_image {
   margin-right: 10px;
@@ -184,7 +185,7 @@ header {
 }
 .inner_header .search_box form input[type='search'] {
   color: #999;
-  background-color: #fff;
+  background-color: #eeeeee;
   font-size: 12px;
   padding: 5px 10px;
   margin-right: 10px;
