@@ -13,6 +13,7 @@ import {
   Res,
   UnauthorizedException,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -30,6 +31,8 @@ import { Users } from './entities/user.entity';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
+import { UserGuard } from '../auth/user.guard';
+import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
 
 @ApiTags('USER')
 @Controller('users')
@@ -104,9 +107,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(UserGuard)
   @Get('mypage')
   @Render('mypage')
+  @UseFilters(UnauthorizedExceptionFilter)
   async getMyInfo(@UserInfo() user: Users) {
     const { id } = user;
     return await this.userService.getUserInfoById(id);
