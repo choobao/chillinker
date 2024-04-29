@@ -134,7 +134,7 @@ header {
   top: 0;
   width: 100%;
   height: 90px;
-  background: #e6e6fa;
+  background-color: #fff;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   z-index: 10;
@@ -145,7 +145,6 @@ header {
   overflow: hidden;
   display: flex;
   align-items: center;
-  background-color: #fff;
 }
 .inner_header .logo_image {
   margin-right: 10px;

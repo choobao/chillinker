@@ -12,7 +12,7 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.183-029cdec/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
+      url: `https://ridibooks.com/_next/data/3.8.184-52481bb/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
     });
     const books = data.pageProps.dehydratedState.queries[2].state.data;
 
@@ -108,7 +108,7 @@ export async function get20BestRanking(gerne: GENRE) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.183-029cdec/bestsellers/${gerne}.json?genre=${gerne}`,
+      url: `https://ridibooks.com/_next/data/3.8.184-52481bb/bestsellers/${gerne}.json?genre=${gerne}`,
     });
 
     const items =
