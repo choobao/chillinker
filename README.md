@@ -1,74 +1,38 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## 💜 [Chillinker](https://chillinker-q2dan5o26q-du.a.run.app/main) 💜
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### ✨ 프로젝트 소개
+- 한 줄 정리 : 웹소설, 웹툰 종합 정보 플랫폼
+- 내용 : 최근 웹소설과 웹툰을 제공하는 플랫폼과 그 종류가 매우 다양한데, 여기저기 흩어진 웹소설과 웹툰 관련 정보나 리뷰를 한 곳에서 확인하고 추천받을 수 있으면 좋겠다는 니즈에서 시작하게 되었습니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### ⏳️ 개발 기간
+- 2024.03.26 화 ~ 2024.04.29 월
 
-## Description
+### 👩‍💻 멤버 구성
+- 1조 회빙환 (최혜원, 전수민, 김세영, 서린)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### ⚙️ ERD
+![image](https://github.com/choobao/chillinker/assets/154856948/79e19484-979f-4032-bb51-c444371f9ee7)
 
-## Installation
 
-```bash
-$ npm install
-```
+### ⚙ 서비스 아키텍쳐
+![image](https://github.com/choobao/chillinker/assets/154856948/d4889d4e-04ef-4e62-b774-9bcfb1b967e1)
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+### 👩‍💻 사용 기술
+- framework : Nest.js
+- DB : MySQL(Cloud SQL) & typeORM
+- cache : Redis Lab
+- deploy : Docker & Cloud Build & Cloud Run
+- search : Elasticsearch
+- crawling : Axios, Cheerio, Puppeteer
+- frontend : ejs, jquery, css
 
-# watch mode
-$ npm run start:dev
+### 📌 주요 기능
 
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
-# chillinker
+- 하루에 한번 업데이트되는 베스트 작품 랭킹
+- 성인 작품 블라인드
+- cross platform 작품 검색
+- 플랫폼 리뷰 조회 + 칠린커 리뷰 작성
+- 컬렉션 만들기 + 컬렉션 북마크
+- 유저 팔로우 + 팔로잉
+- 카테고리별 작품 조회

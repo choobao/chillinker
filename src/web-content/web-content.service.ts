@@ -220,9 +220,9 @@ export class WebContentService {
   }
 
   // 지난 24시간 이내 생성된 likeCount가 높은 순 상위 20개
-  async getBestLikesContents(type: string, user) {
+  async getBestLikesContents(type: string, user: Users | boolean | null) {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 3);
 
     let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
@@ -255,9 +255,9 @@ export class WebContentService {
     return contents;
   }
 
-  async getBestReviewCountContents(type: string, user) {
+  async getBestReviewCountContents(type: string, user: Users | boolean | null) {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 3);
 
     let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
@@ -293,7 +293,7 @@ export class WebContentService {
   // 컬렉션에 많이 들어간 작품
   async getBestCollectionContents(type: string, user: Users | boolean | null) {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 3);
     let contents = await this.webContentRepository
       .createQueryBuilder('webContents')
       .leftJoinAndSelect('webContents.contentCollections', 'contentCollections')

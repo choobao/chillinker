@@ -34,3 +34,19 @@
   color: #fff;
   border-radius: 4px;
 }
+
+/* 페이지네이션 */
+.pagination {
+  width: max-content;
+  margin: 0 auto 10px auto;
+}
+
+.page-item {
+  margin: 5px;
+  padding: 5px;
+}
+
+.page-item.active {
+  text-decoration: underline;
+  font-weight: bold;
+}
