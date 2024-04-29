@@ -11,11 +11,11 @@
 - 1조 회빙환 (최혜원, 전수민, 김세영, 서린)
 
 ### ⚙️ ERD
-![image](https://github.com/choobao/chillinker/assets/154856948/79e19484-979f-4032-bb51-c444371f9ee7)
+![drawSQL-image-export-2024-04-29](https://github.com/choobao/chillinker/assets/154856948/5dabb6d5-1077-4c54-91c6-bf0a652008ce)
 
 
 ### ⚙ 서비스 아키텍쳐
-![image](https://github.com/choobao/chillinker/assets/154856948/d4889d4e-04ef-4e62-b774-9bcfb1b967e1)
+![_Chillinker drawio](https://github.com/choobao/chillinker/assets/154856948/3b8490d1-c01a-4703-9dcd-6da42285766b)
 
 
 ### 👩‍💻 사용 기술
