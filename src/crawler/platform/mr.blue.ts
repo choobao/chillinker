@@ -254,6 +254,8 @@ export default class MrbluePuppeteer {
             title: item.querySelector('div.txt-box > span.tit > a')
               ?.textContent,
             rank: item.querySelector('p')?.textContent,
+            genre: item.querySelector('div.txt-box > span > span > a')
+              ?.textContent,
             link: item.querySelector('div.img > a')?.getAttribute('href'),
           };
         });
@@ -272,6 +274,8 @@ export default class MrbluePuppeteer {
         return items.map((item) => {
           return {
             title: item.querySelector('div.txt-box > span.tit > a')
+              ?.textContent,
+            genre: item.querySelector('div.txt-box > span.name > span > a')
               ?.textContent,
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a').getAttribute('href'),
@@ -465,7 +469,8 @@ export default class MrbluePuppeteer {
 
         if (genreDetail) {
           if (genre === '판타지/무협') {
-            if (genreDetail.includes('무협')) category = '무협';
+            if (genreDetail === '신무협' || genreDetail === '전통무협')
+              category = '무협';
             else if (genreDetail === '현대판타지') category = '현판';
             else category = '판타지';
           } else if (genre === '로맨스') {

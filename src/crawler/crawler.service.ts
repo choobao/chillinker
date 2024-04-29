@@ -229,12 +229,12 @@ export class CrawlerService {
       const ridiCurrWebtoons =
         +(await this.redisService.getValue('ridi_curr1600')) || 1;
 
-      // const mbWebnovelCurPage =
-      //   +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
-      // const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
-      // const mbWebtoonCurPage =
-      //   +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
-      // const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
+      const mbWebnovelCurPage =
+        +(await this.redisService.getValue('mrblueWebnovelCur')) || 1;
+      const mbWebnovelMaxPage = +mbWebnovelCurPage + 1 || 2;
+      const mbWebtoonCurPage =
+        +(await this.redisService.getValue('mrblueWebtoonCur')) || 1;
+      const mbWebtoonMaxPage = mbWebtoonCurPage + 1 || 2;
 
       let begin_time = new Date().getTime();
       console.log('네이버 크롤링 시작');
@@ -281,12 +281,12 @@ export class CrawlerService {
       console.log('미스터 블루 작업 시작.');
       begin_time = new Date().getTime();
 
-      // const mrblueData = await this.createMrblue(
-      //   mbWebnovelCurPage,
-      //   mbWebnovelMaxPage,
-      //   mbWebtoonCurPage,
-      //   mbWebtoonMaxPage,
-      // );
+      const mrblueData = await this.createMrblue(
+        mbWebnovelCurPage,
+        mbWebnovelMaxPage,
+        mbWebtoonCurPage,
+        mbWebtoonMaxPage,
+      );
 
       console.log(
         '미스터 블루 크롤링 끝. 총 걸린 시간은 ',
@@ -298,7 +298,7 @@ export class CrawlerService {
         await this.removeDuplicate(ridiData),
         await this.removeDuplicate(kakaoData),
         await this.removeDuplicate(naverData),
-        // await this.removeDuplicate(mrblueData),
+        await this.removeDuplicate(mrblueData),
       );
 
       console.log('디비 작업 시작.');
@@ -462,8 +462,8 @@ export class CrawlerService {
       await this.redisService.save(`ridi_curr${TYPE.B}`, ridiCurrBnovels + 1);
       await this.redisService.save(`ridi_curr${TYPE.WB}`, ridiCurrWebtoons + 1);
 
-      // await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
-      // await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
+      await this.redisService.save('mrblueWebnovelCur', mbWebnovelMaxPage);
+      await this.redisService.save('mrblueWebtoonCur', mbWebtoonMaxPage);
 
       console.log(
         '디비 작업 끝. 총 걸린 시간은 ',
