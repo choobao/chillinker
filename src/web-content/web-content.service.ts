@@ -52,6 +52,7 @@ export class WebContentService {
             'webContents.title AS title',
             'webContents.image AS image',
             'webContents.author AS author',
+            'webContents.viewCount AS viewCount',
             'webContents.isAdult AS isAdult',
           ])
           .addSelect('COUNT(pReview.id)', 'pReviewCount')
@@ -236,6 +237,7 @@ export class WebContentService {
         'webContents.title AS title',
         'webContents.image AS image',
         'webContents.category AS category',
+        'webContents.viewCount AS viewCount',
         'webContents.isAdult AS isAdult',
         'webContents.author AS author',
       ])
@@ -271,6 +273,7 @@ export class WebContentService {
         'webContents.title AS title',
         'webContents.image AS image',
         'webContents.category AS category',
+        'webContents.viewCount AS viewCount',
         'webContents.isAdult AS isAdult',
         'webContents.author AS author',
       ])
@@ -306,6 +309,7 @@ export class WebContentService {
         'webContents.title AS title',
         'webContents.image AS image',
         'webContents.category AS category',
+        'webContents.viewCount AS viewCount',
         'webContents.isAdult AS isAdult',
         'webContents.author AS author',
       ])
@@ -595,6 +599,41 @@ export class WebContentService {
         totalCount,
         userInfo: this.isAdult(user),
       };
+    }
+  }
+
+  async getOneWebContent(user, id: number) {
+    const content = await this.webContentRepository.findOne({
+      where: { id },
+    });
+
+    if (!content) {
+      throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
+    }
+
+    //일단 유저가 로그인했을때만 가정하고 로직 짜기
+    let userId = user.id;
+
+    if (!user) {
+      userId = user.ip;
+    }
+
+    console.log('false', userId);
+
+    const key = `user:${userId}:postViews`;
+
+    const existingViews = await this.redisService.isExistingViews(key, id);
+
+    if (existingViews) {
+      return content;
+    } else {
+      await this.redisService.firstViews(key, id);
+
+      await this.webContentRepository.update(content.id, {
+        viewCount: content.viewCount + 1,
+      });
+
+      return content;
     }
   }
 }
