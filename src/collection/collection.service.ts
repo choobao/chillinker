@@ -378,88 +378,89 @@ export class CollectionService {
   //   // 추가적인 로직...
   // }
 
-  // async getTopBookmarkedCollections(): Promise<Collections[]> {
-  //   const threeDaysAgo = new Date();
-  //   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  async getTopBookmarkedCollections(): Promise<Collections[]> {
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-  //   const topBookmarkedCollections = await this.colRepository
-  //     .createQueryBuilder('collection')
-  //     .leftJoin('collection.bookmarks', 'bookmark') // 'bookmarks'는 컬렉션 엔티티 내 북마크 관계를 나타냅니다.
-  //     .addSelect('COUNT(bookmark.id)', 'bookmarkCount')
-  //     .where('bookmark.createdAt > :threeDaysAgo', { threeDaysAgo })
-  //     .groupBy('collection.id')
-  //     .orderBy('bookmarkCount', 'DESC')
-  //     .limit(100)
-  //     .getMany();
+    const topBookmarkedCollections = await this.colRepository
+      .createQueryBuilder('collection')
+      .leftJoinAndSelect('collection.user', 'user')
+      .leftJoin('collection.bookmarks', 'bookmark') // 'bookmarks'는 컬렉션 엔티티 내 북마크 관계를 나타냅니다.
+      .addSelect('COUNT(bookmark.id)', 'bookmarkCount')
+      .where('bookmark.createdAt > :threeDaysAgo', { threeDaysAgo })
+      .groupBy('collection.id')
+      .orderBy('bookmarkCount', 'DESC')
+      .limit(100)
+      .getMany();
 
-  //   return topBookmarkedCollections;
-  // }
+    return topBookmarkedCollections;
+  }
 
-  // async getPopularCollections(page?: number, order?: string) {
-  //   // 페이지당 항목 수 설정
-  //   const perPage = 10;
+  async getPopularCollections(page?: number, order?: string) {
+    // 페이지당 항목 수 설정
+    const perPage = 10;
 
-  //   // 페이지 번호 설정 (기본값은 1)
-  //   page = page ? page : 1;
-  //   let skip = (page - 1) * perPage;
+    // 페이지 번호 설정 (기본값은 1)
+    page = page ? page : 1;
+    let skip = (page - 1) * perPage;
 
-  //   // 현재 날짜와 3일 전 날짜 계산
-  //   var today = new Date();
-  //   var threeDaysAgo = new Date(today);
-  //   threeDaysAgo.setDate(today.getDate() - 3);
+    // 현재 날짜와 3일 전 날짜 계산
+    var today = new Date();
+    var threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(today.getDate() - 3);
 
-  //   // 지난 3일간 생성된 컬렉션 북마크 정보 조회
-  //   // 컬렉션 ID를 기준으로 선택
-  //   const bookmarksCount = await this.colBookRepository
-  //     .createQueryBuilder('collectionBookmark')
-  //     .select('collectionBookmark.collectionId')
-  //     .innerJoin('collectionBookmark.collection', 'collection')
-  //     .where('collectionBookmark.createdAt >= :threeDaysAgo', { threeDaysAgo })
-  //     .getRawMany();
+    // 지난 3일간 생성된 컬렉션 북마크 정보 조회
+    // 컬렉션 ID를 기준으로 선택
+    const bookmarksCount = await this.colBookRepository
+      .createQueryBuilder('collectionBookmarks')
+      .select('collectionBookmarks.collectionId')
+      .innerJoin('collectionBookmarks.collection', 'collection')
+      .where('collectionBookmarks.createdAt >= :threeDaysAgo', { threeDaysAgo })
+      .getRawMany();
 
-  //   // 조회된 북마크들 중에서 고유한 컬렉션의 수 계산
-  //   const uniqueCollectionsCount = new Set(
-  //     bookmarksCount.map((item) => item.collectionBookmarks_collection_id),
-  //   ).size;
+    // 조회된 북마크들 중에서 고유한 컬렉션의 수 계산
+    const uniqueCollectionsCount = new Set(
+      bookmarksCount.map((item) => item.collectionBookmarks_collection_id),
+    ).size;
 
-  //   // 전체 페이지 수 계산
-  //   const totalPages = Math.ceil(uniqueCollectionsCount / perPage);
+    // 전체 페이지 수 계산
+    const totalPages = Math.ceil(uniqueCollectionsCount / perPage);
 
-  //   // 'recent'인 경우 최근 생성된 컬렉션 순으로 정렬, 그렇지 않으면 북마크 수가 많은 순으로 정렬
-  //   if (order === 'recent') {
-  //     // 최근 생성된 컬렉션 조회
-  //     const collections = await this.colBookRepository
-  //       .createQueryBuilder('collectionBookmark')
-  //       .select('collectionBookmark.collectionId, COUNT(*) as count')
-  //       .addSelect('collection')
-  //       .innerJoin('collectionBookmark.collection', 'collection')
-  //       .where('collectionBookmark.createdAt >= :threeDaysAgo', {
-  //         threeDaysAgo,
-  //       })
-  //       .groupBy('collectionBookmark.collectionId')
-  //       .orderBy('collection.createdAt', 'DESC') // 최근 생성 순으로 정렬
-  //       .offset(skip)
-  //       .limit(perPage)
-  //       .getRawMany();
+    // 'recent'인 경우 최근 생성된 컬렉션 순으로 정렬, 그렇지 않으면 북마크 수가 많은 순으로 정렬
+    if (order === 'recent') {
+      // 최근 생성된 컬렉션 조회
+      const collections = await this.colBookRepository
+        .createQueryBuilder('collectionBookmark')
+        .select('collectionBookmark.collectionId, COUNT(*) as count')
+        .addSelect('collection')
+        .innerJoin('collectionBookmark.collection', 'collection')
+        .where('collectionBookmark.createdAt >= :threeDaysAgo', {
+          threeDaysAgo,
+        })
+        .groupBy('collectionBookmark.collectionId')
+        .orderBy('collection.createdAt', 'DESC') // 최근 생성 순으로 정렬
+        .offset(skip)
+        .limit(perPage)
+        .getRawMany();
 
-  //     return { collections, totalPages };
-  //   } else {
-  //     // 북마크 수가 많은 컬렉션 조회
-  //     const collections = await this.colBookRepository
-  //       .createQueryBuilder('collectionBookmark')
-  //       .select('collectionBookmark.collectionId, COUNT(*) as count')
-  //       .addSelect('collection')
-  //       .innerJoin('collectionBookmark.collection', 'collection')
-  //       .where('collectionBookmark.createdAt >= :threeDaysAgo', {
-  //         threeDaysAgo,
-  //       })
-  //       .groupBy('collectionBookmark.collectionId')
-  //       .orderBy('count', 'DESC') // 북마크 수가 많은 순으로 정렬
-  //       .offset(skip)
-  //       .limit(perPage)
-  //       .getRawMany();
+      return { collections, totalPages };
+    } else {
+      // 북마크 수가 많은 컬렉션 조회
+      const collections = await this.colBookRepository
+        .createQueryBuilder('collectionBookmark')
+        .select('collectionBookmark.collectionId, COUNT(*) as count')
+        .addSelect('collection')
+        .innerJoin('collectionBookmark.collection', 'collection')
+        .where('collectionBookmark.createdAt >= :threeDaysAgo', {
+          threeDaysAgo,
+        })
+        .groupBy('collectionBookmark.collectionId')
+        .orderBy('count', 'DESC') // 북마크 수가 많은 순으로 정렬
+        .offset(skip)
+        .limit(perPage)
+        .getRawMany();
 
-  //     return { collections, totalPages };
-  //   }
-  // }
+      return { collections, totalPages };
+    }
+  }
 }

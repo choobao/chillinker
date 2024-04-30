@@ -32,24 +32,25 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
-  // @ApiOperation({ summary: '인기 컬렉션 조회' })
-  // @Get('/popular')
-  // @Render('collectionTop')
-  // async showPopularCollections(
-  //   @Query('page') page?: number,
-  //   @Query('order') order?: string,
-  // ) {
-  //   // getPopularCollections 함수 호출
-  //   const { collections, totalPages } =
-  //     await this.collectionService.getPopularCollections(page, order);
+  @ApiOperation({ summary: '인기 컬렉션 조회' })
+  @Get('/popular')
+  @Render('collectionTop')
+  async showPopularCollections(
+    @Query('page') page?: number,
+    @Query('order') order?: string,
+  ) {
+    // getPopularCollections 함수 호출
+    const { collections, totalPages } =
+      await this.collectionService.getPopularCollections(page, order);
 
-  //   // EJS 템플릿에 전달할 데이터
-  //   return {
-  //     collections,
-  //     totalPages,
-  //     order, // 'order' 변수도 함께 전달
-  //   };
-  // }
+    // EJS 템플릿에 전달할 데이터
+    return {
+      collections,
+      totalPages,
+      order, // 'order' 변수도 함께 전달
+      page,
+    };
+  }
 
   @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
