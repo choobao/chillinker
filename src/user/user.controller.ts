@@ -33,6 +33,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 import { UserGuard } from '../auth/user.guard';
 import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
+import { AdultVerifyDto } from './dto/adult-verify.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -142,6 +143,22 @@ export class UserController {
 
     await this.userService.leave(id, deleteUserDto);
     return res.clearCookie('accessToken').clearCookie('refreshToken').end();
+  }
+
+  @ApiOperation({ summary: '성인인증 요청 보내기' })
+  @UseInterceptors(FileInterceptor('registrationCardImage'))
+  @UseGuards(AuthGuard('jwt'))
+  @Post('sendAdultVerify')
+  async sendAdultVerifyRequest(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() adultVerifyDto: AdultVerifyDto,
+    @UserInfo() user: Users,
+  ) {
+    await this.userService.sendAdultVerifyRequest(
+      user.id,
+      file,
+      adultVerifyDto,
+    );
   }
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })
