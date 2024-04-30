@@ -45,6 +45,9 @@ export class Users {
   @DeleteDateColumn({ type: 'timestamp', select: false, nullable: true })
   deletedAt?: Date;
 
+  @Column({ type: 'smallint', default: 0 })
+  isAdmin: number;
+
   //내가 팔로잉 한 사람 목록
   @OneToMany(() => Follows, (following) => following.followings)
   followings: Follows[];

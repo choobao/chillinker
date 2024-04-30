@@ -8,6 +8,7 @@ import { Users } from './entities/user.entity';
 import { StorageService } from '../storage/storage.service';
 import { UserGuard } from '../auth/user.guard';
 import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
+import { UserAdultVerifyRequest } from './entities/user.adult-verify.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthori
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Users]),
+    TypeOrmModule.forFeature([Users, UserAdultVerifyRequest]),
   ],
   providers: [
     UserService,
