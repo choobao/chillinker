@@ -18,6 +18,7 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 import { SseService } from 'src/sse/sse.service';
 import _ from 'lodash';
+import { WebContentService } from 'src/web-content/web-content.service';
 
 @Injectable()
 export class ReviewService {
@@ -33,6 +34,7 @@ export class ReviewService {
     @InjectRepository(WebContents)
     private readonly webContentRepository: Repository<WebContents>,
     private readonly dataSource: DataSource,
+    private readonly webContentService: WebContentService,
   ) {}
 
   isOver19(birthDate: Date) {
@@ -54,13 +56,10 @@ export class ReviewService {
   ) {
     const take = 10;
 
-    const content = await this.webContentRepository.findOne({
-      where: { id: webContentId },
-    });
-
-    if (!content) {
-      throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
-    }
+    const content = await this.webContentService.getOneWebContent(
+      user,
+      webContentId,
+    );
 
     if (
       content.isAdult &&

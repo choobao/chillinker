@@ -48,4 +48,24 @@ export class RedisService {
     console.log('cache hit!');
     return data ? JSON.parse(data) : null;
   }
+
+  async isExistingViews(key: string, postId: number): Promise<any> {
+    const data = await this.client.hget(key, postId.toString());
+
+    return data ? true : false;
+  }
+
+  async firstViews(
+    key: string,
+    postId: number,
+    ttl: number = 3600,
+  ): Promise<any> {
+    const data = await this.client.hset(key, postId.toString(), 'true');
+
+    if (data) {
+      await this.client.expire(key, ttl);
+    }
+
+    return data ? true : false;
+  }
 }

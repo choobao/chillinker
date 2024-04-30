@@ -30,6 +30,9 @@ export class Collections {
   @Column({ type: 'int', default: 0 })
   bookmarkCount: number;
 
+  @Column({ type: 'int', default: 0 })
+  viewCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
