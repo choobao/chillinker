@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Collection List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
+    <link rel="stylesheet" href="/css/topReview.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <%- include('header.ejs') %>
+      <main>
+        <div class="head-title">
+          <h3 class="top-title">지금 뜨는 컬렉션</h3>
+        </div>
+        <div class="search_btn_bar">
+          <ul class="search_bar_list" style="display: flex; padding: 15px">
+            <li class="search_btn1" style="margin-right: 10px">
+              <a href="/collections/popular?page=1&order=recent">최신순</a>
+            </li>
+            <li class="search_btn2" style="margin-right: 10px">
+              <a href="/collections/popular?page=1&order=like">인기순</a>
+            </li>
+          </ul>
+        </div>
+        <div class="top-review-list-container">
+          <ul class="top-review-section">
+            <% collections.forEach((item,index) => { %>
+            <li class="review-card" id="reviewId-<%= index %>" val="<%= item.collection_id %>">
+              <article>
+                <a class="writer-container" href="/users/<%= item.collection_user_id %>">
+                  <img
+                    src="<%= item.users_profile_image %>"
+                    alt="프로필사진"
+                    onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                    class="profile-img"
+                  />
+                  <div class="reivewer-info">
+                  <div class="reviewer-id-and-rate">
+                  <span class="reviewer_id"><%= item.users_nickname %></span>
+                </a>
+        </div>
+            </div>
+                  <div class="review_date"><%= item.collection_created_at %></div>
+                <div class="review-content-web-info-container">
+                    <a class="webContent-container" href="/collections/info/<%= item.collection_id %>">
+                        <img
+                          src="<%= item.collection_cover_image %>"
+                          alt="작품사진"
+                          onerror="this.src='/logo_image/chillinker_logo(1).png'"
+                          class="webContent-img"
+                        />
+                        <div class="webContent-info-container">
+                        <span class="webContent-title-info"><%= item.collection_title %></span>
+                      </a>
+                      <div class="webContent-info-con">
+                        <%= item.collection_desc %>
+                      </div>
+                    </div>
+                </div>
+                <hr class="css-line">
+                <div class="like-container">
+                    <div class="review-like-btn-wrapper">
+                        <button type="button"  id="likeBtn-<%= index %>" class="my-rui_button_white_25">
+                          <span class="rui_button_contents">
+                            <span class="rui_button_icon"></span>
+                            <span class="rui_button_text">
+                              <span class="indent_hidden">🔖</span>
+                              <span class="like_count js_like_count"><%= item.count %></span>
+                            </span>
+                          </span>
+                        </button>
+                      </div> 
+                </div>
+              </article>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+          <ul class="pagination">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item"><a class="page-link" href="/collections/popular?order=<%- order %>&page=<%= i %>"><%= i %></a>&nbsp;&nbsp;&nbsp;</li>
+            <% } %>
+          </ul>
+        </nav>
+      </div>
+        </div>
+        <script src="/js/topReview.js"></script>
+      </main>
+      <%- include('footer.ejs') %>
+    </div>
+  </body>
+</html>

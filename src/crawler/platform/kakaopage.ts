@@ -34,7 +34,7 @@ class KakaopageAxios {
               page: 0,
             },
           },
-        },
+        }, 
       });
       return data.data.staticLandingRankingSection.groups[0].items;
     } catch (err) {
@@ -180,6 +180,7 @@ class KakaopageAxios {
         content: comment.comment,
         likeCount: comment.likeCount,
         createDate: comment.createDt,
+        isSpoiler: comment.isSpoiler === false ? 0 : 1,
       }));
       return reviews;
     } catch (err) {
@@ -188,7 +189,7 @@ class KakaopageAxios {
   }
 
   async getDailyRank_20_WebContents(contentType: Type) {
-    let items = await this.requestDailyRanking(contentType);
+    const items = await this.requestDailyRanking(contentType);
     const ids = items.slice(0, 20).map((item) => ({
       id: +item.eventLog.eventMeta.series_id,
       rank: +item.rank,

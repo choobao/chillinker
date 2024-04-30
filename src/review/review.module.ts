@@ -6,7 +6,13 @@ import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
-import { Users } from 'src/user/entities/user.entity';
+import { Users } from '../user/entities/user.entity';
+import { SseService } from '../sse/sse.service';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { WebContentService } from 'src/web-content/web-content.service';
+import { Collections } from 'src/collection/entities/collections.entity';
+import { ElasticSearchService } from 'src/elastic-search/elastic-search.service';
+import { RedisService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
@@ -16,10 +22,17 @@ import { Users } from 'src/user/entities/user.entity';
       ReviewLikes,
       WebContents,
       Users,
+      Collections,
     ]),
   ],
   controllers: [ReviewController],
   exports: [ReviewService],
-  providers: [ReviewService],
+  providers: [
+    ReviewService,
+    OptionalAuthGuard,
+    WebContentService,
+    ElasticSearchService,
+    RedisService,
+  ],
 })
 export class ReviewModule {}

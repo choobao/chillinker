@@ -12,7 +12,7 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.178-d5b5a64/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
+      url: `https://ridibooks.com/_next/data/3.8.184-52481bb/category/books/${type}.json?tab=books&category=${type}&page=${page}&order=review`,
     });
     const books = data.pageProps.dehydratedState.queries[2].state.data;
 
@@ -26,9 +26,9 @@ export async function get60WebtoonRanking(type: TYPE, page: number) {
         // const image = imageSmall.replace('/small', '');
         const isAdult = book.adultsOnly;
         const authorArr = book.authors;
-        let authors = [];
+        const authors = [];
         for (let i = 0; i < authorArr.length; i++) {
-          let name = authorArr[i].name;
+          const name = authorArr[i].name;
           let role = authorArr[i].role;
 
           if (
@@ -108,13 +108,13 @@ export async function get20BestRanking(gerne: GENRE) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: `https://ridibooks.com/_next/data/3.8.178-d5b5a64/bestsellers/${gerne}.json?genre=${gerne}`,
+      url: `https://ridibooks.com/_next/data/3.8.184-52481bb/bestsellers/${gerne}.json?genre=${gerne}`,
     });
 
     const items =
       data.pageProps.dehydratedState.queries[0].state.data.bestsellers.items;
 
-    let data20ranking = await Promise.all(
+    const data20ranking = await Promise.all(
       items.slice(0, 20).map(async (bookData, index) => {
         console.log(index);
         const book = bookData.book;
@@ -129,9 +129,9 @@ export async function get20BestRanking(gerne: GENRE) {
         const bookId = book.id;
         const isAdult = book.isAdultOnly;
         const authorArr = book.authors;
-        let authors = [];
+        const authors = [];
         for (let i = 0; i < authorArr.length; i++) {
-          let name = authorArr[i].name;
+          const name = authorArr[i].name;
           let role = authorArr[i].role;
 
           if (
@@ -348,7 +348,7 @@ export async function getKeywordPubDate(bookId: number) {
 }
 
 export async function getReviews10(bookId: number) {
-  let offset = 0;
+  const offset = 0;
   const { data } = await axios({
     method: 'get',
     url: `https://ridibooks.com/books/load-reviews?book_id=${bookId}&order=like&offset=0&buyer_only=true`,

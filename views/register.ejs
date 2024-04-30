@@ -3,6 +3,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chillinker</title>
   <link rel="stylesheet" href="/css/register.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/frame.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -21,15 +23,16 @@
 <body>
   <div class="container-wrapper">
     <%- include('header.ejs') %>
-
     <div class="register-wrapper">
       <!-- <h2>Sign Up</h2> -->
+      <p>* 이메일, 비밀번호는 추후 변경하실수 없습니다.</p>
       <form method="post" action="/users/register" id="register-form">
         <label class="profile-update-img-label">
           <img
             src="/logo_image/chillinker_logo(2).png"
             alt="프로필사진"
-            class="profile-update-img" />
+            class="profile-update-img"
+            id="preview-img" />
           <input
             type="file"
             id="profile-register-img-input"
@@ -38,8 +41,13 @@
             style="display: none" /></label
         ><br />
         <input type="text" name="nickname" placeholder="닉네임" required />
-        <input type="text" name="intro" placeholder="소개글" required />
+        <input type="text" name="intro" placeholder="소개글" />
         <input type="email" name="email" placeholder="이메일" required />
+        <input
+          type="birthDate"
+          name="birthDate"
+          placeholder="생년월일 형식은 YYYY-MM-DD 입니다."
+        />
         <input
           type="password"
           name="password"

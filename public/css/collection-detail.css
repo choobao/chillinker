@@ -36,6 +36,13 @@
   grid-template-columns: 25% 25% 25% 25%;
 }
 
+.no-content {
+  font-size: large;
+  width: 400%;
+  margin: 200px auto;
+  text-align: center;
+}
+
 .content {
   max-height: max-content;
   margin: 10px;
@@ -53,8 +60,18 @@
 .content_info {
   padding: 10px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .content_info > h3 {
   font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.content_info > h4 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

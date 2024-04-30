@@ -12,7 +12,9 @@ import {
   Post,
   Query,
   Render,
+  Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateCReviewsDto } from './dto/review.create.dto';
@@ -22,36 +24,53 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('REVIEW')
+// @UseInterceptors(ErrorInterceptor)
 @Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @ApiOperation({ summary: '리뷰 조회' })
+  @UseGuards(OptionalAuthGuard)
   @Render('detailContent')
   @Get('books/:webContentsId')
   async getCReivew(
+    @Req() req,
     @Param('webContentsId', ParseIntPipe) webContentsId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     @Query('order') order?: string,
     @Query('option') option?: string,
   ) {
+    const user = req.user;
+    console.log('유저: ', user);
     const result = await this.reviewService.getCReviews(
       webContentsId,
+      req.user,
       page,
       order,
       option,
     );
 
-    const { content, reviewList, totalPages } = result;
+    const { content, reviewList, totalPages, myReview } = result;
 
-    return { content, reviewList, totalPages, page, order, option };
+    return {
+      content,
+      reviewList,
+      totalPages,
+      page,
+      order,
+      option,
+      user,
+      myReview,
+    };
   }
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('books/:webContentsId/:reviewId/likes')
+  @Post('/reviews/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
@@ -135,5 +154,19 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     await this.reviewService.deleteReview(user, webContentsId, reviewId);
+  }
+
+  @Render('reviewTop')
+  @Get('rank/reviews')
+  async getTopReviews(
+    @Query('page') page?: string,
+    @Query('order') order?: string,
+  ) {
+    //탑리뷰
+    const topReviews = await this.reviewService.getTopReviews(+page, order);
+
+    const { reviews, totalPages } = topReviews;
+
+    return { reviews, totalPages, page, order };
   }
 }

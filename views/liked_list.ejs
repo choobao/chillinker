@@ -6,6 +6,7 @@
     <title>Contents Like List</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/reviewed_list.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
     <link
       rel="icon"
       type="image/png"
@@ -31,11 +32,8 @@
       <%- include('header.ejs') %>
         <main>
           <div class="inner">
+            <h3 class="top-title">좋아요 작품 리스트</h3>
             <div class="category">
-              <!-- <ul> -->
-                <!-- <li><a href="/user/bogosips/wishes">보고싶어요</a></li> -->
-                <!-- <li><a href="/user/bogosips/watchings">보는중</a></li> -->
-              <!-- </ul> -->
               <br />
             <select id="sort-option" name="sort" onchange="updateOrderType(this)">
                 <option value="ADD_DT">추가 오름차순</option>
@@ -83,6 +81,7 @@
           </script>
             </div>
             <div class="contents_container">
+              <% if (content.length > 0) { %>
               <% content.forEach(function(content) { %>
               <div class="content">
                 <a href="/books/<%= content.webContent.id %>">
@@ -95,6 +94,9 @@
                 </a>
               </div>
               <% }) %>
+              <% } else { %>
+                <p class="empty_contents">좋아요한 작품이 존재하지 않습니다.</p>
+              <% } %>
             </div>
           </div>
         </main>

@@ -1,3 +1,12 @@
+.top-title {
+  font-weight: 500;
+  color: #7b68ee;
+  font-size: 22pt;
+  margin: 20px 0;
+  padding: 5px 20px;
+  width: max-content;
+}
+
 .category ul li {
   display: inline-block;
   margin: 40px 10px;
@@ -19,12 +28,28 @@
   margin: 30px;
 }
 .content img {
-  width: 250px;
+  width: 170px;
+  height: 240px;
+  object-fit: cover;
   border-radius: 10px;
 }
 .content .bottom_box {
   padding: 10px;
 }
 .content .bottom_box .title {
-  font-size: 20px;
+  display: block;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.content .bottom_box .rate {
+  font-size: 13px;
+}
+
+.empty_contents {
+  font-size: 36px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 150px;
 }

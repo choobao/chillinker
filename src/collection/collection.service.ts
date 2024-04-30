@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { Collections } from './entities/collections.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
@@ -14,6 +14,11 @@ import { UpdateColDto } from './dto/updateCol.dto';
 
 import { StorageService } from '../storage/storage.service';
 import { result } from 'lodash';
+import { Users } from '../user/entities/user.entity';
+import _ from 'lodash';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { CollectionBookmark } from './entities/collection-bookmark.entity';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class CollectionService {
@@ -24,7 +29,11 @@ export class CollectionService {
     private webContentRepository: Repository<WebContents>,
     @InjectRepository(ContentCollection)
     private contentCollectionRepository: Repository<ContentCollection>,
-
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
+    @InjectRepository(CollectionBookmark)
+    private colBookRepository: Repository<CollectionBookmark>,
+    private readonly redisService: RedisService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -53,6 +62,7 @@ export class CollectionService {
         'desc',
         'coverImage',
         'bookmarkCount',
+        'viewCount',
         'contentCollections',
       ],
     });
@@ -61,6 +71,7 @@ export class CollectionService {
       const title = collection.title;
       const desc = collection.desc;
       const coverImage = collection.coverImage;
+      const viewCount = collection.viewCount;
       const bookmarkCount = collection.collectionBookmarks.length;
       const webContents = collection.contentCollections.map(
         (contentCollection) => {
@@ -74,6 +85,7 @@ export class CollectionService {
         id,
         title,
         desc,
+        viewCount,
         coverImage,
         bookmarkCount,
         webContents,
@@ -83,6 +95,9 @@ export class CollectionService {
 
   // 타 유저 컬렉션 목록 조회
   async getUserColList(userId: number) {
+    const existUser = await this.userRepository.findOneBy({ id: userId });
+    if (!existUser)
+      throw new NotFoundException('해당 유저를 찾을 수 없습니다.');
     const collections = await this.colRepository.find({
       where: { userId },
       relations: ['contentCollections', 'collectionBookmarks'],
@@ -91,7 +106,9 @@ export class CollectionService {
         'title',
         'desc',
         'coverImage',
+        'viewCount',
         'bookmarkCount',
+        'userId',
         'contentCollections',
       ],
     });
@@ -99,15 +116,19 @@ export class CollectionService {
       const id = collection.id;
       const title = collection.title;
       const desc = collection.desc;
+      const viewCount = collection.viewCount;
       const coverImage = collection.coverImage;
       const bookmarkCount = collection.collectionBookmarks.length;
       const webContentNumber = collection.contentCollections.length;
+      const userId = collection.userId;
 
       return {
         id,
         title,
         desc,
         coverImage,
+        viewCount,
+        userId,
         bookmarkCount,
         webContentNumber,
       };
@@ -279,5 +300,197 @@ export class CollectionService {
     }
 
     await this.contentCollectionRepository.remove(contentCollection);
+  }
+
+  async getMyColsTitle(userId: number) {
+    console.log('유저아이디: ', userId);
+    const collections = await this.colRepository.find({
+      where: {
+        userId,
+      },
+    });
+    console.log('컬렉션: ', collections);
+    return collections;
+  }
+
+  async getMyColBlind(collectionId: number, user) {
+    const collectionInfo = await this.colRepository
+      .createQueryBuilder('collections')
+      .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
+      .leftJoinAndSelect('contentCollection.webContent', 'webContent')
+      .leftJoinAndSelect('collections.user', 'user')
+      .leftJoinAndSelect(
+        'collections.collectionBookmarks',
+        'collectionBooknmarks',
+      )
+      .where('collections.id = :id', { id: collectionId })
+      .getOne();
+
+    const webContents = collectionInfo.contentCollections.map((item) => {
+      return item.webContent;
+    });
+
+    const blindWebContents = this.blindAdultImage(user, webContents);
+    const isAdult = this.isAdult(user);
+
+    let userId = user.id;
+
+    if (!userId) {
+      userId = user.ip;
+    }
+
+    const key = `user:${userId}:collectionViews`;
+
+    const existingViews = await this.redisService.isExistingViews(
+      key,
+      collectionId,
+    );
+
+    if (existingViews) {
+      return { collectionInfo, blindWebContents, isAdult };
+    } else {
+      await this.redisService.firstViews(key, collectionId);
+
+      await this.colRepository.update(collectionId, {
+        viewCount: collectionInfo.viewCount + 1,
+      });
+      return { collectionInfo, blindWebContents, isAdult };
+    }
+  }
+
+  isOver19(birthDate: Date) {
+    const today = new Date();
+    const date19YearsAgo = new Date(
+      today.getFullYear() - 19,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return birthDate <= date19YearsAgo;
+  }
+
+  blindAdultImage(user, contents: WebContents[]) {
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      const adult_image =
+        'https://ssl.pstatic.net/static/m/nstore/thumb/19/home_book_4.png';
+      contents.map((content) => {
+        if (content.isAdult) {
+          content.image = adult_image;
+        }
+        return content;
+      });
+    }
+    return contents;
+  }
+
+  isAdult(user) {
+    const userInfo = { isAdult: 1 };
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      userInfo.isAdult = 0;
+    }
+    return userInfo;
+  }
+
+  // @Cron(CronExpression.EVERY_3_DAYS)
+  // async updateTopBookmarkedCollections() {
+  //   // 여기서는 단순히 콘솔에 로깅을 합니다만, 실제로는 DB에 저장하거나 캐시를 업데이트할 수 있습니다.
+  //   const topCollections = await this.getTopBookmarkedCollections();
+  //   console.log(topCollections);
+  //   // 추가적인 로직...
+  // }
+
+  async getTopBookmarkedCollections(): Promise<Collections[]> {
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+    const topBookmarkedCollections = await this.colRepository
+      .createQueryBuilder('collection')
+      .leftJoinAndSelect('collection.user', 'user')
+      .leftJoin('collection.bookmarks', 'bookmark') // 'bookmarks'는 컬렉션 엔티티 내 북마크 관계를 나타냅니다.
+      .addSelect('COUNT(bookmark.id)', 'bookmarkCount')
+      .where('bookmark.createdAt > :threeDaysAgo', { threeDaysAgo })
+      .groupBy('collection.id')
+      .orderBy('bookmarkCount', 'DESC')
+      .limit(100)
+      .getMany();
+
+    return topBookmarkedCollections;
+  }
+
+  async getPopularCollections(page?: number, order?: string) {
+    // 페이지당 항목 수 설정
+    const perPage = 10;
+
+    // 페이지 번호 설정 (기본값은 1)
+    page = page ? page : 1;
+    let skip = (page - 1) * perPage;
+
+    // 현재 날짜와 3일 전 날짜 계산
+    var today = new Date();
+    var threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(today.getDate() - 3);
+
+    // 지난 3일간 생성된 컬렉션 북마크 정보 조회
+    // 컬렉션 ID를 기준으로 선택
+    const bookmarksCount = await this.colBookRepository
+      .createQueryBuilder('collectionBookmarks')
+      .select('collectionBookmarks.collectionId')
+      .innerJoin('collectionBookmarks.collection', 'collection')
+      .where('collectionBookmarks.createdAt >= :threeDaysAgo', { threeDaysAgo })
+      .getRawMany();
+
+    // 조회된 북마크들 중에서 고유한 컬렉션의 수 계산
+    const uniqueCollectionsCount = new Set(
+      bookmarksCount.map((item) => item.collectionBookmarks_collection_id),
+    ).size;
+
+    // 전체 페이지 수 계산
+    const totalPages = Math.ceil(uniqueCollectionsCount / perPage);
+
+    // 'recent'인 경우 최근 생성된 컬렉션 순으로 정렬, 그렇지 않으면 북마크 수가 많은 순으로 정렬
+    if (order === 'recent') {
+      // 최근 생성된 컬렉션 조회
+      const collections = await this.colBookRepository
+        .createQueryBuilder('collectionBookmark')
+        .select('collectionBookmark.collectionId, COUNT(*) as count')
+        .addSelect('collection')
+        .innerJoin('collectionBookmark.collection', 'collection')
+        .where('collectionBookmark.createdAt >= :threeDaysAgo', {
+          threeDaysAgo,
+        })
+        .groupBy('collectionBookmark.collectionId')
+        .orderBy('collection.createdAt', 'DESC') // 최근 생성 순으로 정렬
+        .offset(skip)
+        .limit(perPage)
+        .getRawMany();
+
+      return { collections, totalPages };
+    } else {
+      // 북마크 수가 많은 컬렉션 조회
+      const collections = await this.colBookRepository
+        .createQueryBuilder('collectionBookmark')
+        .select('collectionBookmark.collectionId, COUNT(*) as count')
+        .addSelect('collection')
+        .innerJoin('collectionBookmark.collection', 'collection')
+        .where('collectionBookmark.createdAt >= :threeDaysAgo', {
+          threeDaysAgo,
+        })
+        .groupBy('collectionBookmark.collectionId')
+        .orderBy('count', 'DESC') // 북마크 수가 많은 순으로 정렬
+        .offset(skip)
+        .limit(perPage)
+        .getRawMany();
+
+      return { collections, totalPages };
+    }
   }
 }

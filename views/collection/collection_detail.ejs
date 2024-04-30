@@ -4,6 +4,7 @@
   <title>Chillinker</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/collection-detail.css" />
+  <link rel="stylesheet" href="/css/frame.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -19,34 +20,58 @@
   />
 </head>
 <body>
+  <div class="wrap">
   <%- include('../header.ejs') %>
   <main>
     <div class="collection_wrap">
-      <div class="collection" id="collectionId-<%= collection.id%>">
+      <div class="collection" id="collectionId-<%= collectionInfo.id%>">
         <div class="collection_detail_info">
           <ul>
-            <li class="collection_title"><%= collection.title%></li>
-            <li class="collection_desc"><%= collection.desc%></li>
+            <h4 class="contents_viewCount">👀 <%= collectionInfo.viewCount %></h4>
+            <li class="collection_title"><%= collectionInfo.title%></li>
+            <li class="collection_desc"><%= collectionInfo.desc%></li>
             <li class="collection_user_nickname">
-              만든이: <%= collection.user.nickname%>
+              <a href='/users/<%= collectionInfo.user.id%>'>
+                만든이: <%= collectionInfo.user.nickname%>
+              </a>
             </li>
             <li class="contents_number">
-              작품수: <%= collection.contentCollections.length%>
+              작품수: <%= blindWebContents.length%>
             </li>
             <li class="collection_bookmarked_number">
-              북마크수: <%= collection.collectionBookmarks.length || 0%>
+              북마크수: <%= collectionInfo.collectionBookmarks.length || 0%>
             </li>
           </ul>
         </div>
         <div class="contents_list_container">
-          <% collection.contentCollections.forEach((item,index) => { %>
-            <span class="contentId" id="contentId-<%= index %>" style="display:none;"><%= item.webContent.id %></span>
-            <div class="content"  id="contentBtn-<%= index %>">
-              <img src="<%= item.webContent.image %>" alt="작품 표지" />
+          <% if (blindWebContents.length === 0) { %>
+            <h1 class="no-content">아직 컬렉션에 작품이 없습니다. 작품을 추가해보세요!</h1>
+          <% } %>
+          <% blindWebContents.forEach((item,index) => { %>
+            <span class="contentId" id="contentId-<%= index %>" style="display:none;"><%= item.id %></span>
+            <div class="content"  id="contentBtn-<%= index %>" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= isAdult.isAdult %>')">
+              <img src="<%= item.image %>" alt="작품 표지" />
               <div class="content_info">
-                <h3 class="contents_title"><%= item.webContent.title %></h3>
-                <h4 class="contents_category"><%= item.webContent.category %></h4>
-                <h4 class="contents_author"><%= item.webContent.author %></h4>
+                <h3 class="contents_title"><%= item.title %></h3>
+                <h4 class="contents_author"><% const arr = item.author.split(',') %>
+                  <% let role = arr[0].split('/')[0] %>
+                  <% const name = arr[0].split('/')[1] %>
+                  <% if(role == 'author' ){ %>
+                    <% role = '글' %>
+                    <% }else if(role =='illustrator'){ %>
+                      <% role = '그림' %>
+                      <% }else if(role =='original_author'){ %>
+                        <% role = '원작' %>
+                        <% }else if(role =='Author'){ %>
+                          <% role = '글/그림' %>
+                          <% }else{ %>
+                            <% role = '작가' %>
+                            <% }%>
+                  <span class="metadata-item- author-item-wrapper">
+                    <span class="author-detail"><%= name %></span> <%= role %>
+                   </span>
+                </h4>
+                <h4 class="contents_category"><%= item.category %></h4>
               </div>
             </div>
           <% }) %>
@@ -55,19 +80,7 @@
     </div>
   </main>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-      var contentBtn = document.querySelectorAll('.content')
-      contentBtn.forEach(function(contentBtn){
-        contentBtn.addEventListener('click', function(){
-          const index =this.id.split('-')[1];
-          const contentId = document.getElementById(
-            `contentId-${index}`
-          ).textContent
-          window.location.href = `/books/${contentId}`
-        })
-      })
-      
-    
-  </script>
+  <script src="/js/adult_blind.js"></script>
   <%- include('../footer.ejs') %>
+</div>
 </body>

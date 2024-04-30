@@ -7,6 +7,7 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
   />
   <link rel="stylesheet" href="/css/mypage.css" />
+  <link rel="stylesheet" href="/css/frame.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
   </style>
@@ -24,14 +25,14 @@
 
 <body>
   <%- include('header.ejs') %>
-
+  <!-- <main> -->
   <div class="mypage-wrapper">
     <span class="material-symbols-outlined" id="profile-edit-btn">
       settings
     </span>
-    <!-- <span class="material-symbols-outlined"
-      ><a href="/users/mypage/update"> settings </a></span
-    > -->
+    <!-- <span class="material-symbols-outlined" id="adult-verify-btn">
+      domain_verification
+    </span> -->
     <img
       src="<%= user.profileImage %>"
       alt="프로필사진"
@@ -43,11 +44,13 @@
     <button class="profile-btn-small" id="profile-following">팔로잉</button>
     <button class="profile-btn-small" id="profile-follower">팔로워</button>
     <button class="profile-btn" id="profile-review">내 리뷰</button>
-    <button class="profile-btn" id="profile-like">보고싶어요</button>
+    <button class="profile-btn" id="profile-like">좋아요</button>
     <button class="profile-btn" id="profile-col">내 컬렉션</button>
     <button class="profile-btn" id="profile-bookmark-col">
       내가 북마크한 컬렉션
     </button>
+    <!-- <button class="profile-btn" id="profile-alarm-col">알림</button> -->
+    <span class="userId" id="userId" style="display: none"><%= user.id %></span>
   </div>
 
   <!-- 모달 창 -->
@@ -61,13 +64,16 @@
             src="<%= user.profileImage %>"
             alt="프로필사진"
             onerror="this.src='/logo_image/chillinker_logo(1).png'"
-            class="profile-update-img" />
+            class="profile-update-img"
+            id="preview-img"
+          />
           <input
             type="file"
             id="profile-update-img-input"
             name="profileImage"
             accept="image/*"
-            style="display: none" /></label
+            style="display: none"
+          /> </label
         ><br />
         <label for="nickname">닉네임:</label>
         <input
@@ -78,7 +84,14 @@
         /><br />
         <label for="password">비밀번호:</label>
         <input type="password" id="password" name="password" /><br />
-
+        <label for="birthDate">생년월일:</label>
+        <input
+          type="text"
+          id="birthDate"
+          name="birthDate"
+          placeholder="형식은 2000-01-01"
+          value="<%= user.birthDate %>"
+        /><br />
         <label for="intro">소개글:</label>
         <textarea id="intro" name="intro"><%= user.intro %></textarea>
         <input type="submit" value="저장" />
@@ -86,8 +99,22 @@
     </div>
   </div>
 
+  <!-- <div id="alarm-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="alarm-list-wrapper">
+        <ul class="alarm-list">
+          <div>
+            <li>어떤 작품의 댓글 좋아요 수 20개 돌파!</li>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- </main> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mypage-update.js"></script>
-
+  <!-- <script src="/js/sse.js"></script> -->
   <%- include('footer.ejs') %>
 </body>

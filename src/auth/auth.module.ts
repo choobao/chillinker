@@ -27,6 +27,7 @@ import { Users } from 'src/user/entities/user.entity';
   controllers: [AuthController],
   providers: [
     JwtStrategy,
+    ConfigService,
     AuthService,
     GoogleStrategy,
     KakaoStrategy,

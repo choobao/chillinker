@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { StorageService } from '../storage/storage.service';
+import { UserGuard } from '../auth/user.guard';
+import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
 
 @Module({
   imports: [
@@ -18,7 +20,12 @@ import { StorageService } from '../storage/storage.service';
     }),
     TypeOrmModule.forFeature([Users]),
   ],
-  providers: [UserService, StorageService],
+  providers: [
+    UserService,
+    StorageService,
+    UserGuard,
+    //UnauthorizedExceptionFilter,
+  ],
   controllers: [UserController],
   exports: [UserService],
 })

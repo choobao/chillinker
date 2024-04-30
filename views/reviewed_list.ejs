@@ -6,6 +6,7 @@
     <title>Contents Reviewed List</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/reviewed_list.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
     <link
       rel="icon"
       type="image/png"
@@ -31,6 +32,7 @@
       <%- include('header.ejs') %>
       <main>
         <div class="inner">
+          <h3 class="top-title">리뷰 작성 작품 리스트</h3>
           <!-- <div class="category">
             <ul>
               <li><a href="#">웹소설</a></li>
@@ -38,6 +40,7 @@
             </ul>
           </div> -->
           <div class="contents_container">
+            <% if (reviewedWorks.length > 0) { %>
             <% reviewedWorks.forEach(review => { %>
             <div class="content" >
 
@@ -55,7 +58,9 @@
             </div>
           
             <% }); %>
-         
+            <% } else { %>
+              <p class="empty_contents">작성된 리뷰가 존재하지 않습니다.</p>
+            <% } %>
           </div>
         </div>
       </main>

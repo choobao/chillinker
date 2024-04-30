@@ -1,9 +1,10 @@
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/collection.css">
+    <link rel="stylesheet" href="/css/frame.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -19,33 +20,44 @@
     />
   </head>
   <body>
+    <div class="wrap">
     <%- include('../header.ejs') %>
     <main>
       <div class="collection-list-upper">
         <h3>컬렉션 목록</h3>
       </div>
-      <input type="hidden" value="<%= collections %>" />
+      <!-- <input type="hidden" value="<%= collections %>" /> -->
       <div class="collections_container">
+        <% if(collections.length === 0) { %>
+          <h1 class="no-content">아직 컬렉션이 없습니다.</h1>
+        <% } %>
         <% collections.forEach((item, index)=> { %>
+          <span class="collection-userId" id="userId-<%= index %>" style="display:none;"><%= item.userId %></span>
           <span class="collectionId" id="collectionId-<%= index %>" style="display:none;"><%= item.id %></span>
-          <div class="collection" href="/info/<%= item.id %>">
+          <div class="collection" href="/collections/info/<%= item.id %>">
             <div class="collection_upper">
-              <img class="collection_img"
-                src="<%= item.coverImage%>"
-                alt="커버이미지"
-                onerror="this.src='/logo_image/chillinker_logo(2).png'"
-              />
+              <a href="info/<%= item.id %>">
+                <img class="collection_img"
+                  src="<%= item.coverImage%>"
+                  alt="커버이미지"
+                  onerror="this.src='/logo_image/chillinker_logo(2).png'"
+                />
+              </a>
               <div class="contents_number">
+                <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
+
                 작품수: <%= item.webContentNumber || 0%>
               </div>
             </div>
             <div class="collection_info">
               <ul>
-                <li class="collection_title"><%= item.title %></li>
+                <li class="collection_title">
+                  <a href="info/<%= item.id %>"><%= item.title %></a>
+                </li>
                 <li class="collection_desc"><%= item.desc %></li>
                 <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
                 <li class="collection_btn_group">
-                    <button class="bookmark-btn" id="bookmark-btn">이 컬렉션 북마크</button>
+                    <button class="bookmark-btn" id="collectionId-<%= index %>">이 컬렉션 북마크</button>
                 </li>
               </ul>
             </div>
@@ -54,7 +66,32 @@
       </div>
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- <script src="/js/mycollection_list.js"></script> -->
+    <script>
+      var bookmarkBtn = document.querySelectorAll('.bookmark-btn')
+      bookmarkBtn.forEach(function(bookmarkBtn){
+        bookmarkBtn.addEventListener('click', function(){
+          const index =this.id.split('-')[1];
+          const collectionId = document.getElementById(
+            `collectionId-${index}`
+          ).textContent
+          const collection_userId= document.getElementById(
+            `userId-${index}`
+          ).textContent
+        
+        $.ajax({
+          url: `/bookmark/${collectionId}`,
+          type: 'POST',
+          success: function () {
+            alert('북마크가 추가되었습니다.');
+            window.location.href = `/collections/${collection_userId}`; // 이전 페이지(컬렉션)로 리다이렉트
+          },
+          error: function (response) {
+            alert(response.responseJSON.message);
+          },
+        });
+        })
+      })
+    </script>
     <%- include('../footer.ejs') %>
+  </div>
   </body>
-  

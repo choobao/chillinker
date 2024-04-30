@@ -34,6 +34,9 @@ export class Users {
   @Column({ type: 'varchar', nullable: true })
   profileImage?: string;
 
+  @Column({ type: 'date', nullable: true })
+  birthDate?: Date;
+
   @CreateDateColumn({
     type: 'timestamp',
   })
