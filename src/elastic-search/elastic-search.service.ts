@@ -42,7 +42,7 @@ export class ElasticSearchService {
     });
   }
 
-  @Cron('34 11 * * *')
+  @Cron('14 12 * * *')
   async indexWebContentsToElasticSearch() {
     const webContents = await this.contentRepository.find();
 
@@ -77,7 +77,16 @@ export class ElasticSearchService {
             },
           },
         },
-        _source: ['id', 'title', 'author', 'starRate', 'image', 'contentType', 'isAdult'],
+        _source: [
+          'id',
+          'title',
+          'author',
+          'starRate',
+          'viewCount',
+          'image',
+          'contentType',
+          'isAdult',
+        ],
       };
       const result = await this.client.search({
         track_total_hits: true,
@@ -87,7 +96,6 @@ export class ElasticSearchService {
         from: from,
       });
 
-    
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
@@ -130,7 +138,16 @@ export class ElasticSearchService {
               minimum_should_match: 1,
             },
           },
-          _source: ['id', 'title', 'author', 'starRate', 'image', 'contentType', 'isAdult'],
+          _source: [
+            'id',
+            'title',
+            'author',
+            'starRate',
+            'viewCount',
+            'image',
+            'contentType',
+            'isAdult',
+          ],
         },
       });
 
