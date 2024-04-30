@@ -77,6 +77,7 @@ export class ElasticSearchService {
             },
           },
         },
+        _source: ['id', 'title', 'author', 'starRate', 'image', 'contentType', 'isAdult'],
       };
       const result = await this.client.search({
         track_total_hits: true,
@@ -86,6 +87,7 @@ export class ElasticSearchService {
         from: from,
       });
 
+    
       return result.hits.hits.length !== 0
         ? result.hits.hits.map((item) => item._source)
         : [];
@@ -128,6 +130,7 @@ export class ElasticSearchService {
               minimum_should_match: 1,
             },
           },
+          _source: ['id', 'title', 'author', 'starRate', 'image', 'contentType', 'isAdult'],
         },
       });
 

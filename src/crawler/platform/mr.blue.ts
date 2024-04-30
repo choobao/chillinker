@@ -64,8 +64,10 @@ export default class MrbluePuppeteer {
       const data: any[] = [];
 
       for (const work of linkList) {
-        if (work.genre.includes('성인소설' || '라이트노벨')) continue;
-        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+        if (work.title.includes('세트]')) continue;
+        if (work.genre.includes('성인소설')) continue;
+        if (work.genre.includes('라이트노벨')) continue;
+        if (work.title.includes('% 세트 할인]')) continue;
 
         const realUrl = mrblue_main_url + work.link;
         const rank = null;
@@ -143,8 +145,10 @@ export default class MrbluePuppeteer {
       const data: any[] = [];
       console.log('3');
       for (const work of linkList) {
-        if (work.genre.includes('성인소설' || '라이트노벨')) continue;
-        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+        if (work.title.includes('세트]')) continue;
+        if (work.genre.includes('성인소설')) continue;
+        if (work.genre.includes('라이트노벨')) continue;
+        if (work.title.includes('% 세트 할인]')) continue;
 
         const realUrl = mrblue_main_url + work.link;
         const rank = { mrblue: +work.rank };
@@ -204,7 +208,8 @@ export default class MrbluePuppeteer {
       const data: any[] = [];
 
       for (const work of linkList) {
-        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+        if (work.title.includes('세트]')) continue;
+        if (work.title.includes('% 세트 할인]')) continue;
         if (work.genre.includes('에로')) continue;
 
         const realUrl = mrblue_main_url + work.link;
@@ -249,6 +254,8 @@ export default class MrbluePuppeteer {
             title: item.querySelector('div.txt-box > span.tit > a')
               ?.textContent,
             rank: item.querySelector('p')?.textContent,
+            genre: item.querySelector('div.txt-box > span > span > a')
+              ?.textContent,
             link: item.querySelector('div.img > a')?.getAttribute('href'),
           };
         });
@@ -268,6 +275,8 @@ export default class MrbluePuppeteer {
           return {
             title: item.querySelector('div.txt-box > span.tit > a')
               ?.textContent,
+            genre: item.querySelector('div.txt-box > span.name > span > a')
+              ?.textContent,
             rank: item.querySelector('p')?.textContent,
             link: item.querySelector('div.img > a').getAttribute('href'),
           };
@@ -277,7 +286,9 @@ export default class MrbluePuppeteer {
       const data: any[] = [];
 
       for (const work of linkList) {
-        if (work.title.includes('[특가 세트]' || '% 세트 할인]')) continue;
+        if (work.title.includes('세트]')) continue;
+        if (work.title.includes('% 세트 할인]')) continue;
+        if (work.genre.includes('에로')) continue;
 
         const realUrl = mrblue_main_url + work.link;
         const rank = { mrblue: +work.rank };
@@ -458,13 +469,13 @@ export default class MrbluePuppeteer {
 
         if (genreDetail) {
           if (genre === '판타지/무협') {
-            if (genreDetail.includes('무협')) {
+            if (genreDetail === '신무협' || genreDetail === '전통무협')
               category = '무협';
-            } else {
-              category = '판타지';
-            }
+            else if (genreDetail === '현대판타지') category = '현판';
+            else category = '판타지';
           } else if (genre === '로맨스') {
             if (genreDetail === 'GL') category = genreDetail;
+            else if (genreDetail === '로맨스 판타지') category = '로판';
           } else if (genre === '연재') category = genreDetail;
         }
 
