@@ -61,7 +61,7 @@ export class RedisService {
     ttl: number = 3600,
   ): Promise<any> {
     const data = await this.client.hset(key, postId.toString(), 'true');
-    console.log('첫조회!');
+
     if (data) {
       await this.client.expire(key, ttl);
     }

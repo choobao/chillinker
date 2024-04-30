@@ -611,12 +611,12 @@ export class WebContentService {
       throw new NotFoundException('해당 작품 페이지가 존재하지 않습니다!');
     }
 
-    //일단 유저가 로그인했을때만 가정하고 로직 짜기
     let userId = user.id;
 
-    if (!user) {
+    if (!userId) {
       userId = user.ip;
     }
+    console.log('ip조회', user);
 
     console.log('false', userId);
 
