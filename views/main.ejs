@@ -119,7 +119,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -139,7 +139,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -160,7 +160,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -180,7 +180,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -200,7 +200,7 @@
                     <% naverWebtoons.forEach((item) => { %>
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -220,7 +220,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -241,7 +241,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -261,7 +261,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -283,7 +283,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -303,7 +303,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -324,7 +324,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -344,7 +344,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -365,7 +365,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -385,7 +385,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -406,7 +406,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                       
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -426,7 +426,7 @@
                             <span class="author-detail"><%= name %></span> <%= role %>
                            </span>
                         </h4>
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
+                        <h4 class="contents_category">장르: <%= item.category %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -448,7 +448,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -469,8 +469,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -492,7 +490,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -513,8 +511,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -536,7 +532,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -557,8 +553,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -580,7 +574,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -601,8 +595,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -624,7 +616,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -645,8 +637,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
@@ -668,7 +658,7 @@
                       <div class="contents" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                         
                         <img src="<%= item.image %>" alt="작품 표지"/>
-                        <h3 class="contents_title"><%= item.title %></h3>
+                        <h3 class="contents_title"><%= item.ranking %>위 <%= item.title %></h3>
                         <h4 class="contents_author">
                           <% const arr = item.author.split(',') %>
                           <% let role = arr[0].split('/')[0] %>
@@ -689,8 +679,6 @@
                            </span>
                         </h4>
                         <h4 class="contents_category">장르: <%= item.category %></h4>
-                        <!-- <h4 class="contents_reviewCount">리뷰 개수: <%= item.reviewCount %></h4> -->
-                        <h4 class="contents_ranking">랭킹: <%= item.ranking %></h4>
                         <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                       </div>
                     <% }); %>
