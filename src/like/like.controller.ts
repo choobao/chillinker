@@ -15,11 +15,12 @@ import { Users } from '../user/entities/user.entity';
 import _ from 'lodash';
 import { LikeService } from './like.service';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
+import { UserGuard } from '../auth/user.guard';
 
 @ApiTags('LIKE')
 @Controller()
-@UseInterceptors(ErrorInterceptor)
-@UseGuards(AuthGuard('jwt'))
+// @UseInterceptors(ErrorInterceptor)
+@UseGuards(UserGuard)
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 

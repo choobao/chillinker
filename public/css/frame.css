@@ -134,7 +134,7 @@ header {
   top: 0;
   width: 100%;
   height: 90px;
-  background: #e6e6fa;
+  background-color: #fff;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   z-index: 10;
@@ -184,7 +184,7 @@ header {
 }
 .inner_header .search_box form input[type='search'] {
   color: #999;
-  background-color: #fff;
+  background-color: #eeeeee;
   font-size: 12px;
   padding: 5px 10px;
   margin-right: 10px;
