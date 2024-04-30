@@ -68,7 +68,6 @@ $(document).ready(function () {
     e.preventDefault(); // 기본 제출 동작을 방지
 
     var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-
     $.ajax({
       url: '/users/mypage/update', // 데이터를 전송할 서버의 URL
       type: 'PATCH',
