@@ -4,7 +4,6 @@ import { Client } from '@elastic/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { Repository } from 'typeorm';
-import { ContentType } from '../web-content/webContent.type';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
@@ -143,10 +142,10 @@ export class ElasticSearchService {
             'title',
             'author',
             'starRate',
-            'viewCount',
             'image',
             'contentType',
             'isAdult',
+            'viewCount',
           ],
         },
       });
