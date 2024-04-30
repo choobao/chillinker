@@ -220,114 +220,165 @@ export class WebContentService {
     return content;
   }
 
-  // 지난 24시간 이내 생성된 likeCount가 높은 순 상위 20개
   async getBestLikesContents(type: string, user: Users | boolean | null) {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 3);
+    try {
+      let contents = await this.redisService.getCachedData(
+        `bestLikesContents_${type}`,
+      );
 
-    let contents = await this.webContentRepository
-      .createQueryBuilder('webContents')
-      .leftJoinAndSelect('webContents.likes', 'likes')
-      .where('likes.createdAt > :yesterday', { yesterday })
-      .andWhere('webContents.contentType = :type', { type })
-      .groupBy('webContents.id')
-      .orderBy('COUNT(likes.id)', 'DESC')
-      .select([
-        'webContents.id AS id',
-        'webContents.title AS title',
-        'webContents.image AS image',
-        'webContents.category AS category',
-        'webContents.viewCount AS viewCount',
-        'webContents.isAdult AS isAdult',
-        'webContents.author AS author',
-      ])
-      .addSelect('COUNT(likes.id)', 'likeCount')
-      .limit(20)
-      .getRawMany();
-    contents =
-      contents.length === 0 || _.isNil(contents)
-        ? []
-        : this.blindAdultImage(
-            user,
-            contents.map((content, idx) => {
-              return { ...content, ranking: idx + 1 };
-            }),
-          );
+      if (_.isNil(contents)) {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-    return contents;
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .leftJoinAndSelect('webContents.likes', 'likes')
+          .where('likes.createdAt > :threeDaysAgo', { threeDaysAgo })
+          .andWhere('webContents.contentType = :type', { type })
+          .groupBy('webContents.id')
+          .orderBy('COUNT(likes.id)', 'DESC')
+          .select([
+            'webContents.id AS id',
+            'webContents.title AS title',
+            'webContents.image AS image',
+            'webContents.category AS category',
+            'webContents.viewCount AS viewCount',
+            'webContents.isAdult AS isAdult',
+            'webContents.author AS author',
+          ])
+          .addSelect('COUNT(likes.id)', 'likeCount')
+          .limit(20)
+          .getRawMany();
+
+        await this.redisService.cacheData(
+          `bestLikesContents_${type}`,
+          contents,
+          3 * 3600,
+        );
+      }
+      contents =
+        contents.length === 0 || _.isNil(contents)
+          ? []
+          : this.blindAdultImage(
+              user,
+              contents.map((content, idx) => {
+                return { ...content, ranking: idx + 1 };
+              }),
+            );
+
+      return contents;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async getBestReviewCountContents(type: string, user: Users | boolean | null) {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 3);
+    try {
+      let contents = await this.redisService.getCachedData(
+        `bestReviewContents_${type}`,
+      );
 
-    let contents = await this.webContentRepository
-      .createQueryBuilder('webContents')
-      .leftJoinAndSelect('webContents.cReviews', 'reviews')
-      .where('reviews.createdAt > :yesterday', { yesterday })
-      .andWhere('webContents.contentType = :type', { type })
-      .groupBy('webContents.id')
-      .orderBy('COUNT(reviews.id)', 'DESC')
-      .select([
-        'webContents.id AS id',
-        'webContents.title AS title',
-        'webContents.image AS image',
-        'webContents.category AS category',
-        'webContents.viewCount AS viewCount',
-        'webContents.isAdult AS isAdult',
-        'webContents.author AS author',
-      ])
-      .addSelect('COUNT(reviews.id)', 'reviewCount')
-      .limit(20)
-      .getRawMany();
+      if (_.isNil(contents)) {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-    contents =
-      contents.length === 0 || _.isNil(contents)
-        ? []
-        : this.blindAdultImage(
-            user,
-            contents.map((content, idx) => {
-              return { ...content, ranking: idx + 1 };
-            }),
-          );
-    return contents;
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .leftJoinAndSelect('webContents.cReviews', 'reviews')
+          .where('reviews.createdAt > :threeDaysAgo', { threeDaysAgo })
+          .andWhere('webContents.contentType = :type', { type })
+          .groupBy('webContents.id')
+          .orderBy('COUNT(reviews.id)', 'DESC')
+          .select([
+            'webContents.id AS id',
+            'webContents.title AS title',
+            'webContents.image AS image',
+            'webContents.category AS category',
+            'webContents.viewCount AS viewCount',
+            'webContents.isAdult AS isAdult',
+            'webContents.author AS author',
+          ])
+          .addSelect('COUNT(reviews.id)', 'reviewCount')
+          .limit(20)
+          .getRawMany();
+
+        await this.redisService.cacheData(
+          `bestReviewContents_${type}`,
+          contents,
+          3 * 3600,
+        );
+      }
+
+      contents =
+        contents.length === 0 || _.isNil(contents)
+          ? []
+          : this.blindAdultImage(
+              user,
+              contents.map((content, idx) => {
+                return { ...content, ranking: idx + 1 };
+              }),
+            );
+      return contents;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   // 컬렉션에 많이 들어간 작품
   async getBestCollectionContents(type: string, user: Users | boolean | null) {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 3);
-    let contents = await this.webContentRepository
-      .createQueryBuilder('webContents')
-      .leftJoinAndSelect('webContents.contentCollections', 'contentCollections')
-      .where('contentCollections.createdAt > :yesterday', { yesterday })
-      .andWhere('webContents.contentType = :type', { type })
-      .groupBy('webContents.id')
-      .orderBy('COUNT(contentCollections.id)', 'DESC')
-      .select([
-        'webContents.id AS id',
-        'webContents.title AS title',
-        'webContents.image AS image',
-        'webContents.category AS category',
-        'webContents.viewCount AS viewCount',
-        'webContents.isAdult AS isAdult',
-        'webContents.author AS author',
-      ])
-      .addSelect('COUNT(contentCollections.id)', 'colCount')
-      .limit(20)
-      .getRawMany();
+    try {
+      let contents = await this.redisService.getCachedData(
+        `bestCollectionContents_${type}`,
+      );
 
-    contents =
-      contents.length === 0 || _.isNil(contents)
-        ? []
-        : this.blindAdultImage(
-            user,
-            contents.map((content, idx) => {
-              return { ...content, ranking: idx + 1 };
-            }),
-          );
+      if (_.isNil(contents)) {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        contents = await this.webContentRepository
+          .createQueryBuilder('webContents')
+          .leftJoinAndSelect(
+            'webContents.contentCollections',
+            'contentCollections',
+          )
+          .where('contentCollections.createdAt > :threeDaysAgo', {
+            threeDaysAgo,
+          })
+          .andWhere('webContents.contentType = :type', { type })
+          .groupBy('webContents.id')
+          .orderBy('COUNT(contentCollections.id)', 'DESC')
+          .select([
+            'webContents.id AS id',
+            'webContents.title AS title',
+            'webContents.image AS image',
+            'webContents.category AS category',
+            'webContents.viewCount AS viewCount',
+            'webContents.isAdult AS isAdult',
+            'webContents.author AS author',
+          ])
+          .addSelect('COUNT(contentCollections.id)', 'colCount')
+          .limit(20)
+          .getRawMany();
 
-    return contents;
+        await this.redisService.cacheData(
+          `bestCollectionContents_${type}`,
+          contents,
+          3 * 3600,
+        );
+      }
+      contents =
+        contents.length === 0 || _.isNil(contents)
+          ? []
+          : this.blindAdultImage(
+              user,
+              contents.map((content, idx) => {
+                return { ...content, ranking: idx + 1 };
+              }),
+            );
+
+      return contents;
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   async getContentCategory(
