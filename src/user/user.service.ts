@@ -111,7 +111,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('해당회원을 찾을 수 없습니다.');
     }
-    return user;
+    return { user };
   }
 
   async updateMyInfo(
@@ -196,6 +196,9 @@ export class UserService {
     adultVerifyDto: AdultVerifyDto,
   ) {
     try {
+      if (_.isNil(file)) {
+        throw new BadRequestException('사진을 첨부해주세요.');
+      }
       const existingVerifyRequest =
         await this.userAdultVerifyRepository.findOneBy({ userId });
       if (!_.isNil(existingVerifyRequest)) {
