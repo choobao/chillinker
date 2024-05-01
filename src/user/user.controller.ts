@@ -66,15 +66,15 @@ export class UserController {
 
   @Render('login')
   @Get('login')
-  showLoginPage() {}
+  async showLoginPage() {}
 
   @Render('register')
   @Get('register')
-  showRegisterPage() {}
+  async showRegisterPage() {}
 
   @Render('mypage-update')
   @Get('mypage/update')
-  showUpdatePage() {}
+  async showUpdatePage() {}
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
