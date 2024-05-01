@@ -35,7 +35,7 @@ export class ReviewController {
 
   @ApiOperation({ summary: '리뷰 조회' })
   @UseGuards(OptionalAuthGuard)
-  // @Render('detailContent')
+  @Render('detailContent')
   @Get('books/:webContentsId')
   async getCReivew(
     @Req() req,

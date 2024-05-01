@@ -18,6 +18,7 @@ import { Users } from '../user/entities/user.entity';
 import _ from 'lodash';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CollectionBookmark } from './entities/collection-bookmark.entity';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class CollectionService {
@@ -32,7 +33,7 @@ export class CollectionService {
     private userRepository: Repository<Users>,
     @InjectRepository(CollectionBookmark)
     private colBookRepository: Repository<CollectionBookmark>,
-
+    private readonly redisService: RedisService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -61,6 +62,7 @@ export class CollectionService {
         'desc',
         'coverImage',
         'bookmarkCount',
+        'viewCount',
         'contentCollections',
       ],
     });
@@ -69,6 +71,7 @@ export class CollectionService {
       const title = collection.title;
       const desc = collection.desc;
       const coverImage = collection.coverImage;
+      const viewCount = collection.viewCount;
       const bookmarkCount = collection.collectionBookmarks.length;
       const webContents = collection.contentCollections.map(
         (contentCollection) => {
@@ -82,6 +85,7 @@ export class CollectionService {
         id,
         title,
         desc,
+        viewCount,
         coverImage,
         bookmarkCount,
         webContents,
@@ -102,6 +106,7 @@ export class CollectionService {
         'title',
         'desc',
         'coverImage',
+        'viewCount',
         'bookmarkCount',
         'userId',
         'contentCollections',
@@ -111,6 +116,7 @@ export class CollectionService {
       const id = collection.id;
       const title = collection.title;
       const desc = collection.desc;
+      const viewCount = collection.viewCount;
       const coverImage = collection.coverImage;
       const bookmarkCount = collection.collectionBookmarks.length;
       const webContentNumber = collection.contentCollections.length;
@@ -121,6 +127,7 @@ export class CollectionService {
         title,
         desc,
         coverImage,
+        viewCount,
         userId,
         bookmarkCount,
         webContentNumber,
@@ -325,7 +332,30 @@ export class CollectionService {
 
     const blindWebContents = this.blindAdultImage(user, webContents);
     const isAdult = this.isAdult(user);
-    return { collectionInfo, blindWebContents, isAdult };
+
+    let userId = user.id;
+
+    if (!userId) {
+      userId = user.ip;
+    }
+
+    const key = `user:${userId}:collectionViews`;
+
+    const existingViews = await this.redisService.isExistingViews(
+      key,
+      collectionId,
+    );
+
+    if (existingViews) {
+      return { collectionInfo, blindWebContents, isAdult };
+    } else {
+      await this.redisService.firstViews(key, collectionId);
+
+      await this.colRepository.update(collectionId, {
+        viewCount: collectionInfo.viewCount + 1,
+      });
+      return { collectionInfo, blindWebContents, isAdult };
+    }
   }
 
   isOver19(birthDate: Date) {

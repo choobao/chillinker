@@ -18,6 +18,8 @@ import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { StorageService } from '../storage/storage.service';
+import { AdultVerifyDto } from './dto/adult-verify.dto';
+import { UserAdultVerifyRequest } from './entities/user.adult-verify.entity';
 
 @Injectable()
 export class UserService {
@@ -28,6 +30,8 @@ export class UserService {
     private readonly configService: ConfigService,
     private dataSource: DataSource,
     private readonly storageService: StorageService,
+    @InjectRepository(UserAdultVerifyRequest)
+    private userAdultVerifyRepository: Repository<UserAdultVerifyRequest>,
   ) {}
 
   async register(file: Express.Multer.File, createUserDto: CreateUserDto) {
@@ -107,7 +111,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('해당회원을 찾을 수 없습니다.');
     }
-    return { user };
+    return user;
   }
 
   async updateMyInfo(
@@ -184,5 +188,29 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
+  }
+
+  async sendAdultVerifyRequest(
+    userId: number,
+    file: Express.Multer.File,
+    adultVerifyDto: AdultVerifyDto,
+  ) {
+    try {
+      const existingVerifyRequest =
+        await this.userAdultVerifyRepository.findOneBy({ userId });
+      if (!_.isNil(existingVerifyRequest)) {
+        throw new ConflictException('이미 성인인증을 요청하셨습니다.');
+      }
+
+      const { birthDate } = adultVerifyDto;
+      const registrationCardImage = await this.storageService.upload(file);
+      await this.userAdultVerifyRepository.save({
+        userId,
+        registrationCardImage,
+        birthDate,
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 }
