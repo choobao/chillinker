@@ -47,13 +47,12 @@
           <div class="collection_info">
             <ul>
               <li class="collection_title">
-                <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                 <a href="collections/info/<%= item.id %>">
                   <%= item.title%>
                 </a>
               </li>
               <li class="collection_desc"><%= item.desc %></li>
-              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
+              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회 &nbsp;&nbsp;&nbsp;👀 <%= item.viewCount %></li>
               <li class="collection_btn_group">
                 <button class="remove_bookmark_btn" id="collectionId-<%= index %>">북마크 취소</button>
               </li>
