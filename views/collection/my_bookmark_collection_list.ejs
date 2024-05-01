@@ -42,12 +42,13 @@
               onerror="this.src='/logo_image/chillinker_logo(2).png'"
               />
             </a>
-            <div class="contents_number">작품수: <%= item.contentCollections.length || 0 %></div>
+            <div class="contents_number">
+              <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
+              작품수: <%= item.contentCollections.length || 0 %></div>
           </div>
           <div class="collection_info">
             <ul>
               <li class="collection_title">
-                <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
                 <a href="collections/info/<%= item.id %>">
                   <%= item.title%>
                 </a>

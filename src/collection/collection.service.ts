@@ -461,9 +461,16 @@ export class CollectionService {
       // 최근 생성된 컬렉션 조회
       const collections = await this.colBookRepository
         .createQueryBuilder('collectionBookmark')
-        .select('collectionBookmark.collectionId, COUNT(*) as count')
-        .addSelect('collection')
         .innerJoin('collectionBookmark.collection', 'collection')
+        .innerJoin('collection.user', 'user')
+        .select([
+          'collectionBookmark.collectionId',
+          'COUNT(*) as count',
+          'collection', // 컬렉션 엔티티의 필드들
+          'user.id', // 유저 엔티티의 필드들
+          'user.nickname',
+          'user.profileImage',
+        ])
         .where('collectionBookmark.createdAt >= :threeDaysAgo', {
           threeDaysAgo,
         })
@@ -478,9 +485,16 @@ export class CollectionService {
       // 북마크 수가 많은 컬렉션 조회
       const collections = await this.colBookRepository
         .createQueryBuilder('collectionBookmark')
-        .select('collectionBookmark.collectionId, COUNT(*) as count')
-        .addSelect('collection')
         .innerJoin('collectionBookmark.collection', 'collection')
+        .innerJoin('collection.user', 'user')
+        .select([
+          'collectionBookmark.collectionId',
+          'COUNT(*) as count',
+          'collection', // 컬렉션 엔티티의 필드들
+          'user.id', // 유저 엔티티의 필드들
+          'user.nickname',
+          'user.profileImage',
+        ])
         .where('collectionBookmark.createdAt >= :threeDaysAgo', {
           threeDaysAgo,
         })

@@ -113,16 +113,9 @@ export class UserController {
   @Render('mypage')
   @UseFilters(UnauthorizedExceptionFilter)
   async getMyInfo(@UserInfo() user: Users) {
-    const { id } = user;
-    return await this.userService.getUserInfoById(id);
-
-    // if (isAdmin) {
-    //   res.render('admin-mypage', { user: userInfo });
-    // } else {
-    //   res.render('mypage', {
-    //     user: userInfo,
-    //   });
-    // }
+    const { id, isAdmin } = user;
+    const userInfo = await this.userService.getUserInfoById(id);
+    return { ...userInfo, isAdmin };
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })

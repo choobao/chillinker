@@ -19,14 +19,6 @@ window.onclick = function (event) {
   }
 };
 
-var adultVerifyBtn = document.getElementById('adult-verify-btn');
-
-var adultVerifyModal = document.getElementById('adult-verify');
-
-adultVerifyBtn.onclick = function () {
-  adultVerifyModal.style.display = 'block';
-};
-
 // 버튼 클릭 이벤트
 // 팔로잉/팔로워
 $('#profile-follower').click(function () {
@@ -56,11 +48,28 @@ $('#profile-bookmark-col').click(function () {
   window.location.href = '/bookmark';
 });
 
+var adultVerifyBtn = document.getElementById('adult-verify-btn');
+
+var adultVerifyModal = document.getElementById('adult-verify');
+
+if (adultVerifyBtn && adultVerifyModal) {
+  adultVerifyBtn.onclick = function () {
+    adultVerifyModal.style.display = 'block';
+  };
+}
+
+const adultRequestList = document.getElementById('adult-verify-request-list');
+if (adultRequestList) {
+  // 성인인증 요청 리스트
+  $('#adult-verify-request-list').click(function () {
+    window.location.href = '/admin/show/adultVerifyRequest';
+  });
+}
+
 $(document).ready(function () {
   // 모달 창 닫기 버튼 이벤트
-  $('.close').click(function () {
+  $('.update-close').click(function () {
     $('#mypage-update').hide();
-    $('#adult-verify').hide();
   });
 
   // 폼 제출 이벤트
@@ -84,28 +93,33 @@ $(document).ready(function () {
     });
   });
 
-  $('#adult-verify-form').submit(function (e) {
-    e.preventDefault(); // 기본 제출 동작을 방지
-
-    var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
-
-    $.ajax({
-      url: '/users/sendAdultVerify', // 데이터를 전송할 서버의 URL
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (data) {
-        alert(
-          '성인인증 요청이 전송되었습니다. 요청 수락까지 최대 3일이 걸릴 수 있습니다.',
-        );
-        window.location.href = '/users/mypage';
-      },
-      error: function (response) {
-        alert(response.responseJSON.message);
-      },
+  if (adultVerifyModal) {
+    $('.adult-close').click(function () {
+      $('#adult-verify').hide();
     });
-  });
+    $('#adult-verify-form').submit(function (e) {
+      e.preventDefault(); // 기본 제출 동작을 방지
+
+      var formData = new FormData(this); // 폼 데이터를 FormData 객체로 생성
+
+      $.ajax({
+        url: '/users/sendAdultVerify', // 데이터를 전송할 서버의 URL
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          alert(
+            '성인인증 요청이 전송되었습니다. 요청 수락까지 최대 3일이 걸릴 수 있습니다.',
+          );
+          window.location.href = '/users/mypage';
+        },
+        error: function (response) {
+          alert(response.responseJSON.message);
+        },
+      });
+    });
+  }
 });
 
 document.addEventListener('DOMContentLoaded', function () {

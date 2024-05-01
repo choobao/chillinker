@@ -156,17 +156,29 @@ export class ReviewController {
     await this.reviewService.deleteReview(user, webContentsId, reviewId);
   }
 
+  @UseGuards(OptionalAuthGuard)
   @Render('reviewTop')
   @Get('rank/reviews')
   async getTopReviews(
+    @Req() req,
     @Query('page') page?: string,
     @Query('order') order?: string,
   ) {
     //탑리뷰
-    const topReviews = await this.reviewService.getTopReviews(+page, order);
+    const topReviews = await this.reviewService.getTopReviews(
+      req.user,
+      +page,
+      order,
+    );
 
     const { reviews, totalPages } = topReviews;
 
-    return { reviews, totalPages, page, order };
+    return {
+      reviews,
+      totalPages,
+      page,
+      order,
+      userInfo: this.reviewService.isAdult(req.user),
+    };
   }
 }

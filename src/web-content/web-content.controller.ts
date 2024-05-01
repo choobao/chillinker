@@ -91,7 +91,7 @@ export class WebContentController {
     const bestCollectionedWebtoons =
       await this.webContentService.getBestCollectionContents('웹툰', req.user);
 
-    const top3Reviews = await this.reviewService.top10Reviews();
+    const top3Reviews = await this.reviewService.top10Reviews(req.user);
 
     return {
       naverWebtoons,

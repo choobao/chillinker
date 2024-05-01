@@ -18,7 +18,8 @@ import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
 import { SseService } from 'src/sse/sse.service';
 import _ from 'lodash';
-import { WebContentService } from 'src/web-content/web-content.service';
+import { WebContentService } from '../web-content/web-content.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class ReviewService {
@@ -35,6 +36,7 @@ export class ReviewService {
     private readonly webContentRepository: Repository<WebContents>,
     private readonly dataSource: DataSource,
     private readonly webContentService: WebContentService,
+    private readonly redisService: RedisService,
   ) {}
 
   isOver19(birthDate: Date) {
@@ -438,7 +440,11 @@ export class ReviewService {
   //   );
   // }
 
-  async getTopReviews(page?: number, order?: string) {
+  async getTopReviews(
+    user: Users | boolean | null,
+    page?: number,
+    order?: string,
+  ) {
     const perPage = 10;
 
     page = page ? page : 1;
@@ -489,7 +495,7 @@ export class ReviewService {
         .limit(perPage) // 페이지당 아이템 수 설정
         .getRawMany();
 
-      return { reviews, totalPages };
+      return { reviews: this.blindAdultImage(user, reviews), totalPages };
     } else {
       const reviews = await this.reviewLikesRepository
         .createQueryBuilder('reviewLikes')
@@ -512,33 +518,76 @@ export class ReviewService {
 
       console.log(reviews.length);
 
-      return { reviews, totalPages };
+      return { reviews: this.blindAdultImage(user, reviews), totalPages };
     }
   }
 
-  async top10Reviews() {
-    var today = new Date();
-    var threeDaysAgo = new Date(today);
-    threeDaysAgo.setDate(today.getDate() - 3);
+  async top10Reviews(user: Users | boolean | null) {
+    try {
+      let reviews = await this.redisService.getCachedData('top10Reviews');
+      if (_.isNil(reviews)) {
+        var today = new Date();
+        var threeDaysAgo = new Date(today);
+        threeDaysAgo.setDate(today.getDate() - 3);
 
-    const reviews = await this.reviewLikesRepository
-      .createQueryBuilder('reviewLikes')
-      .select('reviewLikes.cReviewId, COUNT(*) as count')
-      .addSelect('cReviews')
-      .addSelect('users')
-      .addSelect(
-        'webContents.id, webContents.title, webContents.image, webContents.likeCount, webContents.starRate, webContents.isAdult, webContents.author',
-      )
-      .innerJoin('reviewLikes.cReviews', 'cReviews')
-      .innerJoin('cReviews.users', 'users')
-      .innerJoin('cReviews.webContent', 'webContents')
-      .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
-      .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
-      .groupBy('reviewLikes.cReviewId')
-      .orderBy('count', 'DESC')
-      .limit(10) // 페이지당 아이템 수 설정
-      .getRawMany();
+        reviews = await this.reviewLikesRepository
+          .createQueryBuilder('reviewLikes')
+          .select('reviewLikes.cReviewId, COUNT(*) as count')
+          .addSelect('cReviews')
+          .addSelect('users')
+          .addSelect(
+            'webContents.id, webContents.title, webContents.image, webContents.likeCount, webContents.starRate, webContents.isAdult, webContents.author',
+          )
+          .innerJoin('reviewLikes.cReviews', 'cReviews')
+          .innerJoin('cReviews.users', 'users')
+          .innerJoin('cReviews.webContent', 'webContents')
+          .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
+          .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+          .groupBy('reviewLikes.cReviewId')
+          .orderBy('count', 'DESC')
+          .limit(10) // 페이지당 아이템 수 설정
+          .getRawMany();
 
-    return reviews;
+        await this.redisService.cacheData('top10Reviews', reviews, 3 * 3600);
+      }
+
+      reviews = this.blindAdultImage(user, reviews);
+
+      return reviews;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  blindAdultImage(user, contents) {
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      const adult_image =
+        'https://ssl.pstatic.net/static/m/nstore/thumb/19/home_book_4.png';
+      contents.map((content) => {
+        if (content.is_adult === 1) {
+          content.image = adult_image;
+        }
+        return content;
+      });
+    }
+    return contents;
+  }
+
+  isAdult(user) {
+    const userInfo = { isAdult: 1 };
+    if (
+      user === false ||
+      _.isNil(user) ||
+      _.isNil(user.birthDate) ||
+      !this.isOver19(new Date(user.birthDate))
+    ) {
+      userInfo.isAdult = 0;
+    }
+    return userInfo;
   }
 }
