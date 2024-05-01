@@ -119,12 +119,7 @@ export class UserService {
     id: number,
     updateUserDto: UpdateUserDto,
   ) {
-    const {
-      nickname,
-      intro,
-      // password,
-      birthDate,
-    } = updateUserDto;
+    const { nickname, intro, birthDate } = updateUserDto;
 
     if (!nickname && !intro) {
       throw new BadRequestException('수정할 것을 입력해주세요.');
@@ -132,12 +127,8 @@ export class UserService {
 
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['profileImage', 'password', 'birthDate'],
+      select: ['profileImage', 'birthDate'],
     });
-
-    // if (!(await compare(password, user.password))) {
-    //   throw new UnauthorizedException('비밀번호를 확인해주세요.');
-    // }
 
     let profileImage = user.profileImage;
     if (file) {
