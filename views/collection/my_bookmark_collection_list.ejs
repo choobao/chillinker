@@ -42,7 +42,9 @@
               onerror="this.src='/logo_image/chillinker_logo(2).png'"
               />
             </a>
-            <div class="contents_number">작품수: <%= item.contentCollections.length || 0 %></div>
+            <div class="contents_number">
+              <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
+              작품수: <%= item.contentCollections.length || 0 %></div>
           </div>
           <div class="collection_info">
             <ul>
@@ -52,7 +54,7 @@
                 </a>
               </li>
               <li class="collection_desc"><%= item.desc %></li>
-              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회 &nbsp;&nbsp;&nbsp;👀 <%= item.viewCount %></li>
+              <li class="collection_bookmarked_number">💛<%= item.bookmarkCount %>회</li>
               <li class="collection_btn_group">
                 <button class="remove_bookmark_btn" id="collectionId-<%= index %>">북마크 취소</button>
               </li>
