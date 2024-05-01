@@ -110,17 +110,19 @@ export class UserController {
   @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(UserGuard)
   @Get('mypage')
+  @Render('mypage')
   @UseFilters(UnauthorizedExceptionFilter)
-  async getMyInfo(@UserInfo() user: Users, @Res() res) {
-    const { id, isAdmin } = user;
-    const userInfo = await this.userService.getUserInfoById(id);
-    if (isAdmin) {
-      res.render('admin-mypage', { user: userInfo });
-    } else {
-      res.render('mypage', {
-        user: userInfo,
-      });
-    }
+  async getMyInfo(@UserInfo() user: Users) {
+    const { id } = user;
+    return await this.userService.getUserInfoById(id);
+
+    // if (isAdmin) {
+    //   res.render('admin-mypage', { user: userInfo });
+    // } else {
+    //   res.render('mypage', {
+    //     user: userInfo,
+    //   });
+    // }
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })

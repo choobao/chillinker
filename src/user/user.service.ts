@@ -111,7 +111,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('해당회원을 찾을 수 없습니다.');
     }
-    return user;
+    return { user };
   }
 
   async updateMyInfo(
