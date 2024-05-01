@@ -36,10 +36,4 @@ export class CollectionBookmark {
 
   @Column('int', { name: 'user_id', nullable: false })
   userId: number;
-
-  @Column('varchar', { name: 'user_nickname', nullable: false })
-  nickname: string;
-
-  @Column('varchar', { name: 'user_profile_image', nullable: true })
-  profileImage: string;
 }
