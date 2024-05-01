@@ -19,7 +19,7 @@ export class UserAdultVerifyRequest {
   registrationCardImage?: string;
 
   @Column({ type: 'date' })
-  birthDate?: Date;
+  birthDate: Date;
 
   @CreateDateColumn({
     type: 'timestamp',
