@@ -54,11 +54,10 @@ export class CollectionBookmarkService {
       throw new BadRequestException('이미 북마크된 컬렉션입니다.');
     }
 
-    const bookmark = this.colBookRepository.create({
+    const bookmark = this.colBookRepository.save({
       collectionId,
       userId,
     });
-    await this.colBookRepository.save(bookmark);
 
     collection.bookmarkCount += 1;
     await this.colRepository.save(collection);
