@@ -49,22 +49,22 @@
             <% collections.forEach((item,index) => { %>
             <li class="review-card" id="reviewId-<%= index %>" val="<%= item.collection_id %>">
               <article>
-                <a class="writer-container" href="/users/<%= item.      collection_user_id %>">
+                <a class="writer-container" href="/users/<%= item.collection_user_id %>">
                   <img
-                    src="<%= item.collection_user_profile_image %>"
+                    src="<%= item.user_profile_image %>"
                     alt="프로필사진"
                     onerror="this.src='/logo_image/chillinker_logo(1).png'"
                     class="profile-img"
                   />
                   <div class="reivewer-info">
                   <div class="reviewer-id-and-rate">
-                  <span class="reviewer_id"><%= item.collection_user_nickname %></span>
+                  <span class="reviewer_id"><%= item.user_nickname %></span>
                 </a>
         </div>
             </div>
                   <div class="review_date"><%= item.collection_created_at %></div>
                 <div class="review-content-web-info-container">
-                    <a class="webContent-container" href="/collections/info/<%= item.collection_id %>">
+                    <a class="webContent-container" href="/collections/info/<%= item.collection_user_id %>">
                         <img
                           src="<%= item.collection_cover_image %>"
                           alt="작품사진"
