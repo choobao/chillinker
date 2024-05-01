@@ -15,6 +15,7 @@
     src="https://kit.fontawesome.com/0b832ce4c1.js"
     crossorigin="anonymous"
   ></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link
     rel="icon"
     type="image/png"
@@ -31,10 +32,12 @@
       settings
       <span class="tooltiptext">프로필 수정하기</span>
     </span>
+    <% if(isAdmin === 0) { %>
     <span class="tooltip material-symbols-outlined" id="adult-verify-btn">
       domain_verification
       <span class="tooltiptext">성인 인증하기</span>
     </span>
+    <% } %>
     <img
       src="<%= user.profileImage %>"
       alt="프로필사진"
@@ -51,6 +54,11 @@
     <button class="profile-btn" id="profile-bookmark-col">
       내가 북마크한 컬렉션
     </button>
+    <% if(isAdmin === 1) { %>
+        <button class="profile-btn" id="adult-verify-request-list">
+          성인인증 요청 리스트 
+        </button>
+    <% } %>
     <!-- <button class="profile-btn" id="profile-alarm-col">알림</button> -->
     <span class="userId" id="userId" style="display: none"><%= user.id %></span>
   </div>
@@ -59,7 +67,7 @@
   <div id="mypage-update" class="modal">
     <!-- 모달 컨텐츠 -->
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close update-close">&times;</span>
       <form id="profile-form">
         <label class="profile-update-img-label">
           <img
@@ -95,10 +103,11 @@
   </div>
 
   <!-- 모달 창 -->
+  <% if(isAdmin === 0) { %>
   <div id="adult-verify" class="modal">
     <!-- 모달 컨텐츠 -->
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close adult-close">&times;</span>
       <form id="adult-verify-form">
         <label for="registrationCardImage">주민등록증 사진:</label>
         <input
@@ -123,7 +132,7 @@
       </form>
     </div>
   </div>
-
+  <% } %>
   <!-- <div id="alarm-modal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -138,7 +147,6 @@
   </div> -->
 
   <!-- </main> -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/js/mypage-update.js"></script>
   <!-- <script src="/js/sse.js"></script> -->
   <%- include('footer.ejs') %>
