@@ -103,6 +103,13 @@
   margin: 0 auto;
   width: calc(100% + 80px); /* 카드 너비 4개 + 여백 */
   transition: transform 0.5s ease-in-out;
+  height: 450px;
+}
+
+.contents_viewCount {
+  /* opacity: 0.5; */
+  float: left;
+  padding-left: 15px;
 }
 
 .contents {

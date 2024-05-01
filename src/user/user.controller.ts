@@ -33,6 +33,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 import { UserGuard } from '../auth/user.guard';
 import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
+import { AdultVerifyDto } from './dto/adult-verify.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -109,11 +110,17 @@ export class UserController {
   @ApiOperation({ summary: '마이페이지 조회' })
   @UseGuards(UserGuard)
   @Get('mypage')
-  @Render('mypage')
   @UseFilters(UnauthorizedExceptionFilter)
-  async getMyInfo(@UserInfo() user: Users) {
-    const { id } = user;
-    return await this.userService.getUserInfoById(id);
+  async getMyInfo(@UserInfo() user: Users, @Res() res) {
+    const { id, isAdmin } = user;
+    const userInfo = await this.userService.getUserInfoById(id);
+    if (isAdmin) {
+      res.render('admin-mypage', { user: userInfo });
+    } else {
+      res.render('mypage', {
+        user: userInfo,
+      });
+    }
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })
@@ -142,6 +149,22 @@ export class UserController {
 
     await this.userService.leave(id, deleteUserDto);
     return res.clearCookie('accessToken').clearCookie('refreshToken').end();
+  }
+
+  @ApiOperation({ summary: '성인인증 요청 보내기' })
+  @UseInterceptors(FileInterceptor('registrationCardImage'))
+  @UseGuards(AuthGuard('jwt'))
+  @Post('sendAdultVerify')
+  async sendAdultVerifyRequest(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() adultVerifyDto: AdultVerifyDto,
+    @UserInfo() user: Users,
+  ) {
+    await this.userService.sendAdultVerifyRequest(
+      user.id,
+      file,
+      adultVerifyDto,
+    );
   }
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })

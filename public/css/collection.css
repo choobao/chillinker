@@ -11,6 +11,11 @@
   width: max-content;
 }
 
+.contents_number {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* 위 오 아 왼 */
 .collection-list-upper > button {
   margin: 20px 60px 20px auto;

@@ -27,12 +27,14 @@
   <%- include('header.ejs') %>
   <!-- <main> -->
   <div class="mypage-wrapper">
-    <span class="material-symbols-outlined" id="profile-edit-btn">
+    <span class="tooltip material-symbols-outlined" id="profile-edit-btn">
       settings
+      <span class="tooltiptext">프로필 수정하기</span>
     </span>
-    <!-- <span class="material-symbols-outlined" id="adult-verify-btn">
+    <span class="tooltip material-symbols-outlined" id="adult-verify-btn">
       domain_verification
-    </span> -->
+      <span class="tooltiptext">성인 인증하기</span>
+    </span>
     <img
       src="<%= user.profileImage %>"
       alt="프로필사진"
@@ -81,20 +83,43 @@
           id="nickname"
           name="nickname"
           value="<%= user.nickname %>"
-        /><br />
+        />
         <label for="password">비밀번호:</label>
         <input type="password" id="password" name="password" /><br />
-        <label for="birthDate">생년월일:</label>
-        <input
-          type="text"
-          id="birthDate"
-          name="birthDate"
-          placeholder="형식은 2000-01-01"
-          value="<%= user.birthDate %>"
-        /><br />
+
         <label for="intro">소개글:</label>
         <textarea id="intro" name="intro"><%= user.intro %></textarea>
         <input type="submit" value="저장" />
+      </form>
+    </div>
+  </div>
+
+  <!-- 모달 창 -->
+  <div id="adult-verify" class="modal">
+    <!-- 모달 컨텐츠 -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="adult-verify-form">
+        <label for="registrationCardImage">주민등록증 사진:</label>
+        <input
+          type="file"
+          id="registration-card-input"
+          name="registrationCardImage"
+          accept="image/*"
+        />
+        <br />
+        <label for="birthDate">생년월일:</label>
+        <input
+          type="date"
+          id="birthDate"
+          name="birthDate"
+          value="<%= user.birthDate %>"
+        />
+        <span class="msg">
+          * 주민등록증 사진을 비롯한 수집된 정보는 성인인증 수락과 즉시 3일 내로
+          폐기됩니다.
+        </span>
+        <input type="submit" value="요청하기" />
       </form>
     </div>
   </div>
