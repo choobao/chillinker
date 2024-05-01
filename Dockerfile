@@ -11,7 +11,7 @@ RUN npm i
 COPY . .
 
 #RUN npm run build  
-FROM node:21-alpine
+# FROM node:21-alpine
 CMD [ "npm", "start" ]
 EXPOSE 3000
 
