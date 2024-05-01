@@ -66,7 +66,7 @@
             </div>
                   <div class="review_date"><%= item.cReviews_created_at %></div>
                 <div class="review-content-web-info-container">
-                    <a class="webContent-container" href="/books/<%= item.id %>">
+                    <a class="webContent-container" href="javascript:void(0);" onclick="gotoBookDetail('<%= item.id %>', '<%= item.is_adult %>', '<%= userInfo.isAdult %>')">
                         <img
                           src="<%= item.image %>"
                           alt="작품사진"
@@ -110,6 +110,7 @@
       </div>
         </div>
         <script src="/js/topReview.js"></script>
+        <script src="/js/adult_blind.js"></script>
       </main>
       <%- include('footer.ejs') %>
     </div>
