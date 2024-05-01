@@ -196,6 +196,9 @@ export class UserService {
     adultVerifyDto: AdultVerifyDto,
   ) {
     try {
+      if (_.isNil(file)) {
+        throw new BadRequestException('사진을 첨부해주세요.');
+      }
       const existingVerifyRequest =
         await this.userAdultVerifyRepository.findOneBy({ userId });
       if (!_.isNil(existingVerifyRequest)) {
