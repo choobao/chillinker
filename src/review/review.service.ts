@@ -511,7 +511,7 @@ export class ReviewService {
         .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
         .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
         .groupBy('reviewLikes.cReviewId')
-        .orderBy('count', 'DESC')
+        .orderBy('cReviews.likeCount', 'DESC')
         .offset(skip) // 페이지에 따라 스킵하는 수 계산
         .limit(perPage) // 페이지당 아이템 수 설정
         .getRawMany();
@@ -541,11 +541,11 @@ export class ReviewService {
           .innerJoin('reviewLikes.cReviews', 'cReviews')
           .innerJoin('cReviews.users', 'users')
           .innerJoin('cReviews.webContent', 'webContents')
-          .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
-          .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+          .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo })
+          .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false })
           .groupBy('reviewLikes.cReviewId')
-          .orderBy('count', 'DESC')
-          .limit(10) // 페이지당 아이템 수 설정
+          .orderBy('cReviews.likeCount', 'DESC')
+          .limit(10)
           .getRawMany();
 
         await this.redisService.cacheData('top10Reviews', reviews, 3 * 3600);
