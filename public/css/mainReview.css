@@ -41,11 +41,18 @@
   display: flex;
 }
 
+.webContent-info-con {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 100px;
+}
+
 .webContent-info-container {
   display: flex;
   flex-direction: column;
   margin: 10px;
   width: 468px;
+  /* white-space: nowrap; */
   padding-left: 10px;
 }
 
