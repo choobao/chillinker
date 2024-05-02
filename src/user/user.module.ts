@@ -6,6 +6,9 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { StorageService } from '../storage/storage.service';
+import { UserGuard } from '../auth/user.guard';
+import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
+import { UserAdultVerifyRequest } from './entities/user.adult-verify.entity';
 
 @Module({
   imports: [
@@ -16,9 +19,9 @@ import { StorageService } from '../storage/storage.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Users]),
+    TypeOrmModule.forFeature([Users, UserAdultVerifyRequest]),
   ],
-  providers: [UserService, StorageService],
+  providers: [UserService, StorageService, UserGuard],
   controllers: [UserController],
   exports: [UserService],
 })

@@ -18,6 +18,8 @@ import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { StorageService } from '../storage/storage.service';
+import { AdultVerifyDto } from './dto/adult-verify.dto';
+import { UserAdultVerifyRequest } from './entities/user.adult-verify.entity';
 
 @Injectable()
 export class UserService {
@@ -28,6 +30,8 @@ export class UserService {
     private readonly configService: ConfigService,
     private dataSource: DataSource,
     private readonly storageService: StorageService,
+    @InjectRepository(UserAdultVerifyRequest)
+    private userAdultVerifyRepository: Repository<UserAdultVerifyRequest>,
   ) {}
 
   async register(file: Express.Multer.File, createUserDto: CreateUserDto) {
@@ -44,7 +48,6 @@ export class UserService {
 
     let profileImage = null;
     if (file) {
-      //이미지 업로드
       profileImage = await this.storageService.upload(file);
     }
 
@@ -115,7 +118,7 @@ export class UserService {
     id: number,
     updateUserDto: UpdateUserDto,
   ) {
-    const { nickname, intro, password, birthDate } = updateUserDto;
+    const { nickname, intro, birthDate } = updateUserDto;
 
     if (!nickname && !intro) {
       throw new BadRequestException('수정할 것을 입력해주세요.');
@@ -123,16 +126,11 @@ export class UserService {
 
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['profileImage', 'password', 'birthDate'],
+      select: ['profileImage', 'birthDate'],
     });
-
-    if (!(await compare(password, user.password))) {
-      throw new UnauthorizedException('비밀번호를 확인해주세요.');
-    }
 
     let profileImage = user.profileImage;
     if (file) {
-      //이미지 업로드
       profileImage = await this.storageService.upload(file);
       if (user.profileImage) {
         await this.storageService.delete(user.profileImage);
@@ -184,5 +182,32 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
+  }
+
+  async sendAdultVerifyRequest(
+    userId: number,
+    file: Express.Multer.File,
+    adultVerifyDto: AdultVerifyDto,
+  ) {
+    try {
+      if (_.isNil(file)) {
+        throw new BadRequestException('사진을 첨부해주세요.');
+      }
+      const existingVerifyRequest =
+        await this.userAdultVerifyRepository.findOneBy({ userId });
+      if (!_.isNil(existingVerifyRequest)) {
+        throw new ConflictException('이미 성인인증을 요청하셨습니다.');
+      }
+
+      const { birthDate } = adultVerifyDto;
+      const registrationCardImage = await this.storageService.upload(file);
+      await this.userAdultVerifyRepository.save({
+        userId,
+        registrationCardImage,
+        birthDate,
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 }

@@ -9,19 +9,18 @@ import { CollectionBookmark } from './entities/collection-bookmark.entity';
 import { CollectionBookmarkService } from './collection-bookmark.service';
 import { CollectionBookmarkController } from './collection-bookmark.controller';
 
-// import { CollectionBookmarkUser } from './entities/collection-bookmark-user.entity';
-
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ContentCollection } from './entities/content-collections.entity';
 import { StorageService } from '../storage/storage.service';
 import { Users } from '../user/entities/user.entity';
+import { RedisService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Collections,
       CollectionBookmark,
-      // CollectionBookmarkUser,
+
       ContentCollection,
       WebContents,
       StorageService,
@@ -29,7 +28,12 @@ import { Users } from '../user/entities/user.entity';
     ]),
   ],
   exports: [CollectionService, CollectionBookmarkService],
-  providers: [CollectionService, CollectionBookmarkService, StorageService],
+  providers: [
+    CollectionService,
+    CollectionBookmarkService,
+    StorageService,
+    RedisService,
+  ],
   controllers: [CollectionController, CollectionBookmarkController],
 })
 export class CollectionModule {}

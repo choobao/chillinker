@@ -6,6 +6,7 @@
     <title>Chillinker following list</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/following.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
     <link
       rel="icon"
       type="image/png"
@@ -37,8 +38,8 @@
             <ul class="following_list">
               <% followingList.forEach(function(following,index) { %>
                 <li>
-                    <a class="profile_link" href="#">
-                      <span class="followId" id="followId-<%= index %>" style="display:none;"><%= following.followings_id.id %></span>
+                    <a class="profile_link" href='/users/<%= following.followings_id %>'>
+                      <span class="followId" id="followId-<%= index %>" style="display:none;"><%= following.followings_id %></span>
                       <% if (following.followings_profile_image) { %>
                         <img src="<%= following.followings_profile_image %>" alt="profile image">
                     <% } else { %>
@@ -49,9 +50,9 @@
                     </a>
                     <button class="unfollowing_btn" id="<%= following.followings_id %>-<%= index %>" data-is-following="<%= following.followings %>">
                       <% if (following.isFollowing) { %>
-                          언팔로우
+                          언팔로잉
                       <% } else { %>
-                          팔로잉
+                          언팔로잉
                       <% } %>
                   </button>
                 </li>

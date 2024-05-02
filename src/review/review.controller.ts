@@ -28,7 +28,6 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('REVIEW')
-@UseInterceptors(ErrorInterceptor)
 @Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
@@ -45,6 +44,7 @@ export class ReviewController {
     @Query('option') option?: string,
   ) {
     const user = req.user;
+    console.log('유저: ', user);
     const result = await this.reviewService.getCReviews(
       webContentsId,
       req.user,
@@ -53,14 +53,23 @@ export class ReviewController {
       option,
     );
 
-    const { content, reviewList, totalPages } = result;
+    const { content, reviewList, totalPages, myReview } = result;
 
-    return { content, reviewList, totalPages, page, order, option, user };
+    return {
+      content,
+      reviewList,
+      totalPages,
+      page,
+      order,
+      option,
+      user,
+      myReview,
+    };
   }
 
   @ApiOperation({ summary: '리뷰 좋아요/좋아요 취소' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('books/:webContentsId/:reviewId/likes')
+  @Post('/reviews/:reviewId/likes')
   async likeReview(
     @UserInfo() user: Users,
     @Param('reviewId', ParseIntPipe) reviewId: number,
@@ -68,19 +77,6 @@ export class ReviewController {
     console.log('df');
     return await this.reviewService.likeReview(user, reviewId);
   }
-
-  // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  // @Render('reviewed_list.ejs')
-  // @Get('reviewedTitles/:userId')
-  // async getTitlesWithReviews(@Param('userId') userId: number) {
-  //   const reviews = await this.reviewService.getTitlesWithReviews(userId);
-
-  //   const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
-  //     return new ReviewSummaryDto(review.image, review.title, review.rate);
-  //   });
-
-  //   return { reviewedWorks: reviewSummaries };
-  // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
   @UseGuards(AuthGuard('jwt'))
@@ -144,5 +140,30 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
     await this.reviewService.deleteReview(user, webContentsId, reviewId);
+  }
+
+  @UseGuards(OptionalAuthGuard)
+  @Render('reviewTop')
+  @Get('rank/reviews')
+  async getTopReviews(
+    @Req() req,
+    @Query('page') page?: string,
+    @Query('order') order?: string,
+  ) {
+    const topReviews = await this.reviewService.getTopReviews(
+      req.user,
+      +page,
+      order,
+    );
+
+    const { reviews, totalPages } = topReviews;
+
+    return {
+      reviews,
+      totalPages,
+      page,
+      order,
+      userInfo: this.reviewService.isAdult(req.user),
+    };
   }
 }

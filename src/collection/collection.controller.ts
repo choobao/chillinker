@@ -8,7 +8,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Render,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,13 +23,30 @@ import { UserInfo } from '../utils/userinfo.decorator';
 import { Users } from '../user/entities/user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-
-// import { Collections } from './entities/collections.entity';
+import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
 @ApiTags('COLLECTION')
 @Controller('collections')
 export class CollectionController {
   constructor(private readonly collectionService: CollectionService) {}
+
+  @ApiOperation({ summary: '인기 컬렉션 조회' })
+  @Get('/popular')
+  @Render('collectionTop')
+  async showPopularCollections(
+    @Query('page') page?: number,
+    @Query('order') order?: string,
+  ) {
+    const { collections, totalPages } =
+      await this.collectionService.getPopularCollections(page, order);
+
+    return {
+      collections,
+      totalPages,
+      order,
+      page,
+    };
+  }
 
   @ApiOperation({ summary: '내 컬렉션 목록 조회' })
   @UseGuards(AuthGuard('jwt'))
@@ -50,12 +69,12 @@ export class CollectionController {
     return myCol;
   }
 
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({ summary: '컬렉션 상세 조회' })
   @Get('/info/:collectionId')
   @Render('collection/collection_detail')
-  async myCollection(@Param('collectionId') collectionId: number) {
-    const collection = await this.collectionService.getMyCol(collectionId);
-    return { collection };
+  async myCollection(@Param('collectionId') collectionId: number, @Req() req) {
+    return await this.collectionService.getMyColBlind(collectionId, req.user);
   }
 
   @ApiOperation({ summary: '컬렉션 컨텐츠 삭제' })
@@ -91,7 +110,6 @@ export class CollectionController {
     @Body() createColDto: CreateColDto,
     @UserInfo() user: Users,
   ) {
-    // return await this.collectionService.createCol(file, createColDto, user.id);
     const createdCollection = await this.collectionService.createCol(
       file,
       createColDto,
@@ -158,7 +176,8 @@ export class CollectionController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/title/:userId')
-  async getMyColsTitle(@Param('userId') userId: number) {
+  async getMyColsTitle(@UserInfo() user: Users) {
+    const userId = user.id;
     return await this.collectionService.getMyColsTitle(userId);
   }
 }

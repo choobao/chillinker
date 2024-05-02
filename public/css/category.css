@@ -1,0 +1,52 @@
+.rui_tab_and_order {
+  margin-top: 20px;
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+}
+
+.rui_tab_and_order > ul > li {
+  width: 43px;
+  margin: 5px;
+  text-align: center;
+}
+
+.rui_order {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 2px solid #d1d5d9;
+  cursor: default;
+}
+
+.rui_tab {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 2px solid #d1d5d9;
+  cursor: default;
+}
+
+.selected {
+  background-color: #6a5acd;
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* 페이지네이션 */
+.pagination {
+  width: max-content;
+  margin: 0 auto 10px auto;
+}
+
+.page-item {
+  margin: 5px;
+  padding: 5px;
+}
+
+.page-item.active {
+  text-decoration: underline;
+  font-weight: bold;
+}

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adult Verify Request List</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+     
+        <main>
+            <div class="inner">
+              <h3 class="top-title">성인인증 요청 리스트</h3>
+              <table class="contents_container">
+                <thead>
+                  <tr>
+                    <th>주민등록증 사진</th>
+                    <th>생년월일</th>
+                    <th>유저 아이디</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (requests.length > 0) { %>
+                    <% requests.forEach(request => { %>
+                      <tr>
+                        <td><img src="<%= request.registrationCardImage %>" alt="주민등록증 사진"></td>
+                        <td><%= request.birthDate %></td>
+                        <td><%= request.userId %></td>
+                        <td><button onclick="accept('<%= request.id %>')">수락</button></td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="4" class="empty_contents">요청이 존재하지 않습니다.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </main>
+            
+    </div>
+    <script>
+        function accept(id) {
+            $.ajax({
+                type: 'POST',
+                url: `/admin/accept/${id}`,
+                success: function (data) {
+                    alert(data.message);
+                    location.reload(true);
+                },
+                error: function (response) {           
+                    alert(response.responseJSON.message);
+                },
+            });
+        }
+    </script>
+  </body>
+</html>

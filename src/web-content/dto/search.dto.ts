@@ -7,12 +7,4 @@ export class SearchDto {
   })
   @Length(1, 50)
   keyword: string;
-
-  //   @IsInt()
-  //   @Min(0)
-  //   offset: number;
-
-  //   @IsInt()
-  //   @Max(100)
-  //   limit: number;
 }

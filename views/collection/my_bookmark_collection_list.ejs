@@ -4,6 +4,7 @@
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/collection.css">
+    <link rel="stylesheet" href="/css/frame.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -41,7 +42,9 @@
               onerror="this.src='/logo_image/chillinker_logo(2).png'"
               />
             </a>
-            <div class="contents_number">작품수: <%= item.contentCollections.length || 0 %></div>
+            <div class="contents_number">
+              <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
+              작품수: <%= item.contentCollections.length || 0 %></div>
           </div>
           <div class="collection_info">
             <ul>
@@ -76,7 +79,7 @@
           type: 'DELETE',
           success: function () {
             alert('북마크가 삭제되었습니다.');
-            window.location.href = '/bookmark'; // 이전 페이지(컬렉션)로 리다이렉트
+            window.location.href = '/bookmark'; 
           },
           error: function (response) {
             alert(response.responseJSON.message);

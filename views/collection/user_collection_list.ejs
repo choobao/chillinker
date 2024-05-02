@@ -4,6 +4,7 @@
     <title>Chillinker</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/collection.css">
+    <link rel="stylesheet" href="/css/frame.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -43,6 +44,8 @@
                 />
               </a>
               <div class="contents_number">
+                <h4 class="contents_viewCount">👀 <%= item.viewCount %></h4>
+
                 작품수: <%= item.webContentNumber || 0%>
               </div>
             </div>
@@ -80,7 +83,7 @@
           type: 'POST',
           success: function () {
             alert('북마크가 추가되었습니다.');
-            window.location.href = `/collections/${collection_userId}`; // 이전 페이지(컬렉션)로 리다이렉트
+            window.location.href = `/collections/${collection_userId}`; 
           },
           error: function (response) {
             alert(response.responseJSON.message);

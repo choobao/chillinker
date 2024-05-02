@@ -30,15 +30,15 @@ export class Collections {
   @Column({ type: 'int', default: 0 })
   bookmarkCount: number;
 
+  @Column({ type: 'int', default: 0 })
+  viewCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @Column({ type: 'int', nullable: false })
   userId: number;
 
-  // 관계 설정
-
-  // 컬렉션 - 컬렉션 북마크
   @OneToMany(
     () => CollectionBookmark,
     (collectionBookmark) => collectionBookmark.collection,
@@ -46,12 +46,10 @@ export class Collections {
   )
   collectionBookmarks: CollectionBookmark[];
 
-  // 컬렉션 - 유저
   @ManyToOne(() => Users, (user) => user.collections)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: Users;
 
-  //컬렉션 - 웹컨텐츠
   @OneToMany(
     () => ContentCollection,
     (contentCollection) => contentCollection.collection,

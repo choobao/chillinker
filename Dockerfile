@@ -10,10 +10,11 @@ RUN npm i
 
 COPY . .
 
-#RUN npm run build  
+# RUN npm run build  
+# FROM node:21-alpine
 CMD [ "npm", "start" ]
 EXPOSE 3000
-# FROM node:21-alpine
+
 
 # WORKDIR /var/app
 

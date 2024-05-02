@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chillinker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
+    <link rel="stylesheet" href="/css/category.css"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
+    </style>
+    <script
+      src="https://kit.fontawesome.com/0b832ce4c1.js"
+      crossorigin="anonymous"
+    >
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16×16"
+      href="/logo_image/favicon-16x16.png"
+    />
+  </head>
+  <body>
+    <nav class="main-nav">
+      <ul>
+        <li class="category-nav"><a href="/category?query=로맨스">로맨스</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=로판">로판</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=판타지">판타지</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=현판">현판</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=무협">무협</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=BL/GL">BL/GL</a></li>
+        <span>|</span>
+        <li class="category-nav"><a href="/category?query=일반">일반</a></li>
+      </ul>
+    </nav>
+    <%- include('header.ejs') %>
+    <div class="wrap">
+      
+  
+      </div>
+    <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
+      <div class="rui_tab_and_order">
+        <ul class="rui_tab" id="category_type_tab">
+          <li class="tab_list">
+            <a href="/category?query=<%-query%>&type=webnovel" class="js_select_tab_option active webnovel">
+              웹소설</a>
+          </li>
+          <li class="tab_list">
+            <a href="/category?query=<%-query%>&type=webtoon" class="js_select_tab_option" data-filter="all">
+              웹툰</a>
+          </li>
+        </ul>
+        <ul class="rui_order">
+          <li class="order_list">
+            <a href="/category?query=<%-query%>&type=<%-type%>&orderBy=recent" class="js_select_tab_option active" data-order="recent">최신순</a>
+          </li>
+          <li class="order_list">
+            <a href="/category?query=<%-query%>&type=<%-type%>&orderBy=star" class="js_select_tab_option starOrder" data-order="star">평점순</a>
+          </li>
+        </ul>
+      </div>
+      <div class="result_section">
+          <ul class="result_section_list">
+            <% if(content.length === 0) { %>
+              <div class="total-contents-number">총 <strong>0</strong> 작품</div>
+              <div class="no-result">아직 카테고리의 작품이 없습니다</div>
+            <% } else { %>
+              <div class="total-contents-number">총 <strong><%= totalCount || 0%></strong> 작품</div>
+              <div class="result_list">
+                <% content.forEach((item) => { %>
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a title = <%= item.title %> href = "javascript:void(0);">
+                      <div class="searched-card-image">
+                        <img class="searched-card-thumbnail" src="<%= item.image %>"  />
+                      </div>
+                      <div class="searched-card-info">
+                        <div class="card-info-title">
+                          <% if (item.title.length > 14) { %>
+                            <%= item.title.slice(0, 14) + '...' %>
+                          <% } else { %>
+                            <%= item.title %>
+                          <% } %>
+                        </div>
+                        <div class="card-info-card_author">
+                          <% const arr = item.author.split(',') %>
+                          <% let role = arr[0].split('/')[0] %>
+                          <% const name = arr[0].split('/')[1] %>
+                          <% if(role == 'author' ){ %>
+                            <% role = '글' %>
+                            <% }else if(role =='illustrator'){ %>
+                              <% role = '그림' %>
+                              <% }else if(role =='original_author'){ %>
+                                <% role = '원작' %>
+                                <% }else if(role =='Author'){ %>
+                                  <% role = '글/그림' %>
+                                  <% }else{ %>
+                                    <% role = '작가' %>
+                                    <% }%>
+                          <%= %>
+                          <span class="metadata-item- author-item-wrapper">
+                            <span class="author-detail"><%= name %></span> <%= role %>
+                           </span>
+                        </div>
+                        <div class="card-info-star">별점:<%= item.starRate %></div>
+                      </div>
+                    </a>
+                  </li>
+                <% }); %>
+              <% } %>
+              </div>
+          </ul>
+        </div>
+        <nav aria-label="Page navigation example" class="pagination-wrapper">
+          <ul class="pagination">
+            <% 
+            let limit = 5; // 한 번에 보여줄 페이지 수
+            let start = Math.floor((page - 1) / limit) * limit + 1;
+            let end = start + limit - 1;
+            end = end > maxPage ? maxPage : end;
+            %>
+            <!-- "처음" 버튼 -->
+            <% if(page > 5) { %>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=1">‹‹</a></li>
+            <% } %>
+            <% if(start > 1) { %>
+              <!-- "이전" 버튼 -->
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= start - 1 %>">‹</a></li>
+            <% } %>
+            <% for(let i = start; i <= end; i++) { %>
+              <li class="page-item <%= i === page ? 'active' : '' %>">
+                <a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+            <% if(end < maxPage) { %>
+              <!-- "다음" 버튼 -->
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= end + 1 %>">›</a></li>
+            <% } %>
+            <!-- "마지막" 버튼 -->
+            <% if(end < maxPage) { %>
+              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= maxPage %>">››</a></li>
+            <% } %>
+          </ul>
+        </nav>
+    </main>
+    <footer>
+      <ul>
+        <li>
+          <a href="https://github.com/choobao/chillinker">
+            <i class="fa fa-github" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+      <p>Copyright © 2024 회빙환. All rights reserved.</p>
+    </footer>
+    </div>
+    <button class="top_btn" id="top-btn">↑</button>
+    <script src="/js/adult_blind.js"></script>
+    <script>
+     window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('query');
+        const type = urlParams.get('type');
+        const orderBy = urlParams.get('orderBy'); 
+        // const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+
+        if (query) {
+            let selectedBtn = document.querySelector(`.category-nav a[href*="query=${query}"]`)?.parentElement;
+
+            if (selectedBtn) { 
+                selectedBtn.classList.add('selected-nav');
+            }
+        }
+
+        if (type) {
+          const selectedBtn = document.querySelector(`.tab_list a[href*="type=${type}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const webNovelBtn = document.querySelector('.webnovel').parentElement;
+          webNovelBtn.classList.add('selected');
+        }
+
+        if(orderBy) {
+          const selectedBtn = document.querySelector(`.order_list a[href*="orderBy=${orderBy}"]`).parentElement; 
+          selectedBtn.classList.add('selected');
+        }else {
+          const starContentBtn = document.querySelector('.starOrder').parentElement;
+          starContentBtn.classList.add('selected');
+        }
+    }
+
+      $(document).ready(function () {
+        $(window).scroll(function () {
+          if ($(this).scrollTop() > 100) {
+            $('#top-btn').fadeIn();
+          } else {
+            $('#top-btn').fadeOut();
+          }
+        });
+
+        $('#top-btn').click(function () {
+          $('html, body').animate({ scrollTop: 0 }, 800);
+          return false;
+        });
+      });
+    </script>
+  </body>
+</html>

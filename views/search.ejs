@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chillinker</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="/css/frame.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Sriracha&display=swap');
     </style>
@@ -28,7 +29,9 @@
         class="search_input_bar"
         style="height: 50px; background-color: #f5f5fa; padding: 15px"
       >
+      <div class="search-wrapper" style="width: 1200px;  margin: auto;">
         <div class="search_input_text">"<%= keyword %>"의 검색결과</div>
+      </div>
       </div>
     <main style="width: 1200px; height: auto; margin: 0px auto 0px auto">
         <div class="search_btn_bar">
@@ -48,6 +51,9 @@
             <li class="search_btn5" style="margin-right: 10px;">
               <a href="/search?type=collections&query=<%= keyword %>">컬렉션</a>
             </li>
+            <li class="search_btn6" style="margin-right: 10px;">
+              <a href="/search?type=ck&query=<%= keyword %>">키워드</a>
+            </li>
           </ul>
         </div>
         <div class="search-dk-block-title">
@@ -61,6 +67,9 @@
             <% } %>
             <% if (type == 'webtoons') { %>
               <div class="result_list">
+                <% if(webtoons.length === 0) { %>
+                  <div class="no-result">검색 결과가 없습니다</div>
+                <% } else { %>
                 <% webtoons.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href = "javascript:void(0);">
@@ -100,25 +109,29 @@
                     </a>
                   </li>
                 <% }); %>
+              <% } %>
               </div>
             <% } else if (type == 'authors') { %>
               <div class="result_list">
+                <% if(authors.length === 0) { %>
+                  <div class="no-result">검색 결과가 없습니다</div>
+                <% } else { %>
                 <% authors.forEach((item) => { %>
-                  <li class="searched-card">
-                    <a title = <%= item.title %> href="/books/<%= item.webContents_id %>">
+                  <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                    <a href="javascript:void(0);"> 
                       <div class="searched-card-image">
-                        <img class="searched-card-thumbnail" src="<%= item.webContents_image %>" alt="<%= item.webContents_title %>"/>
+                        <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
                       </div>
                       <div class="searched-card-info">
                         <div class="card-info-title">
-                          <% if (item.webContents_title.length > 14) { %>
-                            <%= item.webContents_title.slice(0, 14) + '...' %>
+                          <% if (item.title.length > 14) { %>
+                            <%= item.title.slice(0, 14) + '...' %>
                           <% } else { %>
-                            <%= item.webContents_title %>
+                            <%= item.title %>
                           <% } %>
                         </div>
                         <div class="card-info-card_author">
-                            <% const arr = item.webContents_author.split(',') %>
+                            <% const arr = item.author.split(',') %>
                             <% let role = arr[0].split('/')[0] %>
                             <% const name = arr[0].split('/')[1] %>
                             <% if(role == 'author' ){ %>
@@ -142,9 +155,13 @@
                     </a>
                   </li>
                   <% }); %>
+                  <% } %>
                 </div>
               <% } else if (type == 'users') { %> 
-                <ul class="result_list" >
+                <ul class="result_list">
+                  <% if(users.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% users.forEach((item) => { %>
                   <li class="search-card">
                     <a href="/users/<%= item.users_id %>">
@@ -167,14 +184,20 @@
                     </div>
                     </a>
                   </li>
-                  <% }); %>
+                  <% });  %>
+                  <% } %>
                 </ul>
               <% } else if (type == 'collections') { %>
-                <div class="result_list" >
+                <div class="result_list">
+                  <% if(collections.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% collections.forEach((item) => { %>
                   <div class="search-card">
-                    <a href="#" class="card">
-                    <img src=" https://img.freepik.com/free-photo/cute-dog-with-glasses-sitting-on-books_23-2148917261.jpg " alt="<%= item.title %>" class="card-thumbnail-image" >
+                    <a href="/collections/info/<%= item.collections_id %>" class="card">
+                    <img src="<%= item.collections_cover_image %>" alt="<%= item.title %>" 
+                    class="card-thumbnail-image"
+                    onerror="this.src='/images/readCollection.png'" >
                     <div class="card-info">
                       <h3 class="card-info-title" style="font-weight: 600;"><%= item.collections_title %></h3>
                       <h4 class="card_author">
@@ -188,9 +211,59 @@
                     </a>
                   </div>
                   <% }); %>
+                  <% } %>
                 </div>
+                <% } else if (type == 'ck') { %>
+                  <div class="result_list">
+                    <% if(ck.length === 0) { %>
+                      <div class="no-result">검색 결과가 없습니다</div>
+                    <% } else { %>
+                    <% ck.forEach((item) => { %>
+                      <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
+                        <a href="javascript:void(0);"> 
+                          <div class="searched-card-image">
+                            <img class="searched-card-thumbnail" src="<%= item.image %>" alt="<%= item.title %>"/>
+                          </div>
+                          <div class="searched-card-info">
+                            <div class="card-info-title">
+                              <% if (item.title.length > 14) { %>
+                                <%= item.title.slice(0, 14) + '...' %>
+                              <% } else { %>
+                                <%= item.title %>
+                              <% } %>
+                            </div>
+                            <div class="card-info-card_author">
+                                <% const arr = item.author.split(',') %>
+                                <% let role = arr[0].split('/')[0] %>
+                                <% const name = arr[0].split('/')[1] %>
+                                <% if(role == 'author' ){ %>
+                                  <% role = '글' %>
+                                  <% }else if(role =='illustrator'){ %>
+                                    <% role = '그림' %>
+                                    <% }else if(role =='original_author'){ %>
+                                      <% role = '원작' %>
+                                      <% }else if(role =='Author'){ %>
+                                        <% role = '글/그림' %>
+                                        <% }else{ %>
+                                          <% role = '작가' %>
+                                          <% }%>
+                                <%= %>
+                                <span class="metadata-item- author-item-wrapper">
+                                  <span class="author-detail"><%= name %></span> <%= role %>
+                                 </span>
+                            </div>
+                            <div class="card-info-star">별점:<%= item.starRate %></div>
+                          </div>
+                        </a>
+                      </li>
+                      <% }); %>
+                      <% } %>
+                    </div>
               <% } else { %>
                 <div class="result_list">
+                  <% if(webnovels.length === 0) { %>
+                    <div class="no-result">검색 결과가 없습니다</div>
+                  <% } else { %>
                   <% webnovels.forEach((item) => { %>
                   <li class="searched-card" onclick="gotoBookDetail('<%= item.id %>', '<%= item.isAdult %>', '<%= userInfo.isAdult %>')">
                     <a title = <%= item.title %> href="javascript:void(0);">
@@ -229,10 +302,18 @@
                     </a>
                   </li>
                   <% }); %>
+                  <% } %>
                 </div>
               <% } %>
           </ul>
         </div>
+        <nav aria-label="Page navigation example" class="paginnation-wrapper">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link-back" href="#"><</a>&nbsp;&nbsp;&nbsp;</li>
+            <span class="page-item-num"></span>
+            <li class="page-item"><a class="page-link-forward" href="#">></a>&nbsp;&nbsp;&nbsp;</li>
+          </ul>
+        </nav>
     </main>
     <footer>
       <ul>
@@ -245,6 +326,77 @@
       <p>Copyright © 2024 회빙환. All rights reserved.</p>
     </footer>
     </div>
+    <button class="top_btn" id="top-btn">↑</button>
     <script src="/js/adult_blind.js"></script>
+    <script>
+ window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+
+    if (type) {
+        const selectedBtn = document.querySelector(`.search_btn_bar a[href*="type=${type}"]`).parentElement; 
+        selectedBtn.classList.add('selected');
+        
+    } else {
+        const webnovelBtn = document.querySelector('.search_btn1 a').parentElement;
+        webnovelBtn.classList.add('selected');
+    }  
+
+    const currPage = parseInt(urlParams.get('page'), 10) || 1; 
+    const query = urlParams.get('query');
+    
+    var listItems = document.querySelectorAll('.searched-card');
+
+    if (currPage && currPage > 1) { 
+        const pageLinkBack = document.querySelector('.page-link-back');
+        if (pageLinkBack) { 
+            pageLinkBack.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage-1}`);
+        }
+    }
+
+    if (currPage && currPage < 2) { 
+        const prevPageButton = document.querySelector('.page-link-back');
+        if (prevPageButton) {
+            prevPageButton.removeAttribute('href'); 
+            prevPageButton.style.pointerEvents = 'none'; 
+            prevPageButton.style.opacity = '0.5'; 
+        }
+    }
+
+    if (currPage) { 
+        const pageLinkForward = document.querySelector('.page-link-forward'); 
+        if (pageLinkForward) { 
+            pageLinkForward.setAttribute('href', `/search?query=${query}&type=${type}&page=${currPage+1}`);
+        }
+    }
+
+    const pageItemNum = document.querySelector('.page-item-num');
+    if (pageItemNum) { 
+        pageItemNum.textContent = currPage; 
+    }
+
+   
+    const nextPageButton = document.querySelector('.page-link-forward');
+    if (listItems.length < 30 && nextPageButton) {
+        nextPageButton.removeAttribute('href'); 
+        nextPageButton.style.pointerEvents = 'none'; 
+        nextPageButton.style.opacity = '0.5'; 
+    }
+}
+      $(document).ready(function () {
+        $(window).scroll(function () {
+          if ($(this).scrollTop() > 100) {
+            $('#top-btn').fadeIn();
+          } else {
+            $('#top-btn').fadeOut();
+          }
+        });
+
+        $('#top-btn').click(function () {
+          $('html, body').animate({ scrollTop: 0 }, 800);
+          return false;
+        });
+      })
+    </script>
   </body>
 </html>

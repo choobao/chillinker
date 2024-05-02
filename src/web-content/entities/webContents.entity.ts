@@ -62,6 +62,13 @@ export class WebContents {
   likeCount: number;
 
   /**
+   * viewCount
+   * @example 0
+   */
+  @Column({ type: 'int', default: 0 })
+  viewCount: number;
+
+  /**
    * rate
    * @example 0
    */

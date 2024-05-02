@@ -13,6 +13,7 @@ import {
   Res,
   UnauthorizedException,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -29,6 +30,10 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Users } from './entities/user.entity';
 import { UserInfo } from '../utils/userinfo.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
+import { UserGuard } from '../auth/user.guard';
+import { UnauthorizedExceptionFilter } from '../unauthorized-exception/unauthorized-exception.filter';
+import { AdultVerifyDto } from './dto/adult-verify.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -36,33 +41,40 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '회원가입' })
-  @Render('register')
   @UseInterceptors(FileInterceptor('profileImage'))
   @Post('register')
   @HttpCode(201)
   async register(
     @UploadedFile() file: Express.Multer.File,
     @Body() createUserDto: CreateUserDto,
+    @Res() res,
   ) {
     const { password, confirmPassword } = createUserDto;
     if (password !== confirmPassword) {
       throw new BadRequestException('비밀번호와 비밀번호확인이 다릅니다.');
     }
 
-    return await this.userService.register(file, createUserDto);
+    await this.userService.register(file, createUserDto);
+
+    const loginDto = new LoginDto();
+    loginDto.email = createUserDto.email;
+    loginDto.password = createUserDto.password;
+
+    await this.login(loginDto, res);
+    res.render('main.ejs');
   }
 
   @Render('login')
   @Get('login')
-  showLoginPage() {}
+  async showLoginPage() {}
 
   @Render('register')
   @Get('register')
-  showRegisterPage() {}
+  async showRegisterPage() {}
 
   @Render('mypage-update')
   @Get('mypage/update')
-  showUpdatePage() {}
+  async showUpdatePage() {}
 
   @ApiOperation({ summary: '로그인' })
   @Post('login')
@@ -96,12 +108,14 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '마이페이지 조회' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(UserGuard)
   @Get('mypage')
   @Render('mypage')
+  @UseFilters(UnauthorizedExceptionFilter)
   async getMyInfo(@UserInfo() user: Users) {
-    const { id } = user;
-    return await this.userService.getUserInfoById(id);
+    const { id, isAdmin } = user;
+    const userInfo = await this.userService.getUserInfoById(id);
+    return { ...userInfo, isAdmin };
   }
 
   @ApiOperation({ summary: '회원 정보 수정' })
@@ -130,6 +144,22 @@ export class UserController {
 
     await this.userService.leave(id, deleteUserDto);
     return res.clearCookie('accessToken').clearCookie('refreshToken').end();
+  }
+
+  @ApiOperation({ summary: '성인인증 요청 보내기' })
+  @UseInterceptors(FileInterceptor('registrationCardImage'))
+  @UseGuards(AuthGuard('jwt'))
+  @Post('sendAdultVerify')
+  async sendAdultVerifyRequest(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() adultVerifyDto: AdultVerifyDto,
+    @UserInfo() user: Users,
+  ) {
+    await this.userService.sendAdultVerifyRequest(
+      user.id,
+      file,
+      adultVerifyDto,
+    );
   }
 
   @ApiOperation({ summary: '타 유저 페이지 조회' })

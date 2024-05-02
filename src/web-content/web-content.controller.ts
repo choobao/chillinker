@@ -1,12 +1,26 @@
-import { Controller, Get, Query, Render, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  ParseIntPipe,
+  Query,
+  Render,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { WebContentService } from './web-content.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { ContentType } from './webContent.type';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
+import { ReviewService } from 'src/review/review.service';
 
 @Controller()
 export class WebContentController {
-  constructor(private readonly webContentService: WebContentService) {}
+  constructor(
+    private readonly webContentService: WebContentService,
+    private readonly reviewService: ReviewService,
+  ) {}
 
   @ApiOperation({ summary: '메인' })
   @UseGuards(OptionalAuthGuard)
@@ -54,6 +68,31 @@ export class WebContentController {
       req.user,
     );
 
+    const bestlikeWebnovels = await this.webContentService.getBestLikesContents(
+      '웹소설',
+      req.user,
+    );
+    const bestlikeWebtoons = await this.webContentService.getBestLikesContents(
+      '웹툰',
+      req.user,
+    );
+    const bestReviewedWebnovels =
+      await this.webContentService.getBestReviewCountContents(
+        '웹소설',
+        req.user,
+      );
+    const bestReviewedWebtoons =
+      await this.webContentService.getBestReviewCountContents('웹툰', req.user);
+    const bestCollectionedWebnovels =
+      await this.webContentService.getBestCollectionContents(
+        '웹소설',
+        req.user,
+      );
+    const bestCollectionedWebtoons =
+      await this.webContentService.getBestCollectionContents('웹툰', req.user);
+
+    const top3Reviews = await this.reviewService.top10Reviews(req.user);
+
     return {
       naverWebtoons,
       naverWebnovels,
@@ -64,22 +103,15 @@ export class WebContentController {
       kakaoWebtoons,
       kakaoWebnovels,
       userInfo: this.webContentService.isAdult(req.user),
+      bestlikeWebnovels,
+      bestlikeWebtoons,
+      bestReviewedWebnovels,
+      bestReviewedWebtoons,
+      bestCollectionedWebnovels,
+      bestCollectionedWebtoons,
+      top3Reviews,
     };
   }
-
-  // @Get('search')
-  // @Render('search')
-  // async search(@Body() searchDto: SearchDto) {
-  //   const keyword = searchDto.keyword;
-  //   const users = await this.webContentService.searchFromUsers(keyword);
-  //   const collections =
-  //     await this.webContentService.searchFromCollections(keyword);
-  //   const { webnovels, webtoons } =
-  //     await this.webContentService.searchFromWebContents(keyword);
-  //   const authors = await this.webContentService.searchFromAuthors(keyword);
-
-  //   return { users, collections, webnovels, webtoons, authors };
-  // }
 
   @UseGuards(OptionalAuthGuard)
   @Get('search')
@@ -88,31 +120,73 @@ export class WebContentController {
     @Req() req,
     @Query('query') query: string,
     @Query('type') type: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
   ) {
-    const regex = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
-
-    const keyword = regex.test(query)
-      ? query
-      : query.replace(/[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]/g, '') || 'chillinker';
+    const take = 30;
+    const keyword = query.trim() === '' ? 'chillinker' : query.trim();
 
     const { webtoons, webnovels, userInfo } =
-      (await this.webContentService.searchFromWebContents(keyword, req.user)) ??
-      {};
+      (await this.webContentService.searchFromWebContents(
+        keyword,
+        req.user,
+        +page,
+        take,
+      )) ?? {};
 
     if (type == 'webtoons') {
       return { type, keyword, webtoons, userInfo };
     } else if (type == 'authors') {
-      const authors = await this.webContentService.searchFromAuthors(keyword);
-      return { type, keyword, authors };
+      const authors = await this.webContentService.searchFromAuthors(
+        keyword,
+        req.user,
+        +page,
+        take,
+      );
+      return { type, keyword, authors, userInfo };
     } else if (type == 'users') {
-      const users = await this.webContentService.searchFromUsers(keyword);
+      const users = await this.webContentService.searchFromUsers(
+        keyword,
+        +page,
+        take,
+      );
       return { type, keyword, users };
     } else if (type == 'collections') {
-      const collections =
-        await this.webContentService.searchFromCollections(keyword);
+      const collections = await this.webContentService.searchFromCollections(
+        keyword,
+        +page,
+        take,
+      );
       return { type, keyword, collections };
+    } else if (type == 'ck') {
+      const ck = await this.webContentService.searchFromKeywordCategory(
+        keyword,
+        req.user,
+        +page,
+        take,
+      );
+      return { type, keyword, ck, userInfo };
     } else {
       return { type, keyword, webnovels, userInfo };
     }
+  }
+
+  @UseGuards(OptionalAuthGuard)
+  @Get('/category')
+  @Render('category')
+  async getCategoryPage(
+    @Req() req,
+    @Query('query') query: string,
+    @Query('orderBy') orderBy?: string,
+    @Query('type') type?: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
+  ) {
+    const contents = await this.webContentService.getContentCategory(
+      req.user,
+      type,
+      query,
+      orderBy,
+      page,
+    );
+    return contents;
   }
 }
