@@ -118,13 +118,6 @@
               </div>
           </ul>
         </div>
-        <!-- <nav aria-label="Page navigation example" class="paginnation-wrapper">
-          <ul class="pagination">
-            <% for(let i = 1; i <= maxPage; i++) { %>
-              <li class="page-item"><a class="page-link" href="/category?query=<%-query%>&type=<%-type%>&orderBy=<%=orderBy%>&page=<%= i %>"><%= i %></a></li>
-            <% } %>
-          </ul>
-        </nav> -->
         <nav aria-label="Page navigation example" class="pagination-wrapper">
           <ul class="pagination">
             <% 
@@ -201,25 +194,9 @@
           const starContentBtn = document.querySelector('.starOrder').parentElement;
           starContentBtn.classList.add('selected');
         }
-
-        // if (currPage && currPage > 1) { 
-        //     const pageLinkBack = document.querySelector('.page-link-back');
-        //     if (pageLinkBack) { 
-        //         pageLinkBack.setAttribute('href', `/category?query=${query}&page=${currPage-1}`);
-        //     }
-        // }
-        // if (currPage) { // && currPage < maxPages
-        //     const pageLinkForward = document.querySelector('.page-link-forward'); 
-        //     if (pageLinkForward) { 
-        //         pageLinkForward.setAttribute('href', `/category?query=${query}&page=${currPage+1}`);
-        //     }
-        // }
-        
-        // document.querySelector('.page-item-num').innerHTML = `${currPage}&nbsp;`;
     }
 
       $(document).ready(function () {
-        // Top 버튼 특정 스크롤높이에서만 보이기 / 숨기기
         $(window).scroll(function () {
           if ($(this).scrollTop() > 100) {
             $('#top-btn').fadeIn();
@@ -228,7 +205,6 @@
           }
         });
 
-        // Top 버튼 클릭시 페이지 상단으로 이동
         $('#top-btn').click(function () {
           $('html, body').animate({ scrollTop: 0 }, 800);
           return false;

@@ -48,7 +48,6 @@ export class UserService {
 
     let profileImage = null;
     if (file) {
-      //이미지 업로드
       profileImage = await this.storageService.upload(file);
     }
 
@@ -132,7 +131,6 @@ export class UserService {
 
     let profileImage = user.profileImage;
     if (file) {
-      //이미지 업로드
       profileImage = await this.storageService.upload(file);
       if (user.profileImage) {
         await this.storageService.delete(user.profileImage);

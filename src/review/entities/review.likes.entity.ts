@@ -21,7 +21,6 @@ export class ReviewLikes {
   @CreateDateColumn()
   createdAt: Date;
 
-  //**Users와 Review_likes는 1:N
   @ManyToOne(() => Users, (users) => users.reviewLikes)
   @JoinColumn({ name: 'user_id' })
   users: Users;
@@ -29,7 +28,6 @@ export class ReviewLikes {
   @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 
-  // **C_reviews와 Review_likes는 1:N
   @ManyToOne(() => CReviews, (cReviews) => cReviews.reviewLike, {
     onDelete: 'CASCADE',
   })

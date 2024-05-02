@@ -41,13 +41,11 @@ export class LikeService {
       const existingContent = await this.findContent(userId, contentId);
 
       if (_.isNil(existingContent)) {
-        // 추가
         await this.likesRepository.save({
           userId,
           webContentId: contentId,
         });
 
-        // 카운트 증가
         await this.webContentRepository.increment(
           { id: contentId },
           'likeCount',
@@ -56,10 +54,8 @@ export class LikeService {
 
         return { message: '성공적으로 추가되었습니다.' };
       } else {
-        // 삭제
         await this.likesRepository.delete(existingContent.id);
 
-        // 카운트 감소
         await this.webContentRepository.decrement(
           { id: contentId },
           'likeCount',

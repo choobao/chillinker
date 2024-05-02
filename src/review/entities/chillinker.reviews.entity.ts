@@ -37,7 +37,6 @@ export class CReviews {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // **Users와 CReviews는 1:N
   @ManyToOne(() => Users, (users) => users.cReviews)
   @JoinColumn({ name: 'user_id' })
   users: Users;
@@ -45,7 +44,6 @@ export class CReviews {
   @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 
-  //**WebContents와 CReviews는 1:N
   @ManyToOne(() => WebContents, (webContent) => webContent.cReviews, {
     onDelete: 'CASCADE',
   })
@@ -54,7 +52,6 @@ export class CReviews {
   @Column('int', { name: 'web_content_id', nullable: false })
   webContentId: number;
 
-  //**CReviews와 ReviewLikes는 N:1
   @OneToMany(() => ReviewLikes, (reviewLikes) => reviewLikes.cReviews)
   reviewLike: ReviewLikes[];
 }

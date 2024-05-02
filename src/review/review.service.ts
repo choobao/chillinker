@@ -16,7 +16,6 @@ import { CReviews } from './entities/chillinker.reviews.entity';
 import { PReviews } from './entities/platform.reviews.entity';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { ReviewSummaryDto } from './dto/review.summary.dto';
-import { SseService } from 'src/sse/sse.service';
 import _ from 'lodash';
 import { WebContentService } from '../web-content/web-content.service';
 import { RedisService } from '../redis/redis.service';
@@ -93,10 +92,10 @@ export class ReviewService {
 
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
-          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
-          .select(['review', 'user.nickname', 'user.profileImage', 'user.id']) // "review"와 "user.nickname" 선택
-          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
-          .orderBy('review.createdAt', 'DESC') // 정렬 조건
+          .leftJoinAndSelect('review.users', 'user')
+          .select(['review', 'user.nickname', 'user.profileImage', 'user.id'])
+          .where('review.webContentId = :webContentId', { webContentId })
+          .orderBy('review.createdAt', 'DESC')
           .take(take)
           .skip((page - 1) * take)
           .getMany();
@@ -114,10 +113,10 @@ export class ReviewService {
 
         const reviewList = await this.chillinkerReviewsRepository
           .createQueryBuilder('review')
-          .leftJoinAndSelect('review.users', 'user') // "users"와의 관계를 기반으로 조인
+          .leftJoinAndSelect('review.users', 'user')
           .select(['review', 'user.nickname', 'user.profileImage', 'user.id'])
-          .where('review.webContentId = :webContentId', { webContentId }) // 조건 지정
-          .orderBy('review.likeCount', 'DESC') // 정렬 조건
+          .where('review.webContentId = :webContentId', { webContentId })
+          .orderBy('review.likeCount', 'DESC')
           .take(take)
           .skip((page - 1) * take)
           .getMany();
@@ -162,30 +161,7 @@ export class ReviewService {
     }
   }
 
-  // async getTitlesWithReviews(userId: number) {
-  //   const reviews = await this.webContentRepository
-  //     .createQueryBuilder('webContent')
-  //     .leftJoinAndSelect('webContent.cReviews', 'review')
-  //     .select(['webContent.image', 'webContent.title', 'review.rate'])
-  //     .where('review.userId = :userId', { userId })
-  //     .getRawMany();
-
-  //   const reviewSummaries = reviews.map((review) => ({
-  //     image: review.webContent_image,
-  //     title: review.webContent_title,
-  //     rate: review.review_rate,
-  //   }));
-
-  //   return reviewSummaries;
-  // }
-
-  // async getAllReviewedWorks(userId: number): Promise<CReviews[]> {
-  //   // Assuming you have a method to retrieve all reviewed works
-  //   return await this.chillinkerReviewsRepository.find({ where: { userId } });
-  // }
-
   async getTitlesWithReviews(userId: number): Promise<ReviewSummaryDto[]> {
-    // Fetch reviews along with necessary data (thumbnail, title, rate)
     const reviews = await this.chillinkerReviewsRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.webContent', 'webContent')
@@ -198,7 +174,6 @@ export class ReviewService {
       .where('review.userId = :userId', { userId })
       .getRawMany();
 
-    // Map the retrieved data to objects containing thumbnail, title, and rate
     const reviewSummaries = reviews.map((review) => ({
       image: review.webContent_image,
       title: review.webContent_title,
@@ -210,7 +185,6 @@ export class ReviewService {
   }
 
   async getAllReviewedWorks(userId: number): Promise<CReviews[]> {
-    // Assuming you have a method to retrieve all reviewed works
     return await this.chillinkerReviewsRepository.find({ where: { userId } });
   }
 
@@ -260,8 +234,6 @@ export class ReviewService {
       isSpoiler,
     });
 
-    //가져온 평점
-
     return createReview;
   }
 
@@ -298,7 +270,6 @@ export class ReviewService {
       { starRate: formattedScore },
     );
 
-    //수정정보 업데이트
     const modifyReivew = await this.chillinkerReviewsRepository.update(
       { id: reviewId },
       modifyCReivewDto,
@@ -390,31 +361,6 @@ export class ReviewService {
       }
       await this.chillinkerReviewsRepository.save(findReview);
 
-      // //테스트용
-      // this.sseEvent(
-      //   findReview.webContentId,
-      //   findReview.userId,
-      //   findReview.likeCount,
-      // );
-
-      // if (findReview.likeCount <= 100) {
-      //   if (findReview.likeCount % 20 == 0) {
-      //     this.sseEvent(
-      //       findReview.webContentId,
-      //       findReview.userId,
-      //       findReview.likeCount,
-      //     );
-      //   }
-      // } else {
-      //   if (findReview.likeCount % 50 == 0) {
-      //     this.sseEvent(
-      //       findReview.webContentId,
-      //       findReview.userId,
-      //       findReview.likeCount,
-      //     );
-      //   }
-      // }
-
       await queryRunner.commitTransaction();
 
       return like
@@ -429,17 +375,6 @@ export class ReviewService {
     }
   }
 
-  // async sseEvent(webContentId: number, userId: number, likeCount: number) {
-  //   const webContent = await this.webContentRepository.findOne({
-  //     where: { id: webContentId },
-  //   });
-  //   this.sseService.emitReviewLikeCountEvent(
-  //     webContent.title,
-  //     userId,
-  //     likeCount,
-  //   );
-  // }
-
   async getTopReviews(
     user: Users | boolean | null,
     page?: number,
@@ -450,9 +385,7 @@ export class ReviewService {
     page = page ? page : 1;
 
     let skip = (page - 1) * perPage;
-    // skip = isNaN(skip) ? 0 : skip;
 
-    //오늘 날짜와 이전 날짜 계산
     var today = new Date();
     var threeDaysAgo = new Date(today);
     threeDaysAgo.setDate(today.getDate() - 3);
@@ -461,8 +394,8 @@ export class ReviewService {
       .createQueryBuilder('reviewLikes')
       .select('reviewLikes.cReviewId')
       .innerJoin('reviewLikes.cReviews', 'cReviews')
-      .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
-      .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+      .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo })
+      .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false })
       .getRawMany();
 
     const uniqueReviewsCount = new Set(
@@ -472,9 +405,6 @@ export class ReviewService {
     console.log(uniqueReviewsCount);
     const totalPages = Math.ceil(uniqueReviewsCount / perPage);
 
-    //리뷰라잌스 테이블에서 최신(createdAt 3일이내) 최대 100개 뽑아옴
-
-    //성인작품 가져올까말까 고민..
     if (order === 'recent') {
       const reviews = await this.reviewLikesRepository
         .createQueryBuilder('reviewLikes')
@@ -487,12 +417,12 @@ export class ReviewService {
         .innerJoin('reviewLikes.cReviews', 'cReviews')
         .innerJoin('cReviews.users', 'users')
         .innerJoin('cReviews.webContent', 'webContents')
-        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
-        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo })
+        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false })
         .groupBy('reviewLikes.cReviewId')
         .orderBy('cReviews.createdAt', 'DESC')
-        .offset(skip) // 페이지에 따라 스킵하는 수 계산
-        .limit(perPage) // 페이지당 아이템 수 설정
+        .offset(skip)
+        .limit(perPage)
         .getRawMany();
 
       return { reviews: this.blindAdultImage(user, reviews), totalPages };
@@ -508,12 +438,12 @@ export class ReviewService {
         .innerJoin('reviewLikes.cReviews', 'cReviews')
         .innerJoin('cReviews.users', 'users')
         .innerJoin('cReviews.webContent', 'webContents')
-        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo }) // createdAt이 오늘로부터 3일 이후인 경우
-        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false }) // isSpoiler가 false인 경우만 포함
+        .where('reviewLikes.createdAt >= :threeDaysAgo', { threeDaysAgo })
+        .andWhere('cReviews.isSpoiler = :isSpoiler', { isSpoiler: false })
         .groupBy('reviewLikes.cReviewId')
         .orderBy('cReviews.likeCount', 'DESC')
-        .offset(skip) // 페이지에 따라 스킵하는 수 계산
-        .limit(perPage) // 페이지당 아이템 수 설정
+        .offset(skip)
+        .limit(perPage)
         .getRawMany();
 
       console.log(reviews.length);

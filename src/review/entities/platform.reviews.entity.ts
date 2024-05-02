@@ -31,7 +31,6 @@ export class PReviews {
   @Column({ type: 'datetime' })
   createDate: Date;
 
-  //**WebContents와 p_reviews는 1:N
   @ManyToOne(() => WebContents, (webContent) => webContent.pReviews, {
     onDelete: 'CASCADE',
   })

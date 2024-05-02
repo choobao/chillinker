@@ -42,7 +42,6 @@
                 <option value="OLD">발매 내림차순</option>
             </select>
             <script>
-              // Define orderType object with sorting types
               const orderType = {
                   ADD_DT: 'ADD_DT',
                   ADD_DT_DESC: 'ADD_DT_DESC',
@@ -53,17 +52,15 @@
               function updateOrderType(selectElement) {
                   console.log("updateOrderType function called");
           
-                  // 선택한 옵션의 값
                   const selectedValue = selectElement.value;
                   
-                  // 선택한 값에 해당하는 orderType 가져오기
+
                   const orderTypeInfo = getOrderTypeInfo(selectedValue);
-          
-                  // orderTypeInfo를 사용하여 필요한 작업 수행
+  
                   console.log(orderTypeInfo);
               }
           
-              // 선택한 값에 따라 적절한 orderType 반환
+
               function getOrderTypeInfo(selectedValue) {
                   switch(selectedValue) {
                       case 'ADD_DT':

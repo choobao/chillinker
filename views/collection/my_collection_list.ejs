@@ -139,7 +139,7 @@
   <script>
     function deleteContent (collectionId, webContentId) {
     $.ajax({
-      url: `/collections/${collectionId}/content/${webContentId}`, // 데이터를 전송할 서버의 URL
+      url: `/collections/${collectionId}/content/${webContentId}`,  
       type: 'DELETE',
       success: function (data) {
         alert('삭제되었습니다');

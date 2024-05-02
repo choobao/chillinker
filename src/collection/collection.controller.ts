@@ -25,8 +25,6 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 
-// import { Collections } from './entities/collections.entity';
-
 @ApiTags('COLLECTION')
 @Controller('collections')
 export class CollectionController {
@@ -39,15 +37,13 @@ export class CollectionController {
     @Query('page') page?: number,
     @Query('order') order?: string,
   ) {
-    // getPopularCollections 함수 호출
     const { collections, totalPages } =
       await this.collectionService.getPopularCollections(page, order);
 
-    // EJS 템플릿에 전달할 데이터
     return {
       collections,
       totalPages,
-      order, // 'order' 변수도 함께 전달
+      order,
       page,
     };
   }
@@ -114,7 +110,6 @@ export class CollectionController {
     @Body() createColDto: CreateColDto,
     @UserInfo() user: Users,
   ) {
-    // return await this.collectionService.createCol(file, createColDto, user.id);
     const createdCollection = await this.collectionService.createCol(
       file,
       createColDto,

@@ -88,6 +88,6 @@ export class FollowService {
     const existingFollow = await this.followRepository.findOne({
       where: followRelation,
     });
-    return !!existingFollow; // 반환값으로 팔로우 여부를 불리언 값으로 반환
+    return !!existingFollow;
   }
 }

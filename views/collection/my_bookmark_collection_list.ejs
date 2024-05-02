@@ -79,7 +79,7 @@
           type: 'DELETE',
           success: function () {
             alert('북마크가 삭제되었습니다.');
-            window.location.href = '/bookmark'; // 이전 페이지(컬렉션)로 리다이렉트
+            window.location.href = '/bookmark'; 
           },
           error: function (response) {
             alert(response.responseJSON.message);

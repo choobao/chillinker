@@ -60,8 +60,8 @@ export class WebContentService {
           .addSelect(
             `JSON_EXTRACT(webContents.rank, '$.${platform}')`,
             'ranking',
-          ) // 플랫폼 별 랭킹
-          .orderBy('ranking', 'ASC') // ranking에 따라 정렬
+          )
+          .orderBy('ranking', 'ASC')
           .getRawMany();
 
         await this.redisService.cacheData(
@@ -127,8 +127,8 @@ export class WebContentService {
       .createQueryBuilder('users')
       .where('users.nickname LIKE :keyword', { keyword: `%${keyword}%` })
       .orWhere('users.intro LIKE :keyword', { keyword: `%${keyword}%` })
-      .offset(skip) // 페이지에 따라 스킵하는 수 계산
-      .limit(take) // 페이지당 아이템 수 설정
+      .offset(skip)
+      .limit(take)
       .getRawMany();
 
     return users;
@@ -142,8 +142,8 @@ export class WebContentService {
       .createQueryBuilder('collections')
       .where('collections.title LIKE :keyword', { keyword: `%${keyword}%` })
       .orWhere('collections.desc LIKE :keyword', { keyword: `%${keyword}%` })
-      .offset(skip) // 페이지에 따라 스킵하는 수 계산
-      .limit(take) // 페이지당 아이템 수 설정
+      .offset(skip)
+      .limit(take)
       .getRawMany();
 
     return collections;
@@ -324,7 +324,6 @@ export class WebContentService {
     }
   }
 
-  // 컬렉션에 많이 들어간 작품
   async getBestCollectionContents(type: string, user: Users | boolean | null) {
     try {
       let contents = await this.redisService.getCachedData(
@@ -612,7 +611,7 @@ export class WebContentService {
         totalCount = await this.webContentRepository.count({
           where: {
             contentType,
-            category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+            category: Like(`%${query}%`),
           },
         });
         await this.redisService.save(
@@ -625,7 +624,7 @@ export class WebContentService {
         contents = await this.webContentRepository.find({
           where: {
             contentType,
-            category: Like(`%${query}%`), // 'query'가 포함된 'category' 필드를 검색
+            category: Like(`%${query}%`),
           },
           take: take,
           skip: skip,

@@ -48,11 +48,9 @@ export class Users {
   @Column({ type: 'smallint', default: 0 })
   isAdmin: number;
 
-  //내가 팔로잉 한 사람 목록
   @OneToMany(() => Follows, (following) => following.followings)
   followings: Follows[];
 
-  //나를 팔로잉 한 사람 목록
   @OneToMany(() => Follows, (follower) => follower.followers)
   followers: Follows[];
 

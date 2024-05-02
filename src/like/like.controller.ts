@@ -19,7 +19,6 @@ import { UserGuard } from '../auth/user.guard';
 
 @ApiTags('LIKE')
 @Controller()
-// @UseInterceptors(ErrorInterceptor)
 @UseGuards(UserGuard)
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}

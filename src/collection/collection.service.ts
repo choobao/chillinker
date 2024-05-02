@@ -47,7 +47,6 @@ export class CollectionService {
     });
   }
 
-  // 내 컬렉션 목록 조회
   async getMyColList(userId: number) {
     const collections = await this.colRepository.find({
       where: { userId },
@@ -93,7 +92,6 @@ export class CollectionService {
     });
   }
 
-  // 타 유저 컬렉션 목록 조회
   async getUserColList(userId: number) {
     const existUser = await this.userRepository.findOneBy({ id: userId });
     if (!existUser)
@@ -135,13 +133,7 @@ export class CollectionService {
     });
   }
 
-  // 컬렉션 상세 조회
   async getMyCol(collectionId: number) {
-    // return await this.contentCollectionRepository.find({
-    //   where: { collectionId },
-    //   relations: { webContent: true },
-    //   // select: ['contentCollections.webcontent'],
-    // });
     return await this.colRepository
       .createQueryBuilder('collections')
       .leftJoinAndSelect('collections.contentCollections', 'contentCollection')
@@ -155,40 +147,25 @@ export class CollectionService {
       .getOne();
   }
 
-  // 컬렉션 생성
   async createCol(
     file: Express.Multer.File,
     createColDto: CreateColDto,
     userId: number,
   ): Promise<Collections> {
-    // let coverImage = createColDto.coverImage;
-    // if (file) {
-    //   //이미지 업로드
-    //   coverImage = await this.storageService.upload(file);
-    //   if (createColDto.coverImage) {
-    //     await this.storageService.delete(createColDto.coverImage);
-    //   }
-    // }
-    // const collection = this.colRepository.create({ ...createColDto, userId });
-    // return await this.colRepository.save(collection);
     let coverImage: string;
     if (file) {
-      // 이미지 업로드
       coverImage = await this.storageService.upload(file);
     }
 
-    // 컬렉션 생성
     const collection = this.colRepository.create({
       ...createColDto,
       userId,
-      coverImage, // 커버 이미지 추가
+      coverImage,
     });
 
-    // 컬렉션 저장
     return await this.colRepository.save(collection);
   }
 
-  // 컬렉션 수정 _컬렉션 정보 수정
   async updateCol(
     file: Express.Multer.File,
     collectionId: number,
@@ -202,7 +179,6 @@ export class CollectionService {
     }
     let coverImage: string = collection.coverImage || null;
     if (file) {
-      // 이미지 업로드
       coverImage = await this.storageService.upload(file);
     }
     collection.coverImage = coverImage;
@@ -212,7 +188,6 @@ export class CollectionService {
     return await this.colRepository.save(collection);
   }
 
-  // 컬렉션 삭제
   async deleteCol(userId: number, collectionId: number): Promise<void> {
     const collection = await this.colRepository.findOneBy({
       id: collectionId,
@@ -229,7 +204,6 @@ export class CollectionService {
     await this.colRepository.remove(collection);
   }
 
-  // 컨텐츠 추가
   async addContentToCollection(
     userId: number,
     collectionId: number,
@@ -274,7 +248,6 @@ export class CollectionService {
     return !!contentCollection;
   }
 
-  // 컨텐츠 삭제
   async removeContentFromCollection(
     userId: number,
     collectionId: number,
@@ -400,14 +373,6 @@ export class CollectionService {
     return userInfo;
   }
 
-  // @Cron(CronExpression.EVERY_3_DAYS)
-  // async updateTopBookmarkedCollections() {
-  //   // 여기서는 단순히 콘솔에 로깅을 합니다만, 실제로는 DB에 저장하거나 캐시를 업데이트할 수 있습니다.
-  //   const topCollections = await this.getTopBookmarkedCollections();
-  //   console.log(topCollections);
-  //   // 추가적인 로직...
-  // }
-
   async getTopBookmarkedCollections(): Promise<Collections[]> {
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
@@ -415,7 +380,7 @@ export class CollectionService {
     const topBookmarkedCollections = await this.colRepository
       .createQueryBuilder('collection')
       .leftJoinAndSelect('collection.user', 'user')
-      .leftJoin('collection.bookmarks', 'bookmark') // 'bookmarks'는 컬렉션 엔티티 내 북마크 관계를 나타냅니다.
+      .leftJoin('collection.bookmarks', 'bookmark')
       .addSelect('COUNT(bookmark.id)', 'bookmarkCount')
       .where('bookmark.createdAt > :threeDaysAgo', { threeDaysAgo })
       .groupBy('collection.id')
@@ -427,20 +392,15 @@ export class CollectionService {
   }
 
   async getPopularCollections(page?: number, order?: string) {
-    // 페이지당 항목 수 설정
     const perPage = 10;
 
-    // 페이지 번호 설정 (기본값은 1)
     page = page ? page : 1;
     let skip = (page - 1) * perPage;
 
-    // 현재 날짜와 3일 전 날짜 계산
     var today = new Date();
     var threeDaysAgo = new Date(today);
     threeDaysAgo.setDate(today.getDate() - 3);
 
-    // 지난 3일간 생성된 컬렉션 북마크 정보 조회
-    // 컬렉션 ID를 기준으로 선택
     const bookmarksCount = await this.colBookRepository
       .createQueryBuilder('collectionBookmarks')
       .select('collectionBookmarks.collectionId')
@@ -448,17 +408,13 @@ export class CollectionService {
       .where('collectionBookmarks.createdAt >= :threeDaysAgo', { threeDaysAgo })
       .getRawMany();
 
-    // 조회된 북마크들 중에서 고유한 컬렉션의 수 계산
     const uniqueCollectionsCount = new Set(
       bookmarksCount.map((item) => item.collectionBookmarks_collection_id),
     ).size;
 
-    // 전체 페이지 수 계산
     const totalPages = Math.ceil(uniqueCollectionsCount / perPage);
 
-    // 'recent'인 경우 최근 생성된 컬렉션 순으로 정렬, 그렇지 않으면 북마크 수가 많은 순으로 정렬
     if (order === 'recent') {
-      // 최근 생성된 컬렉션 조회
       const collections = await this.colBookRepository
         .createQueryBuilder('collectionBookmark')
         .innerJoin('collectionBookmark.collection', 'collection')
@@ -466,8 +422,8 @@ export class CollectionService {
         .select([
           'collectionBookmark.collectionId',
           'COUNT(*) as count',
-          'collection', // 컬렉션 엔티티의 필드들
-          'user.id', // 유저 엔티티의 필드들
+          'collection',
+          'user.id',
           'user.nickname',
           'user.profileImage',
         ])
@@ -475,14 +431,13 @@ export class CollectionService {
           threeDaysAgo,
         })
         .groupBy('collectionBookmark.collectionId')
-        .orderBy('collection.createdAt', 'DESC') // 최근 생성 순으로 정렬
+        .orderBy('collection.createdAt', 'DESC')
         .offset(skip)
         .limit(perPage)
         .getRawMany();
 
       return { collections, totalPages };
     } else {
-      // 북마크 수가 많은 컬렉션 조회
       const collections = await this.colBookRepository
         .createQueryBuilder('collectionBookmark')
         .innerJoin('collectionBookmark.collection', 'collection')
@@ -490,8 +445,8 @@ export class CollectionService {
         .select([
           'collectionBookmark.collectionId',
           'COUNT(*) as count',
-          'collection', // 컬렉션 엔티티의 필드들
-          'user.id', // 유저 엔티티의 필드들
+          'collection',
+          'user.id',
           'user.nickname',
           'user.profileImage',
         ])
@@ -499,7 +454,7 @@ export class CollectionService {
           threeDaysAgo,
         })
         .groupBy('collectionBookmark.collectionId')
-        .orderBy('count', 'DESC') // 북마크 수가 많은 순으로 정렬
+        .orderBy('count', 'DESC')
         .offset(skip)
         .limit(perPage)
         .getRawMany();

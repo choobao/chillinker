@@ -83,7 +83,7 @@
           type: 'POST',
           success: function () {
             alert('북마크가 추가되었습니다.');
-            window.location.href = `/collections/${collection_userId}`; // 이전 페이지(컬렉션)로 리다이렉트
+            window.location.href = `/collections/${collection_userId}`; 
           },
           error: function (response) {
             alert(response.responseJSON.message);

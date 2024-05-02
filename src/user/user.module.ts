@@ -21,12 +21,7 @@ import { UserAdultVerifyRequest } from './entities/user.adult-verify.entity';
     }),
     TypeOrmModule.forFeature([Users, UserAdultVerifyRequest]),
   ],
-  providers: [
-    UserService,
-    StorageService,
-    UserGuard,
-    //UnauthorizedExceptionFilter,
-  ],
+  providers: [UserService, StorageService, UserGuard],
   controllers: [UserController],
   exports: [UserService],
 })

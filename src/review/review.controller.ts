@@ -28,7 +28,6 @@ import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { ErrorInterceptor } from '../common/interceptors/error/error.interceptor';
 
 @ApiTags('REVIEW')
-// @UseInterceptors(ErrorInterceptor)
 @Controller()
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
@@ -78,19 +77,6 @@ export class ReviewController {
     console.log('df');
     return await this.reviewService.likeReview(user, reviewId);
   }
-
-  // @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
-  // @Render('reviewed_list.ejs')
-  // @Get('reviewedTitles/:userId')
-  // async getTitlesWithReviews(@Param('userId') userId: number) {
-  //   const reviews = await this.reviewService.getTitlesWithReviews(userId);
-
-  //   const reviewSummaries: ReviewSummaryDto[] = reviews.map((review) => {
-  //     return new ReviewSummaryDto(review.image, review.title, review.rate);
-  //   });
-
-  //   return { reviewedWorks: reviewSummaries };
-  // }
 
   @ApiOperation({ summary: '리뷰 작성한 작품 조회' })
   @UseGuards(AuthGuard('jwt'))
@@ -164,7 +150,6 @@ export class ReviewController {
     @Query('page') page?: string,
     @Query('order') order?: string,
   ) {
-    //탑리뷰
     const topReviews = await this.reviewService.getTopReviews(
       req.user,
       +page,

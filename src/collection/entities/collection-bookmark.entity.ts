@@ -21,7 +21,6 @@ export class CollectionBookmark {
   @CreateDateColumn()
   createdAt: Date;
 
-  // 컬렉션 북마크 - 컬렉션
   @ManyToOne(() => Collections, (collection) => collection.collectionBookmarks)
   @JoinColumn({ name: 'collection_id' })
   collection: Collections;
@@ -29,7 +28,6 @@ export class CollectionBookmark {
   @Column('int', { name: 'collection_id', nullable: false })
   collectionId: number;
 
-  // 컬렉션 좋아요 - 유저
   @ManyToOne(() => Users, (users) => users.collections)
   @JoinColumn({ name: 'user_id' })
   users: Users;

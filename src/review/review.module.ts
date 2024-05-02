@@ -7,7 +7,6 @@ import { PReviews } from './entities/platform.reviews.entity';
 import { ReviewLikes } from './entities/review.likes.entity';
 import { WebContents } from 'src/web-content/entities/webContents.entity';
 import { Users } from '../user/entities/user.entity';
-import { SseService } from '../sse/sse.service';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { WebContentService } from 'src/web-content/web-content.service';
 import { Collections } from 'src/collection/entities/collections.entity';

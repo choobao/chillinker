@@ -25,7 +25,6 @@ $(document).ready(function () {
   const issuedAtTime = new Date(result.iat * 1000).getTime();
   const currentTime = new Date().getTime();
 
-  //accessToken 만료시
   if (currentTime >= expirationTime) {
     $.ajax({
       type: 'POST',
