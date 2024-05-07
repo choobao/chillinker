@@ -15,7 +15,6 @@ import { RedisModule } from './redis/redis.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { StorageModule } from './storage/storage.module';
 import { LikeModule } from './like/like.module';
-import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { AdminModule } from './admin/admin.module';
 
 const typeOrmModuleOptions = {
@@ -54,7 +53,6 @@ const typeOrmModuleOptions = {
     CrawlerModule,
     LikeModule,
     StorageModule,
-    ElasticSearchModule,
     AdminModule,
   ],
   controllers: [ReviewController],
