@@ -23,7 +23,6 @@
 - DB : MySQL(Cloud SQL) & typeORM
 - cache : Redis Lab
 - deploy : Docker & Cloud Build & Cloud Run
-- search : Elasticsearch
 - crawling : Axios, Cheerio, Puppeteer
 - frontend : ejs, jquery, css
 
