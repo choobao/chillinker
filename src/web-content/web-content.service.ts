@@ -11,7 +11,6 @@ import { ContentType } from './webContent.type';
 import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import _ from 'lodash';
-import { ElasticSearchService } from '../elastic-search/elastic-search.service';
 import { RedisService } from '../redis/redis.service';
 
 @Injectable()
@@ -23,7 +22,6 @@ export class WebContentService {
     private readonly userRepository: Repository<Users>,
     @InjectRepository(Collections)
     private readonly collectionRepository: Repository<Collections>,
-    private readonly elasticSearchService: ElasticSearchService,
     private readonly redisService: RedisService,
   ) {}
 
@@ -150,13 +148,25 @@ export class WebContentService {
   }
 
   async searchFromAuthors(keyword: string, user, page: number, take: number) {
-    let authors = await this.elasticSearchService.search(
-      'webcontents',
-      keyword,
-      'author',
-      page,
-      take,
-    );
+    const keywordWithoutSpace = keyword.replace(/ /g, '');
+    let authors = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .where("REPLACE(webContents.author, ' ', '') LIKE :keyword", {
+        keyword: `%${keywordWithoutSpace}%`,
+      })
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.author',
+        'webContents.starRate',
+        'webContents.image',
+        'webContents.isAdult',
+        'webContents.contentType',
+      ])
+      .take(take)
+      .skip((page - 1) * take)
+      .getMany();
+
     authors = this.blindAdultImage(user, authors);
     return authors;
   }
@@ -167,14 +177,28 @@ export class WebContentService {
     page: number,
     take: number,
   ) {
-    let ck = await this.elasticSearchService.searchMultipleField(
-      'webcontents',
-      keyword,
-      'category',
-      'keyword',
-      page,
-      take,
-    );
+    const keywordWithoutSpace = keyword.replace(/ /g, '');
+    let ck = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .where("REPLACE(webContents.category, ' ', '') LIKE :keyword", {
+        keyword: `%${keywordWithoutSpace}%`,
+      })
+      .orWhere("REPLACE(webContents.keyword, ' ', '') LIKE :keyword", {
+        keyword: `%${keywordWithoutSpace}%`,
+      })
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.author',
+        'webContents.starRate',
+        'webContents.image',
+        'webContents.isAdult',
+        'webContents.contentType',
+      ])
+      .take(take)
+      .skip((page - 1) * take)
+      .getMany();
+    console.log(ck);
     ck = this.blindAdultImage(user, ck);
 
     return ck;
@@ -186,13 +210,24 @@ export class WebContentService {
     page: number,
     take: number,
   ) {
-    const webcontents = (await this.elasticSearchService.search(
-      'webcontents',
-      keyword,
-      'title',
-      page,
-      take,
-    )) as WebContents[];
+    const keywordWithoutSpace = keyword.replace(/ /g, '');
+    const webcontents = await this.webContentRepository
+      .createQueryBuilder('webContents')
+      .where("REPLACE(webContents.title, ' ', '') LIKE :keyword", {
+        keyword: `%${keywordWithoutSpace}%`,
+      })
+      .select([
+        'webContents.id',
+        'webContents.title',
+        'webContents.author',
+        'webContents.starRate',
+        'webContents.image',
+        'webContents.isAdult',
+        'webContents.contentType',
+      ])
+      .take(take)
+      .skip((page - 1) * take)
+      .getMany();
 
     const webnovels = webcontents.filter(
       (webContent) => webContent.contentType === '웹소설',

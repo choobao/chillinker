@@ -10,7 +10,6 @@ import { Users } from '../user/entities/user.entity';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
 import { WebContentService } from 'src/web-content/web-content.service';
 import { Collections } from 'src/collection/entities/collections.entity';
-import { ElasticSearchService } from 'src/elastic-search/elastic-search.service';
 import { RedisService } from 'src/redis/redis.service';
 
 @Module({
@@ -30,7 +29,6 @@ import { RedisService } from 'src/redis/redis.service';
     ReviewService,
     OptionalAuthGuard,
     WebContentService,
-    ElasticSearchService,
     RedisService,
   ],
 })

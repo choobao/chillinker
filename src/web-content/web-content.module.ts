@@ -7,7 +7,6 @@ import { Users } from '../user/entities/user.entity';
 import { Collections } from '../collection/entities/collections.entity';
 import { Likes } from '../like/entities/likes.entity';
 import { OptionalAuthGuard } from '../auth/optinal.authguard';
-import { ElasticSearchService } from '../elastic-search/elastic-search.service';
 import { ReviewService } from '../review/review.service';
 import { CReviews } from '../review/entities/chillinker.reviews.entity';
 import { PReviews } from '../review/entities/platform.reviews.entity';
@@ -29,7 +28,6 @@ import { RedisService } from '../redis/redis.service';
   providers: [
     WebContentService,
     OptionalAuthGuard,
-    ElasticSearchService,
     ReviewService,
     RedisService,
   ],
