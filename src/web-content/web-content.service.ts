@@ -258,9 +258,10 @@ export class WebContentService {
 
   async getBestLikesContents(type: string, user: Users | boolean | null) {
     try {
-      let contents = await this.redisService.getCachedData(
-        `bestLikesContents_${type}`,
-      );
+      // let contents = await this.redisService.getCachedData(
+      //   `bestLikesContents_${type}`,
+      // );
+      let contents = null;
 
       if (_.isNil(contents)) {
         const threeDaysAgo = new Date();
@@ -310,9 +311,10 @@ export class WebContentService {
 
   async getBestReviewCountContents(type: string, user: Users | boolean | null) {
     try {
-      let contents = await this.redisService.getCachedData(
-        `bestReviewContents_${type}`,
-      );
+      let contents = null;
+      // let contents = await this.redisService.getCachedData(
+      //   `bestReviewContents_${type}`,
+      // );
 
       if (_.isNil(contents)) {
         const threeDaysAgo = new Date();
@@ -362,9 +364,10 @@ export class WebContentService {
 
   async getBestCollectionContents(type: string, user: Users | boolean | null) {
     try {
-      let contents = await this.redisService.getCachedData(
-        `bestCollectionContents_${type}`,
-      );
+      // let contents = await this.redisService.getCachedData(
+      //   `bestCollectionContents_${type}`,
+      // );
+      let contents = null;
 
       if (_.isNil(contents)) {
         const threeDaysAgo = new Date();
