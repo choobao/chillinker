@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WebContents } from '../web-content/entities/webContents.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { RedisService } from '../redis/redis.service';
 import _ from 'lodash';
@@ -203,7 +202,6 @@ export class CrawlerService {
 
   // 전부 호출해서 -> 배열로 만들어서 -> 중복 데이터 처리 후 -> DB에 넣는다
 
-  @Cron('4 14 * * *')
   async saveAllTogether() {
     try {
       const startTime = new Date().getTime();
