@@ -454,7 +454,8 @@ export class ReviewService {
 
   async top10Reviews(user: Users | boolean | null) {
     try {
-      let reviews = await this.redisService.getCachedData('top10Reviews');
+      //let reviews = await this.redisService.getCachedData('top10Reviews');
+      let reviews = null;
       if (_.isNil(reviews)) {
         var today = new Date();
         var threeDaysAgo = new Date(today);
