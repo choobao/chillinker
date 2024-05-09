@@ -27,9 +27,10 @@ export class WebContentService {
 
   async findBestWebContents(platform: string, type: ContentType, user) {
     try {
-      let bestWebContents = await this.redisService.getCachedData(
-        `bestWebContents_${platform}_${type}`,
-      );
+      // let bestWebContents = await this.redisService.getCachedData(
+      //   `bestWebContents_${platform}_${type}`,
+      // );
+      let bestWebContents = null;
 
       if (_.isNil(bestWebContents)) {
         bestWebContents = await this.webContentRepository
